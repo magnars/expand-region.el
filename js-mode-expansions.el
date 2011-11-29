@@ -27,6 +27,8 @@
 ;; Extra expansions for JavaScript that I've found useful so far:
 ;;
 ;;    er/mark-js-function
+;;    er/mark-js-object-property-value
+;;    er/mark-js-object-property
 ;;    er/mark-js-if
 ;;    er/mark-js-inner-return
 ;;    er/mark-js-outer-return
@@ -96,12 +98,52 @@
   (forward-list)
   (exchange-point-and-mark))
 
+(defun er/mark-js-object-property-value ()
+  "Mark the current object property value, ie. from : to , or }"
+  (interactive)
+  (unless (er--inside-pairs-p)
+    (error "Point is not inside an object"))
+  (search-backward ":")
+  (forward-char)
+  (search-forward-regexp "[^\s]")
+  (backward-char)
+  (set-mark (point))
+  (while (not (looking-at "[},]"))
+    (if (looking-at "\\s(")
+        (forward-list)
+      (forward-char)))
+  (if (looking-back "[\s\n]")
+      (search-backward-regexp "[^\s]"))
+  (exchange-point-and-mark))
+
+(defun er/mark-js-object-property ()
+  "Mark js-object-property presumes that point is at the assignment part of key: value.
+If point is inside the value, that will be marked first anyway."
+  (interactive)
+  (when (or (looking-at "\\(\\s_\\|\\sw\\)*:")
+            (looking-back ": ?"))
+    (search-backward-regexp "[{,]")
+    (forward-char)
+    (search-forward-regexp "[^\s\n]")
+    (backward-char)
+    (set-mark (point))
+    (search-forward ":")
+    (while (not (looking-at "[},]"))
+      (if (looking-at "\\s(")
+          (forward-list)
+        (forward-char)))
+    (if (looking-back "[\s\n]")
+        (search-backward-regexp "[^\s]"))
+    (exchange-point-and-mark)))
+
 (defun er/add-js-mode-expansions ()
   "Adds JS-specific expansions for buffers in js-mode"
   (make-variable-buffer-local 'er/try-expand-list)
   (setq er/try-expand-list (append
                             er/try-expand-list
                             '(er/mark-js-function
+                              er/mark-js-object-property-value
+                              er/mark-js-object-property
                               er/mark-js-if
                               er/mark-js-inner-return
                               er/mark-js-outer-return))))
