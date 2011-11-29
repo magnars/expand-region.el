@@ -6,7 +6,7 @@ As an example:
 
     (setq alphabet-start "abc def")
 
-With the cursur at the c, it starts by marking the entire word `abc`, then
+With the cursor at the `c`, it starts by marking the entire word `abc`, then
 expand to the contents of the quotes `abc def`, then to the entire quote
 `"abc def"`, then to the contents of the sexp `setq alphabet-start "abc def"`
 and finally to the entire sexp.
@@ -46,7 +46,7 @@ There's plenty of examples to look at in these files.
 After you make your function, add it to a buffer-local version of
 the `er/try-expand-list`.
 
-Example:
+**Example:**
 
 Let's say you want expand-region to also mark paragraphs and pages in
 text-mode. Incidentally Emacs already comes with `mark-paragraph` and
@@ -61,7 +61,7 @@ text-mode. Incidentally Emacs already comes with `mark-paragraph` and
 
     (add-hook 'text-mode-hook 'er/add-text-mode-expansions)
 
-Add that to its own file, and include it at the bottom of this one,
+Add that to its own file, and require it at the bottom of this one,
 where it says "Mode-specific expansions"
 
 **Warning:** Badly written expansions might slow down expand-region
