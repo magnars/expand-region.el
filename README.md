@@ -1,8 +1,9 @@
 # expand-region.el
 
-Expand region increases the region by semantic units for each run.
+Expand region increases the selected region by semantic units. Just keep
+pressing the key until it selects what you want.
 
-As an example:
+An example:
 
     (setq alphabet-start "abc def")
 
