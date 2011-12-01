@@ -122,6 +122,23 @@
       (while (looking-back symbol-regexp)
         (backward-char)))))
 
+(defun er/mark-symbol-with-prefix ()
+  "Mark the entire symbol around or in front of point, including prefix."
+  (interactive)
+  (let ((symbol-regexp "\\s_\\|\\sw")
+        (prefix-regexp "\\s'"))
+    (when (or (looking-at prefix-regexp)
+              (looking-at symbol-regexp)
+              (looking-back symbol-regexp))
+      (while (looking-at prefix-regexp)
+        (forward-char))
+      (while (looking-at symbol-regexp)
+        (forward-char))
+      (set-mark (point))
+      (while (or (looking-back symbol-regexp)
+                 (looking-back prefix-regexp))
+        (backward-char)))))
+
 ;; Mark method call (can be improved further)
 
 (defun er/mark-method-call ()
@@ -221,6 +238,7 @@
 
 (setq er/try-expand-list '(er/mark-word
                            er/mark-symbol
+                           er/mark-symbol-with-prefix
                            er/mark-method-call
                            er/mark-inside-quotes
                            er/mark-outside-quotes
