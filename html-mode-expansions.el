@@ -67,7 +67,7 @@ around the equal sign or unquotes attributes atm."
   (when (and (er--inside-tag-p)
              (or (not (looking-at "<"))
                  (er--looking-at-marked-tag)))
-    (sgml-get-context))
+    (goto-char (aref (car (last (sgml-get-context))) 2)))
   (set-mark (point))
   (sgml-skip-tag-forward 1)
   (exchange-point-and-mark))
@@ -75,7 +75,7 @@ around the equal sign or unquotes attributes atm."
 (defun er/mark-inner-tag ()
   "Mark the contents of an open tag, not including the tags."
   (interactive)
-  (goto-char (aref (nth 0 (sgml-get-context)) 3))
+  (goto-char (aref (car (last (sgml-get-context))) 3))
   (set-mark (point))
   (backward-char 1)
   (sgml-skip-tag-forward 1)
