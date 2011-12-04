@@ -260,6 +260,9 @@ moving point or mark as little as possible."
         (best-end (buffer-end 1)))
     (while try-list
       (save-excursion
+        (when (bolp)
+          (back-to-indentation)
+          (setq start (point)))
         (condition-case nil
             (progn
               (funcall (car try-list))
