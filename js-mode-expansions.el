@@ -112,8 +112,9 @@
     (if (looking-at "\\s(")
         (forward-list)
       (forward-char)))
-  (if (looking-back "[\s\n]")
-      (search-backward-regexp "[^\s]"))
+  (when (looking-back "[\s\n]")
+    (search-backward-regexp "[^\s\n]")
+    (forward-char))
   (exchange-point-and-mark))
 
 (defun er/mark-js-object-property ()
@@ -132,8 +133,9 @@ If point is inside the value, that will be marked first anyway."
       (if (looking-at "\\s(")
           (forward-list)
         (forward-char)))
-    (if (looking-back "[\s\n]")
-        (search-backward-regexp "[^\s]"))
+    (when (looking-back "[\s\n]")
+      (search-backward-regexp "[^\s\n]")
+      (forward-char))
     (exchange-point-and-mark)))
 
 (defun er/add-js-mode-expansions ()
