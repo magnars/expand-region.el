@@ -129,7 +129,8 @@
   "Mark js-object-property presumes that point is at the assignment part of key: value.
 If point is inside the value, that will be marked first anyway."
   (interactive)
-  (when (or (looking-at "\\(\\s_\\|\\sw\\)*:")
+  (when (or (looking-at "\"?\\(\\s_\\|\\sw\\| \\)*\":")
+            (looking-at "\\(\\s_\\|\\sw\\)*:")
             (looking-back ": ?"))
     (search-backward-regexp "[{,]")
     (forward-char)
