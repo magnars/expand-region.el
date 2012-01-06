@@ -98,6 +98,10 @@
 
 ;;; Code:
 
+;; keep track of history so we can contract after expanding
+(setq history-start '())
+(setq history-end '())
+
 (defun er/mark-word ()
   "Mark the entire word around or in front of point."
   (interactive)
@@ -258,6 +262,11 @@ moving point or mark as little as possible."
         (try-list er/try-expand-list)
         (best-start 0)
         (best-end (buffer-end 1)))
+
+    ;; remember the start and end points so we can contract later
+    (push start history-start)
+    (push end history-end)
+
     (while try-list
       (save-excursion
         (when (bolp)
@@ -281,6 +290,15 @@ moving point or mark as little as possible."
       (setq try-list (cdr try-list)))
     (goto-char best-start)
     (set-mark best-end)))
+
+(defun er/contract-region ()
+  "Contract the selected region to its previous size."
+  (interactive)
+  (let ((history-length (length history-start)))
+    (if (> history-length 0)
+        (progn
+          (goto-char (pop history-start))
+          (set-mark (pop history-end))))))
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
