@@ -105,6 +105,10 @@
 (defvar er/history-end '()
   "History of end points.")
 
+;; history variables are always local to a single buffer
+(make-variable-buffer-local 'er/history-start)
+(make-variable-buffer-local 'er/history-end)
+
 (defun er/mark-word ()
   "Mark the entire word around or in front of point."
   (interactive)
