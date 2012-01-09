@@ -99,15 +99,11 @@
 ;;; Code:
 
 ;; keep track of history so we can contract after expanding
-(defvar er/history-start '()
-  "History of start points.")
+(defvar er/history '()
+  "History of start and end points.")
 
-(defvar er/history-end '()
-  "History of end points.")
-
-;; history variables are always local to a single buffer
-(make-variable-buffer-local 'er/history-start)
-(make-variable-buffer-local 'er/history-end)
+;; history is always local to a single buffer
+(make-variable-buffer-local 'er/history)
 
 (defun er/mark-word ()
   "Mark the entire word around or in front of point."
@@ -271,8 +267,7 @@ moving point or mark as little as possible."
         (best-end (buffer-end 1)))
 
     ;; remember the start and end points so we can contract later
-    (push start er/history-start)
-    (push end er/history-end)
+    (push (cons start end) er/history)
 
     (while try-list
       (save-excursion
@@ -306,11 +301,11 @@ moving point or mark as little as possible."
               (eq last-command 'er/contract-region))
     (error "er/contact-region should only be called after expanding or contracting a region."))
 
-  (let ((history-length (length er/history-start)))
-    (if (> history-length 0)
+  (if (> (length er/history) 0)
+      (let ((last (pop er/history)))
         (progn
-          (goto-char (pop er/history-start))
-          (set-mark (pop er/history-end))))))
+          (goto-char (car last))
+          (set-mark (cdr last))))))
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
