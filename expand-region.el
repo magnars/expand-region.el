@@ -304,8 +304,16 @@ moving point or mark as little as possible."
   (if (> (length er/history) 0)
       (let ((last (pop er/history)))
         (progn
-          (goto-char (car last))
-          (set-mark (cdr last))))))
+          (let ((start (car last))
+                (end (cdr last)))
+            (goto-char start)
+            (set-mark end)
+
+            ;; deactivate mark and clear history
+            (when (eq start end)
+              (deactivate-mark)
+              (setq er/history '()))
+            )))))
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
