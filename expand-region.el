@@ -98,6 +98,13 @@
 
 ;;; Code:
 
+;; keep track of history so we can contract after expanding
+(defvar er/history '()
+  "History of start and end points.")
+
+;; history is always local to a single buffer
+(make-variable-buffer-local 'er/history)
+
 (defun er/mark-word ()
   "Mark the entire word around or in front of point."
   (interactive)
@@ -258,6 +265,10 @@ moving point or mark as little as possible."
         (try-list er/try-expand-list)
         (best-start 0)
         (best-end (buffer-end 1)))
+
+    ;; remember the start and end points so we can contract later
+    (push (cons start end) er/history)
+
     (while try-list
       (save-excursion
         (when (bolp)
@@ -281,6 +292,32 @@ moving point or mark as little as possible."
       (setq try-list (cdr try-list)))
     (goto-char best-start)
     (set-mark best-end)))
+
+(defun er/contract-region ()
+  "Contract the selected region to its previous size."
+  (interactive)
+
+  (if (> (length er/history) 0)
+      (let ((last (pop er/history)))
+        (progn
+          (let ((start (car last))
+                (end (cdr last)))
+            (goto-char start)
+            (set-mark end)
+
+            ;; deactivate mark and clear history
+            (when (eq start end)
+              (deactivate-mark)
+              (er/clear-history))
+            )))))
+
+(defun er/clear-history ()
+  "Clear the history."
+  (setq er/history '())
+  (remove-hook 'after-change-functions 'er/clear-history t))
+
+;; clear history when the buffer is changed
+(add-hook 'after-change-functions 'er/clear-history t t)
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
