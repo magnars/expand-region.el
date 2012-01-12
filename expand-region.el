@@ -312,8 +312,16 @@ moving point or mark as little as possible."
             ;; deactivate mark and clear history
             (when (eq start end)
               (deactivate-mark)
-              (setq er/history '()))
+              (er/clear-history))
             )))))
+
+(defun er/clear-history ()
+  "Clear the history."
+  (setq er/history '())
+  (remove-hook 'after-change-functions 'er/clear-history t))
+
+;; clear history when the buffer is changed
+(add-hook 'after-change-functions 'er/clear-history t t)
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
