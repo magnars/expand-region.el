@@ -297,10 +297,6 @@ moving point or mark as little as possible."
   "Contract the selected region to its previous size."
   (interactive)
 
-  (unless (or (eq last-command 'er/expand-region)
-              (eq last-command 'er/contract-region))
-    (error "er/contact-region should only be called after expanding or contracting a region."))
-
   (if (> (length er/history) 0)
       (let ((last (pop er/history)))
         (progn
