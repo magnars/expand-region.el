@@ -17,6 +17,8 @@ You can set it up like this:
     (require 'expand-region)
     (global-set-key (kbd "C-@") 'er/expand-region)
 
+There's also `er/contract-region` if you expand too far. 
+
 ## Language support
 
 Expand region works fairly well with most languages, due to the general
@@ -75,6 +77,12 @@ If you make some nice expansions for your favorite mode, it would be
 great if you opened a pull-request. The repo is at:
 
     https://github.com/magnars/expand-region.el
+
+## Contributors
+
+* [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
+
+Thanks!
 
 ## License
 
