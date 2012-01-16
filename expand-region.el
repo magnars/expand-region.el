@@ -98,12 +98,13 @@
 
 ;;; Code:
 
-;; keep track of history so we can contract after expanding
 (defvar er/history '()
-  "History of start and end points.")
+  "A history of start and end points so we can contract after expanding.")
 
 ;; history is always local to a single buffer
 (make-variable-buffer-local 'er/history)
+
+;; Default expansions
 
 (defun er/mark-word ()
   "Mark the entire word around or in front of point."
