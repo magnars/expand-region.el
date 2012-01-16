@@ -260,8 +260,14 @@ Basically it runs all the mark-functions in the er/try-expand-list
 and chooses the one that increases the size of the region while
 moving point or mark as little as possible."
   (interactive)
+
+  (unless (memq last-command '(er/expand-region er/contract-region))
+    (push-mark nil t)
+    (push-mark nil t)
+    (message "length is %s" (length mark-ring)))
+
   (let ((start (point))
-        (end (if (region-active-p) (mark) (point)))
+        (end (if (use-region-p) (mark) (point)))
         (try-list er/try-expand-list)
         (best-start 0)
         (best-end (buffer-end 1)))
