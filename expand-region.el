@@ -74,12 +74,12 @@
 ;; `mark-page`. To add it to the try-list, do this:
 
 ;;     (defun er/add-text-mode-expansions ()
-;;       (make-variable-buffer-local 'er/try-expand-list)
-;;       (setq er/try-expand-list (append
-;;                                 er/try-expand-list
-;;                                 '(mark-paragraph
-;;                                   mark-page))))
-
+;;       (set (make-local-variable 'er/try-expand-list)
+;;            (append
+;;             er/try-expand-list
+;;             '(mark-paragraph
+;;               mark-page))))
+;;
 ;;     (add-hook 'text-mode-hook 'er/add-text-mode-expansions)
 
 ;; Add that to its own file, and require it at the bottom of this one,
@@ -260,8 +260,14 @@ Basically it runs all the mark-functions in the er/try-expand-list
 and chooses the one that increases the size of the region while
 moving point or mark as little as possible."
   (interactive)
+
+  (unless (memq last-command '(er/expand-region er/contract-region))
+    (push-mark nil t)
+    (push-mark nil t)
+    (message "length is %s" (length mark-ring)))
+
   (let ((start (point))
-        (end (if (region-active-p) (mark) (point)))
+        (end (if (use-region-p) (mark) (point)))
         (try-list er/try-expand-list)
         (best-start 0)
         (best-end (buffer-end 1)))

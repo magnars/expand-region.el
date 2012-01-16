@@ -149,15 +149,14 @@ If point is inside the value, that will be marked first anyway."
 
 (defun er/add-js-mode-expansions ()
   "Adds JS-specific expansions for buffers in js-mode"
-  (make-variable-buffer-local 'er/try-expand-list)
-  (setq er/try-expand-list (append
-                            er/try-expand-list
-                            '(er/mark-js-function
-                              er/mark-js-object-property-value
-                              er/mark-js-object-property
-                              er/mark-js-if
-                              er/mark-js-inner-return
-                              er/mark-js-outer-return))))
+  (set (make-local-variable 'er/try-expand-list) (append
+                                                  er/try-expand-list
+                                                  '(er/mark-js-function
+                                                    er/mark-js-object-property-value
+                                                    er/mark-js-object-property
+                                                    er/mark-js-if
+                                                    er/mark-js-inner-return
+                                                    er/mark-js-outer-return))))
 
 (add-hook 'js2-mode-hook 'er/add-js-mode-expansions)
 
