@@ -212,11 +212,11 @@
   "Mark inside pairs (as defined by the mode), not including the pairs."
   (interactive)
   (when (er--inside-pairs-p)
-      (goto-char (nth 1 (syntax-ppss)))
-      (set-mark (1+ (point)))
-      (forward-list)
-      (backward-char)
-      (exchange-point-and-mark)))
+    (goto-char (nth 1 (syntax-ppss)))
+    (set-mark (1+ (point)))
+    (forward-list)
+    (backward-char)
+    (exchange-point-and-mark)))
 
 (defun er--looking-at-pair ()
   "Is point looking at an opening pair char?"
@@ -273,6 +273,10 @@ moving point or mark as little as possible."
         (best-start 0)
         (best-end (buffer-end 1)))
 
+    ;; add hook to clear history on buffer changes
+    (unless er/history
+      (add-hook 'after-change-functions 'er/clear-history t t))
+
     ;; remember the start and end points so we can contract later
     (push (cons start end) er/history)
 
@@ -304,27 +308,22 @@ moving point or mark as little as possible."
   "Contract the selected region to its previous size."
   (interactive)
 
-  (if (> (length er/history) 0)
-      (let ((last (pop er/history)))
-        (progn
-          (let ((start (car last))
-                (end (cdr last)))
-            (goto-char start)
-            (set-mark end)
+  (if er/history
+      (let* ((last (pop er/history))
+             (start (car last))
+             (end (cdr last)))
+        (goto-char start)
+        (set-mark end)
 
-            ;; deactivate mark and clear history
-            (when (eq start end)
-              (deactivate-mark)
-              (er/clear-history))
-            )))))
+        (when (eq start end)
+          (deactivate-mark)
+          (er/clear-history))
+        )))
 
-(defun er/clear-history ()
+(defun er/clear-history (&optional beg end len)
   "Clear the history."
   (setq er/history '())
   (remove-hook 'after-change-functions 'er/clear-history t))
-
-;; clear history when the buffer is changed
-(add-hook 'after-change-functions 'er/clear-history t t)
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
