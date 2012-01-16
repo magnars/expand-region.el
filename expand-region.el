@@ -232,6 +232,11 @@
 (defun er/mark-outside-pairs ()
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
+  (let* ((blank " \t\n")
+         (blank-regex (concat "[" blank "]")))
+    (if (looking-back (concat "\\s)+\\="))
+        (ignore-errors (forward-list -1))
+      (skip-chars-forward blank)))
   (when (and (er--inside-pairs-p)
              (or (not (er--looking-at-pair))
                  (er--looking-at-marked-pair)))
