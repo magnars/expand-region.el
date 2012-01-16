@@ -81,6 +81,7 @@ great if you opened a pull-request. The repo is at:
 ## Contributors
 
 * [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
+* [Le Wang](https://github.com/lewang) contributed bugfixes.
 
 Thanks!
 
