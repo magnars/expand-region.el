@@ -84,12 +84,11 @@ around the equal sign or unquotes attributes atm."
 
 (defun er/add-html-mode-expansions ()
   "Adds HTML-specific expansions for buffers in html-mode"
-  (make-variable-buffer-local 'er/try-expand-list)
-  (setq er/try-expand-list (append
-                            er/try-expand-list
-                            '(er/mark-html-attribute
-                              er/mark-inner-tag
-                              er/mark-outer-tag))))
+  (set (make-local-variable 'er/try-expand-list) (append
+                                                  er/try-expand-list
+                                                  '(er/mark-html-attribute
+                                                    er/mark-inner-tag
+                                                    er/mark-outer-tag))))
 
 (add-hook 'html-mode-hook 'er/add-html-mode-expansions)
 
