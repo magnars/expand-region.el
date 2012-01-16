@@ -39,10 +39,9 @@
 
 (defun er/add-css-mode-expansions ()
   "Adds CSS-specific expansions for buffers in css-mode"
-  (make-variable-buffer-local 'er/try-expand-list)
-  (setq er/try-expand-list (append
-                            er/try-expand-list
-                            '(er/mark-css-declaration))))
+  (set (make-local-variable 'er/try-expand-list) (append
+                                                  er/try-expand-list
+                                                  '(er/mark-css-declaration))))
 
 (add-hook 'css-mode-hook 'er/add-css-mode-expansions)
 

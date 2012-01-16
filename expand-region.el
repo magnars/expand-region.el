@@ -74,12 +74,12 @@
 ;; `mark-page`. To add it to the try-list, do this:
 
 ;;     (defun er/add-text-mode-expansions ()
-;;       (make-variable-buffer-local 'er/try-expand-list)
-;;       (setq er/try-expand-list (append
-;;                                 er/try-expand-list
-;;                                 '(mark-paragraph
-;;                                   mark-page))))
-
+;;       (set (make-local-variable 'er/try-expand-list)
+;;            (append
+;;             er/try-expand-list
+;;             '(mark-paragraph
+;;               mark-page))))
+;;
 ;;     (add-hook 'text-mode-hook 'er/add-text-mode-expansions)
 
 ;; Add that to its own file, and require it at the bottom of this one,
