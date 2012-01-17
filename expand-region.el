@@ -102,12 +102,16 @@
 (defvar er/history '()
   "History of start and end points.")
 
+(defvar er--pushed-mark-p nil
+  "t when mark has been pushed for this command.")
+
 ;; history is always local to a single buffer
 (make-variable-buffer-local 'er/history)
 
 (defun er/mark-word ()
   "Mark the entire word around or in front of point."
   (interactive)
+  (er--setup)
   (let ((word-regexp "\\sw"))
     (when (or (looking-at word-regexp)
               (looking-back word-regexp))
@@ -120,6 +124,7 @@
 (defun er/mark-symbol ()
   "Mark the entire symbol around or in front of point."
   (interactive)
+  (er--setup)
   (let ((symbol-regexp "\\s_\\|\\sw"))
     (when (or (looking-at symbol-regexp)
               (looking-back symbol-regexp))
@@ -132,6 +137,7 @@
 (defun er/mark-symbol-with-prefix ()
   "Mark the entire symbol around or in front of point, including prefix."
   (interactive)
+  (er--setup)
   (let ((symbol-regexp "\\s_\\|\\sw")
         (prefix-regexp "\\s'"))
     (when (or (looking-at prefix-regexp)
@@ -151,6 +157,7 @@
 (defun er/mark-method-call ()
   "Mark the current symbol (including dots) and then paren to closing paren."
   (interactive)
+  (er--setup)
   (let ((symbol-regexp "\\s_\\|\\sw\\|\\."))
     (when (or (looking-at symbol-regexp)
               (looking-back symbol-regexp))
@@ -179,13 +186,34 @@
   "Move point backward until it exits the current quoted string."
   (while (er--point-is-in-string-p) (backward-char)))
 
+(defvar er--cmds '(er/expand-region er/contract-region))
+
 (defsubst er--first-invocation ()
   "return t if this is the first invocation of er/* command"
-  (not (memq last-command '(er/expand-region er/contract-region))))
+  (not (memq last-command er--cmds)))
+
+(defsubst er--is-invocation ()
+  "return t if this is the first invocation of er/* command"
+  (memq this-command er--cmds))
+
+(defun er--post-command-func ()
+  "function to be run on `post-command-hook'"
+  (setq er--pushed-mark-p nil)
+  (remove-hook 'post-command-hook 'er--post-command-func t))
+
+(defun er--setup ()
+  "push mark and add post-command-hook"
+  (unless er--pushed-mark-p
+    (push-mark nil t))
+  (unless (er--is-invocation)
+    (push-mark nil t))
+  (setq er--pushed-mark-p t)
+  (add-hook 'post-command-hook 'er--post-command-func nil t))
 
 (defun er/mark-inside-quotes ()
   "Mark the inside of the current string, not including the quotation marks."
   (interactive)
+  (er--setup)
   (when (er--point-is-in-string-p)
     (er--move-point-backward-out-of-string)
     (forward-char)
@@ -197,6 +225,7 @@
 (defun er/mark-outside-quotes ()
   "Mark the current string, including the quotation marks."
   (interactive)
+  (er--setup)
   (if (er--point-is-in-string-p)
       (er--move-point-backward-out-of-string))
   (when (looking-at "\\s\"")
@@ -214,6 +243,7 @@
 (defun er/mark-inside-pairs ()
   "Mark inside pairs (as defined by the mode), not including the pairs."
   (interactive)
+  (er--setup)
   (when (er--inside-pairs-p)
       (goto-char (nth 1 (syntax-ppss)))
       (set-mark (1+ (point)))
@@ -236,6 +266,7 @@
 (defun er/mark-outside-pairs ()
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
+  (er--setup)
   (let* ((blank " \t\n")
          moved-back-p)
     (if (looking-back (concat "\\s)+\\="))
@@ -247,8 +278,8 @@
       (skip-chars-forward blank))
     (when (and (not moved-back-p)
                (er--inside-pairs-p)
-             (or (not (er--looking-at-pair))
-                 (er--looking-at-marked-pair)))
+               (or (not (er--looking-at-pair))
+                   (er--looking-at-marked-pair)))
       (goto-char (nth 1 (syntax-ppss)))))
   (when (er--looking-at-pair)
     (set-mark (point))
@@ -268,6 +299,24 @@
 
 ;; The magic expand-region method
 
+(defun er/mark-outside-pairs ()
+  "Mark pairs (as defined by the mode), including the pair chars."
+  (interactive)
+  (er--setup)
+  (let* ((blank " \t\n")
+         (blank-regex (concat "[" blank "]")))
+    (if (looking-back (concat "\\s)+\\="))
+        (ignore-errors (forward-list -1))
+      (skip-chars-forward blank)))
+  (when (and (er--inside-pairs-p)
+             (or (not (er--looking-at-pair))
+                 (er--looking-at-marked-pair)))
+    (goto-char (nth 1 (syntax-ppss))))
+  (when (er--looking-at-pair)
+    (set-mark (point))
+    (forward-list)
+    (exchange-point-and-mark)))
+
 (defun er/expand-region ()
   "Increase selected region by semantic units.
 Basically it runs all the mark-functions in the er/try-expand-list
@@ -275,9 +324,9 @@ and chooses the one that increases the size of the region while
 moving point or mark as little as possible."
   (interactive)
 
-  (when (er--first-invocation)
-    (push-mark nil t)
-    (push-mark nil t))
+  (if (er--first-invocation)
+      (push-mark nil t)
+    (setq er--pushed-mark-p t))
 
   (let ((start (point))
         (end (if (use-region-p) (mark) (point)))
@@ -316,7 +365,8 @@ moving point or mark as little as possible."
   "Contract the selected region to its previous size."
   (interactive)
 
-  (if (> (length er/history) 0)
+  (if (and (> (length er/history) 0)
+           (not (er--first-invocation)))
       (let ((last (pop er/history)))
         (progn
           (let ((start (car last))
@@ -327,10 +377,9 @@ moving point or mark as little as possible."
             ;; deactivate mark and clear history
             (when (eq start end)
               (deactivate-mark)
-              (er/clear-history))
-            )))))
+              (er/clear-history)))))))
 
-(defun er/clear-history ()
+(defun er/clear-history (&rest args)
   "Clear the history."
   (setq er/history '())
   (remove-hook 'after-change-functions 'er/clear-history t))
