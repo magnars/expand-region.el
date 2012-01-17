@@ -180,6 +180,10 @@
   "Move point backward until it exits the current quoted string."
   (while (er--point-is-in-string-p) (backward-char)))
 
+(defsubst er--first-invocation ()
+  "return t if this is the first invocation of er/* command"
+  (not (memq last-command '(er/expand-region er/contract-region))))
+
 (defun er/mark-inside-quotes ()
   "Mark the inside of the current string, not including the quotation marks."
   (interactive)
@@ -267,10 +271,9 @@ and chooses the one that increases the size of the region while
 moving point or mark as little as possible."
   (interactive)
 
-  (unless (memq last-command '(er/expand-region er/contract-region))
+  (when (er--first-invocation)
     (push-mark nil t)
-    (push-mark nil t)
-    (message "length is %s" (length mark-ring)))
+    (push-mark nil t))
 
   (let ((start (point))
         (end (if (use-region-p) (mark) (point)))
