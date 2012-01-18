@@ -199,9 +199,11 @@
 
 (defun er--setup ()
   "push mark and add post-command-hook"
-  (unless er--pushed-mark-p
-    (push-mark nil t))
-  (unless (er--is-invocation)
+
+  (when (and (not er--pushed-mark-p)
+             (or (not (er--is-invocation))
+                 (er--first-invocation)))
+    (push-mark nil t)
     (push-mark nil t))
   (setq er--pushed-mark-p t)
   (add-hook 'post-command-hook 'er--post-command-func nil t))
@@ -264,29 +266,6 @@
              (forward-list)
              (point)))))
 
-(defun er/mark-outside-pairs ()
-  "Mark pairs (as defined by the mode), including the pair chars."
-  (interactive)
-  (er--setup)
-  (let* ((blank " \t\n")
-         moved-back-p)
-    (if (looking-back (concat "\\s)+\\="))
-        (condition-case nil
-            (progn
-              (forward-list -1)
-              (setq moved-back-p t))
-          (error nil))
-      (skip-chars-forward blank))
-    (when (and (not moved-back-p)
-               (er--inside-pairs-p)
-               (or (not (er--looking-at-pair))
-                   (er--looking-at-marked-pair)))
-      (goto-char (nth 1 (syntax-ppss)))))
-  (when (er--looking-at-pair)
-    (set-mark (point))
-    (forward-list)
-    (exchange-point-and-mark)))
-
 ;; Methods to try expanding to
 
 (setq er/try-expand-list '(er/mark-word
@@ -304,9 +283,8 @@
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
   (er--setup)
-  (let* ((blank " \t\n")
-         (blank-regex (concat "[" blank "]")))
-    (if (looking-back (concat "\\s)+\\="))
+  (let* ((blank " \t\n"))
+    (if (looking-back "\\s)+\\=")
         (ignore-errors (forward-list -1))
       (skip-chars-forward blank)))
   (when (and (er--inside-pairs-p)
@@ -324,11 +302,7 @@ Basically it runs all the mark-functions in the er/try-expand-list
 and chooses the one that increases the size of the region while
 moving point or mark as little as possible."
   (interactive)
-
-  (if (er--first-invocation)
-      (push-mark nil t)
-    (setq er--pushed-mark-p t))
-
+  (er--setup)
   (let ((start (point))
         (end (if (use-region-p) (mark) (point)))
         (try-list er/try-expand-list)
@@ -344,9 +318,11 @@ moving point or mark as little as possible."
 
     (while try-list
       (save-excursion
-        (when (bolp)
-          (back-to-indentation)
-          (setq start (point)))
+        (let ((blank-regex "[ \t\n]"))
+          (when (and (looking-back blank-regex)
+                     (looking-at blank-regex))
+            (skip-chars-forward " \t\n")
+            (setq start (point))))
         (condition-case nil
             (progn
               (funcall (car try-list))
