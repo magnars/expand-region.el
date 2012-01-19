@@ -17,7 +17,7 @@ You can set it up like this:
     (require 'expand-region)
     (global-set-key (kbd "C-@") 'er/expand-region)
 
-There's also `er/contract-region` if you expand too far. 
+There's also `er/contract-region` if you expand too far.
 
 ## Language support
 
@@ -71,6 +71,10 @@ where it says "Mode-specific expansions"
 dramatically. Remember to exit quickly before you start traversing
 the entire document looking for constructs to mark.
 
+## Todo
+
+* `er/mark-comment` should be a basic expansion
+
 ## Contribute
 
 If you make some nice expansions for your favorite mode, it would be
@@ -81,7 +85,7 @@ great if you opened a pull-request. The repo is at:
 ## Contributors
 
 * [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
-* [Le Wang](https://github.com/lewang) contributed bugfixes.
+* [Le Wang](https://github.com/lewang) contributed consistent handling of the mark ring, expanding into pairs/quotes just left of the cursor, and general code clean-up.
 
 Thanks!
 

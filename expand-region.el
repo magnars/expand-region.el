@@ -89,12 +89,23 @@
 ;; dramatically. Remember to exit quickly before you start traversing
 ;; the entire document looking for constructs to mark.
 
-;; ## Contribute
+;; ## Todo
+;;
+;; * `er/mark-comment` should be a basic expansion
 
+;; ## Contribute
+;;
 ;; If you make some nice expansions for your favorite mode, it would be
 ;; great if you opened a pull-request. The repo is at:
-
+;;
 ;;     https://github.com/magnars/expand-region.el
+
+;; ## Contributors
+;;
+;; * [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
+;; * [Le Wang](https://github.com/lewang) contributed consistent handling of the mark ring, expanding into pairs/quotes just left of the cursor, and general code clean-up.
+;;
+;; Thanks!
 
 ;;; Code:
 
