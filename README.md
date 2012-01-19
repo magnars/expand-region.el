@@ -74,6 +74,7 @@ the entire document looking for constructs to mark.
 ## Todo
 
 * `er/mark-comment` should be a basic expansion
+* `er/expand-region` should take ARGS (negative contracts, 0 resets to pre-expansion state)
 
 ## Contribute
 
