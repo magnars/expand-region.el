@@ -104,6 +104,9 @@
 (defvar er--pushed-mark-p nil
   "t when mark has been pushed for this command.")
 
+(defvar er--pushed-mark-p nil
+  "t when mark has been pushed for this command.")
+
 ;; history is always local to a single buffer
 (make-variable-buffer-local 'er/history)
 
