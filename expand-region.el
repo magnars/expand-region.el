@@ -187,17 +187,19 @@
   "The char that is the current quote delimiter"
   (nth 3 (syntax-ppss)))
 
-(defalias 'er--point-is-in-string-p 'er--current-quotes-char)
+(defalias 'er--point-inside-string-p 'er--current-quotes-char)
 
 (defun er--move-point-forward-out-of-string ()
   "Move point forward until it exits the current quoted string."
-  (while (er--point-is-in-string-p) (forward-char)))
+  (while (er--point-inside-string-p) (forward-char)))
 
 (defun er--move-point-backward-out-of-string ()
   "Move point backward until it exits the current quoted string."
-  (while (er--point-is-in-string-p) (backward-char)))
+  (while (er--point-inside-string-p) (backward-char)))
 
 (defvar er--cmds '(er/expand-region er/contract-region))
+(defvar er--space-str " \t\n")
+
 
 (defsubst er--first-invocation ()
   "return t if this is the first invocation of er/* command"
@@ -227,19 +229,22 @@
   "Mark the inside of the current string, not including the quotation marks."
   (interactive)
   (er--setup)
-  (when (er--point-is-in-string-p)
+  (when (er--point-inside-string-p)
     (er--move-point-backward-out-of-string)
-    (forward-char)
-    (set-mark (point))
+    (save-excursion
+      (forward-char)
+      (skip-chars-forward er--space-str)
+      (set-mark (point)))
     (er--move-point-forward-out-of-string)
     (backward-char)
+    (skip-chars-backward er--space-str)
     (exchange-point-and-mark)))
 
 (defun er/mark-outside-quotes ()
   "Mark the current string, including the quotation marks."
   (interactive)
   (er--setup)
-  (if (er--point-is-in-string-p)
+  (if (er--point-inside-string-p)
       (er--move-point-backward-out-of-string)
     (when (and (not (use-region-p))
                (looking-back "\\s\""))
@@ -253,7 +258,7 @@
 
 ;; Pairs - ie [] () {} etc
 
-(defun er--inside-pairs-p ()
+(defun er--point-inside-pairs-p ()
   "Is point inside any pairs?"
   (> (car (syntax-ppss)) 0))
 
@@ -261,11 +266,15 @@
   "Mark inside pairs (as defined by the mode), not including the pairs."
   (interactive)
   (er--setup)
-  (when (er--inside-pairs-p)
+  (when (er--point-inside-pairs-p)
     (goto-char (nth 1 (syntax-ppss)))
-    (set-mark (1+ (point)))
+    (set-mark (save-excursion
+      (forward-char 1)
+      (skip-chars-forward er--space-str)
+      (point)))
     (forward-list)
     (backward-char)
+    (skip-chars-backward er--space-str)
     (exchange-point-and-mark)))
 
 (defun er--looking-at-pair ()
@@ -298,11 +307,11 @@
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
   (er--setup)
-  (let* ((blank " \t\n"))
+  (progn
     (if (looking-back "\\s)+\\=")
-        (ignore-errors (forward-list -1))
-      (skip-chars-forward blank)))
-  (when (and (er--inside-pairs-p)
+        (ignore-errors (backward-list 1))
+      (skip-chars-forward er--space-str)))
+  (when (and (er--point-inside-pairs-p)
              (or (not (er--looking-at-pair))
                  (er--looking-at-marked-pair)))
     (goto-char (nth 1 (syntax-ppss))))
@@ -333,10 +342,10 @@ moving point or mark as little as possible."
 
     (while try-list
       (save-excursion
-        (let ((blank-regex "[ \t\n]"))
-          (when (and (looking-back blank-regex)
-                     (looking-at blank-regex))
-            (skip-chars-forward " \t\n")
+        (let ((blank-list (append er--space-str nil)))
+          (when (and (memq (char-before) blank-list)
+                     (memq (char-after) blank-list))
+            (skip-chars-forward er--space-str)
             (setq start (point))))
         (condition-case nil
             (progn
@@ -360,19 +369,34 @@ moving point or mark as little as possible."
 (defun er/contract-region ()
   "Contract the selected region to its previous size."
   (interactive)
-
-  (if (and er/history
-           (not (er--first-invocation)))
+  (when (and (use-region-p)
+             (or (null er/history)
+                 (eq (car (car er/history))
+                     (cdr (car er/history)))))
+    (let ((string-p (and (looking-at "\\s\"")
+                         (save-excursion (forward-char) (er--point-inside-string-p))))
+          (pair-p (and (looking-at "\\s(")
+                       (save-excursion (forward-char) (er--point-inside-pairs-p))))
+          end)
+      (when (or string-p pair-p)
+        (save-excursion
+          (goto-char (mark))
+          (backward-char 1)
+          (skip-chars-backward er--space-str)
+          (setq end (point)))
+        (forward-char 1)
+        (skip-chars-forward er--space-str)
+        (push (cons (point)end) er/history))))
+  (if ( and er/history
+            (use-region-p) )
       (let* ((last (pop er/history))
              (start (car last))
              (end (cdr last)))
         (goto-char start)
         (set-mark end)
-
         (when (eq start end)
           (deactivate-mark)
-          (er/clear-history))
-        )))
+          (er/clear-history)))))
 
 (defun er/clear-history (&rest args)
   "Clear the history."
