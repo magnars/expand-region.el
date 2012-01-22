@@ -112,14 +112,40 @@
 (defvar er/history '()
   "A history of start and end points so we can contract after expanding.")
 
-(defvar er--pushed-mark-p nil
-  "t when mark has been pushed for this command.")
-
-(defvar er--pushed-mark-p nil
-  "t when mark has been pushed for this command.")
-
 ;; history is always local to a single buffer
 (make-variable-buffer-local 'er/history)
+
+(defvar er--pushed-mark-p nil
+  "t when mark has been pushed for this command.")
+
+(defvar er--pushed-mark-p nil
+  "t when mark has been pushed for this command.")
+
+(defvar er--cmds '(er/expand-region er/contract-region))
+
+(defsubst er--first-invocation ()
+  "return t if this is the first invocation of er/* command"
+  (not (memq last-command er--cmds)))
+
+(defsubst er--is-invocation ()
+  "return t if this is the first invocation of er/* command"
+  (memq this-command er--cmds))
+
+(defun er--post-command-func ()
+  "function to be run on `post-command-hook'"
+  (setq er--pushed-mark-p nil)
+  (remove-hook 'post-command-hook 'er--post-command-func t))
+
+(defun er--setup ()
+  "push mark and add post-command-hook"
+
+  (when (and (not er--pushed-mark-p)
+             (or (not (er--is-invocation))
+                 (er--first-invocation)))
+    (push-mark nil t)
+    (push-mark nil t))
+  (setq er--pushed-mark-p t)
+  (add-hook 'post-command-hook 'er--post-command-func nil t))
 
 ;; Default expansions
 
@@ -246,32 +272,6 @@
   "Move point backward until it exits the current quoted string."
   (while (er--point-is-in-string-p) (backward-char)))
 
-(defvar er--cmds '(er/expand-region er/contract-region))
-
-(defsubst er--first-invocation ()
-  "return t if this is the first invocation of er/* command"
-  (not (memq last-command er--cmds)))
-
-(defsubst er--is-invocation ()
-  "return t if this is the first invocation of er/* command"
-  (memq this-command er--cmds))
-
-(defun er--post-command-func ()
-  "function to be run on `post-command-hook'"
-  (setq er--pushed-mark-p nil)
-  (remove-hook 'post-command-hook 'er--post-command-func t))
-
-(defun er--setup ()
-  "push mark and add post-command-hook"
-
-  (when (and (not er--pushed-mark-p)
-             (or (not (er--is-invocation))
-                 (er--first-invocation)))
-    (push-mark nil t)
-    (push-mark nil t))
-  (setq er--pushed-mark-p t)
-  (add-hook 'post-command-hook 'er--post-command-func nil t))
-
 (defun er/mark-inside-quotes ()
   "Mark the inside of the current string, not including the quotation marks."
   (interactive)
@@ -330,21 +330,6 @@
              (forward-list)
              (point)))))
 
-;; Methods to try expanding to
-
-(setq er/try-expand-list '(er/mark-word
-                           er/mark-symbol
-                           er/mark-symbol-with-prefix
-                           er/mark-method-call
-                           er/mark-comment
-                           er/mark-comment-block
-                           er/mark-inside-quotes
-                           er/mark-outside-quotes
-                           er/mark-inside-pairs
-                           er/mark-outside-pairs))
-
-;; The magic expand-region method
-
 (defun er/mark-outside-pairs ()
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
@@ -361,6 +346,21 @@
     (set-mark (point))
     (forward-list)
     (exchange-point-and-mark)))
+
+;; Methods to try expanding to
+
+(setq er/try-expand-list '(er/mark-word
+                           er/mark-symbol
+                           er/mark-symbol-with-prefix
+                           er/mark-method-call
+                           er/mark-comment
+                           er/mark-comment-block
+                           er/mark-inside-quotes
+                           er/mark-outside-quotes
+                           er/mark-inside-pairs
+                           er/mark-outside-pairs))
+
+;; The magic expand-region method
 
 (defun er/expand-region ()
   "Increase selected region by semantic units.
