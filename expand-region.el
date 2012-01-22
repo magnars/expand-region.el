@@ -383,6 +383,7 @@ moving point or mark as little as possible."
 (require 'js-mode-expansions)
 (require 'html-mode-expansions)
 (require 'css-mode-expansions)
+(require 'clojure-mode-expansions)
 
 (provide 'expand-region)
 
