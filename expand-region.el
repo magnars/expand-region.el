@@ -279,13 +279,10 @@
   (er--setup)
   (when (er--point-inside-string-p)
     (er--move-point-backward-out-of-string)
-    (save-excursion
     (forward-char)
-      (skip-chars-forward er--space-str)
-      (set-mark (point)))
+    (set-mark (point))
     (er--move-point-forward-out-of-string)
     (backward-char)
-    (skip-chars-backward er--space-str)
     (exchange-point-and-mark)))
 
 (defun er/mark-outside-quotes ()
@@ -317,9 +314,9 @@
   (when (er--point-inside-pairs-p)
     (goto-char (nth 1 (syntax-ppss)))
     (set-mark (save-excursion
-      (forward-char 1)
-      (skip-chars-forward er--space-str)
-      (point)))
+                (forward-char 1)
+                (skip-chars-forward er--space-str)
+                (point)))
     (forward-list)
     (backward-char)
     (skip-chars-backward er--space-str)
