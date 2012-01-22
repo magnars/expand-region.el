@@ -27,6 +27,8 @@ nature of the basic expansions:
     er/mark-word
     er/mark-symbol
     er/mark-method-call
+    er/mark-comment
+    er/mark-comment-block
     er/mark-inside-quotes
     er/mark-outside-quotes
     er/mark-inside-pairs
@@ -73,7 +75,6 @@ the entire document looking for constructs to mark.
 
 ## Todo
 
-* `er/mark-comment` should be a basic expansion
 * `er/expand-region` should take ARGS (negative contracts, 0 resets to pre-expansion state)
 
 ## Contribute
