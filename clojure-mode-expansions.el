@@ -49,6 +49,7 @@
   "Mark clj-regexp-literal presumes that point is outside the string.
 If point is inside the string, the quotes will be marked first anyway."
   (interactive)
+  (er--setup)
   (when (or (looking-at "#\"")
             (looking-back "#"))
     (forward-char 1)
@@ -63,6 +64,7 @@ If point is inside the string, the quotes will be marked first anyway."
   "Mark clj-function-literal presumes that point is outside the parens.
 If point is inside the parens, they will be marked first anyway."
   (interactive)
+  (er--setup)
   (when (or (looking-at "#(")
             (looking-back "#"))
     (forward-char)

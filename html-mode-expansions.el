@@ -38,6 +38,7 @@ If point is inside the value-string, the quotes will be marked
 first anyway.  Does not support html-attributes with spaces
 around the equal sign or unquotes attributes atm."
   (interactive)
+  (er--setup)
   (when (or (looking-at "\\(\\s_\\|\\sw\\)*=")
             (looking-back "="))
     (search-backward " ")
@@ -64,6 +65,7 @@ around the equal sign or unquotes attributes atm."
 (defun er/mark-outer-tag ()
   "Mark from opening to closing tag, including the tags."
   (interactive)
+  (er--setup)
   (when (and (er--inside-tag-p)
              (or (not (looking-at "<"))
                  (er--looking-at-marked-tag)))
@@ -75,6 +77,7 @@ around the equal sign or unquotes attributes atm."
 (defun er/mark-inner-tag ()
   "Mark the contents of an open tag, not including the tags."
   (interactive)
+  (er--setup)
   (goto-char (aref (car (last (sgml-get-context))) 3))
   (set-mark (point))
   (backward-char 1)
