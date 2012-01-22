@@ -33,7 +33,7 @@
 ;;; Code:
 
 (defun er/mark-clj-word ()
-  "Marka the entire word around or in front of point, including dashes."
+  "Mark the entire word around or in front of point, including dashes."
   (interactive)
   (er--setup)
   (let ((word-regexp "\\(\\sw\\|-\\)"))
