@@ -37,6 +37,12 @@
 ;;     (require 'expand-region)
 ;;     (global-set-key (kbd "C-@") 'er/expand-region)
 
+;; There's also `er/contract-region` if you expand too far.
+
+;; ## Video
+;;
+;; You can [watch an intro to expand-region at Emacs Rocks](http://emacsrocks.com/e09.html).
+
 ;; ## Language support
 
 ;; Expand region works fairly well with most languages, due to the general
