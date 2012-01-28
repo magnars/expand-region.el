@@ -124,9 +124,6 @@
 (defvar er--pushed-mark-p nil
   "t when mark has been pushed for this command.")
 
-(defvar er--pushed-mark-p nil
-  "t when mark has been pushed for this command.")
-
 (defvar er--cmds '(er/expand-region er/contract-region))
 (defvar er--space-str " \t\n")
 
@@ -135,7 +132,7 @@
   (not (memq last-command er--cmds)))
 
 (defsubst er--is-invocation ()
-  "return t if this is the first invocation of er/* command"
+  "return t if this is an er/* command"
   (memq this-command er--cmds))
 
 (defun er--post-command-func ()
