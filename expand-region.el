@@ -442,6 +442,7 @@ moving point or mark as little as possible."
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
+(require 'ruby-mode-expansions)
 (require 'html-mode-expansions)
 (require 'css-mode-expansions)
 (require 'clojure-mode-expansions)
