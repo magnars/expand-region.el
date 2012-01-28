@@ -373,6 +373,7 @@
 
 ;; The magic expand-region method
 
+;;;###autoload
 (defun er/expand-region ()
   "Increase selected region by semantic units.
 Basically it runs all the mark-functions in the er/try-expand-list
