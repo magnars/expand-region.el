@@ -1,4 +1,4 @@
-;;; ruby-mode-expansions.el --- JS-specific expansions for expand-region
+;;; ruby-mode-expansions.el --- ruby-specific expansions for expand-region
 
 ;; Copyright (C) 2011 Magnar Sveen
 
