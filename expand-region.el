@@ -95,10 +95,6 @@
 ;; dramatically. Remember to exit quickly before you start traversing
 ;; the entire document looking for constructs to mark.
 
-;; ## Todo
-;;
-;; * `er/expand-region` should take ARGS (negative contracts, 0 resets to pre-expansion state)
-
 ;; ## Contribute
 ;;
 ;; If you make some nice expansions for your favorite mode, it would be
@@ -434,7 +430,7 @@ before calling `er/expand-region' for the first time."
   "Contract the selected region to its previous size.
 With prefix argument contracts that many times.
 If prefix argument is negative calls `er/expand-region'.
-If prefix argument is 0 resets point and mark to their state
+If prefix argument is 0 it resets point and mark to their state
 before calling `er/expand-region' for the first time."
   (interactive "p")
   (if (< arg 0)
