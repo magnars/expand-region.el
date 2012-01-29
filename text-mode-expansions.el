@@ -44,7 +44,8 @@
   "Marks one paragraph."
   (interactive)
   (er--setup)
-  (mark-paragraph))
+  (mark-paragraph)
+  (skip-chars-forward er--space-str))
 
 (defun er/mark-text-page ()
   "Marks one page (as delimited by ^L)."
