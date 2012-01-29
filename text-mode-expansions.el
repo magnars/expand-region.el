@@ -1,0 +1,68 @@
+;;; text-mode-expansions.el --- Expansions for expand-region to be used in text
+
+;; Copyright (C) 2012 Ivan Andrus
+
+;; Author: Ivan Andrus
+;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
+;; Keywords: marking region
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; Feel free to contribute any other expansions for normal text at
+;;
+;;     https://github.com/magnars/expand-region.el
+
+;;; Code:
+
+(defun er/mark-text-sentence ()
+  "Marks one sentence."
+  (interactive)
+  (er--setup)
+  ;; The obvious
+  ;; (backward-sentence 1) (mark-end-of-sentence 1)
+  ;; doesn't work here because it's repeated and the selection keeps
+  ;; growing by sentences, which isn't what's wanted.
+  (backward-sentence 1)
+  (set-mark (point))
+  (forward-sentence 1)
+  (exchange-point-and-mark))
+
+(defun er/mark-text-paragraph ()
+  "Marks one paragraph."
+  (interactive)
+  (er--setup)
+  (mark-paragraph)
+  (skip-chars-forward er--space-str))
+
+(defun er/mark-text-page ()
+  "Marks one page (as delimited by ^L)."
+  (interactive)
+  (er--setup)
+  (mark-page))
+
+(defun er/add-text-mode-expansions ()
+  "Adds expansions for buffers in text-mode"
+  (set (make-local-variable 'er/try-expand-list) (append
+                                                  er/try-expand-list
+                                                  '(er/mark-text-sentence
+                                                    er/mark-text-paragraph
+                                                    er/mark-text-page))))
+
+(add-hook 'text-mode-hook 'er/add-text-mode-expansions)
+
+(provide 'text-mode-expansions)
+
+;; text-mode-expansions.el ends here
