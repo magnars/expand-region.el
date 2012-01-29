@@ -93,6 +93,7 @@ great if you opened a pull-request. The repo is at:
 * [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
 * [Le Wang](https://github.com/lewang) contributed consistent handling of the mark ring, expanding into pairs/quotes just left of the cursor, and general code clean-up.
 * [Matt Briggs](https://github.com/mbriggs) contributed expansions for ruby-mode.
+* [Ivan Andrus](https://github.com/gvol) contributed expansions for python-mode.
 
 Thanks!
 
