@@ -95,10 +95,6 @@
 ;; dramatically. Remember to exit quickly before you start traversing
 ;; the entire document looking for constructs to mark.
 
-;; ## Todo
-;;
-;; * `er/expand-region` should take ARGS (negative contracts, 0 resets to pre-expansion state)
-
 ;; ## Contribute
 ;;
 ;; If you make some nice expansions for your favorite mode, it would be
@@ -371,58 +367,85 @@
 ;; The magic expand-region method
 
 ;;;###autoload
-(defun er/expand-region ()
+(defun er/expand-region (arg)
   "Increase selected region by semantic units.
-Basically it runs all the mark-functions in the er/try-expand-list
+Basically it runs all the mark-functions in `er/try-expand-list'
 and chooses the one that increases the size of the region while
-moving point or mark as little as possible."
-  (interactive)
-  (er--setup)
-  (let ((start (point))
-        (end (if (use-region-p) (mark) (point)))
-        (try-list er/try-expand-list)
-        (best-start 0)
-        (best-end (buffer-end 1)))
+moving point or mark as little as possible.
 
-    ;; add hook to clear history on buffer changes
-    (unless er/history
-      (add-hook 'after-change-functions 'er/clear-history t t))
+With prefix argument expands the region that many times.
+If prefix argument is negative calls `er/contract-region'.
+If prefix argument is 0 it resets point and mark to their state
+before calling `er/expand-region' for the first time."
+  (interactive "p")
+  (if (< arg 1)
+      ;; `er/contract-region' will take care of negative and 0 arguments
+      (er/contract-region (- arg))
+    ;; We handle everything else
+    (er--setup)
+    (while (>= arg 1)
+      (setq arg (- arg 1))
+      (let ((start (point))
+            (end (if (use-region-p) (mark) (point)))
+            (try-list er/try-expand-list)
+            (best-start 0)
+            (best-end (buffer-end 1)))
 
-    ;; remember the start and end points so we can contract later
-    (push (cons start end) er/history)
+        ;; add hook to clear history on buffer changes
+        (unless er/history
+          (add-hook 'after-change-functions 'er/clear-history t t))
 
-    (while try-list
-      (save-excursion
-        (let ((blank-list (append er--space-str nil)))
-          (when (and (memq (char-before) blank-list)
-                     (memq (char-after) blank-list))
-            (skip-chars-forward er--space-str)
-            (setq start (point))))
-        (condition-case nil
-            (progn
-              (funcall (car try-list))
-              (when (and (region-active-p)
-                         (<= (point) start)
-                         (>= (mark) end)
-                         (> (- (mark) (point)) (- end start))
-                         (or (> (point) best-start)
-                             (and (= (point) best-start)
-                                  (< (mark) best-end))))
-                (setq best-start (point))
-                (setq best-end (mark))
-                (unless (minibufferp)
-                  (message "%S" (car try-list)))))
-          (error nil)))
-      (setq try-list (cdr try-list)))
-    (goto-char best-start)
-    (set-mark best-end)))
+        ;; remember the start and end points so we can contract later
+        (push (cons start end) er/history)
 
-(defun er/contract-region ()
-  "Contract the selected region to its previous size."
-  (interactive)
+        (while try-list
+          (save-excursion
+            (let ((blank-list (append er--space-str nil)))
+              (when (and (memq (char-before) blank-list)
+                         (memq (char-after) blank-list))
+                (skip-chars-forward er--space-str)
+                (setq start (point))))
+            (condition-case nil
+                (progn
+                  (funcall (car try-list))
+                  (when (and (region-active-p)
+                             (<= (point) start)
+                             (>= (mark) end)
+                             (> (- (mark) (point)) (- end start))
+                             (or (> (point) best-start)
+                                 (and (= (point) best-start)
+                                      (< (mark) best-end))))
+                    (setq best-start (point))
+                    (setq best-end (mark))
+                    (unless (minibufferp)
+                      (message "%S" (car try-list)))))
+              (error nil)))
+          (setq try-list (cdr try-list)))
+        (if (= best-start 0) ;; We didn't find anything new, so exit early
+            (setq arg 0))
+        (goto-char best-start)
+        (set-mark best-end)))))
 
-  (if (and er/history
-           (not (er--first-invocation)))
+(defun er/contract-region (arg)
+  "Contract the selected region to its previous size.
+With prefix argument contracts that many times.
+If prefix argument is negative calls `er/expand-region'.
+If prefix argument is 0 it resets point and mark to their state
+before calling `er/expand-region' for the first time."
+  (interactive "p")
+  (if (< arg 0)
+      (er/expand-region (- arg))
+    (when (and er/history
+               (not (er--first-invocation)))
+      ;; Be sure to reset them all if called with 0
+      (when (= arg 0)
+        (setq arg (length er/history)))
+      ;; Advance through the list the desired distance
+      (while (and (cdr er/history)
+                  (> arg 1))
+        (setq arg (- arg 1))
+        (setq er/history (cdr er/history)))
+      ;; Reset point and mark
       (let* ((last (pop er/history))
              (start (car last))
              (end (cdr last)))
@@ -430,7 +453,7 @@ moving point or mark as little as possible."
         (set-mark end)
         (when (eq start end)
           (deactivate-mark)
-          (er/clear-history)))))
+          (er/clear-history))))))
 
 (defun er/clear-history (&rest args)
   "Clear the history."
@@ -443,6 +466,9 @@ moving point or mark as little as possible."
 (require 'html-mode-expansions)
 (require 'css-mode-expansions)
 (require 'clojure-mode-expansions)
+(require 'python-mode-expansions)
+(require 'text-mode-expansions)
+(require 'latex-mode-expansions)
 
 (provide 'expand-region)
 
