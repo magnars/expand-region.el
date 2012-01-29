@@ -77,10 +77,6 @@ where it says "Mode-specific expansions"
 dramatically. Remember to exit quickly before you start traversing
 the entire document looking for constructs to mark.
 
-## Todo
-
-* `er/expand-region` should take ARGS (negative contracts, 0 resets to pre-expansion state)
-
 ## Contribute
 
 If you make some nice expansions for your favorite mode, it would be
