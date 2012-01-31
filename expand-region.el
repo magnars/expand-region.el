@@ -425,7 +425,12 @@ before calling `er/expand-region' for the first time."
         (if (= best-start 0) ;; We didn't find anything new, so exit early
             (setq arg 0))
         (goto-char best-start)
-        (set-mark best-end)))))
+        (set-mark best-end)
+
+        ;; remove last marked positions if duplicated
+        (when (equal (first er/history)
+                     (second er/history))
+          (pop er/history))))))))
 
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.
