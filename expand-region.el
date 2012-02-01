@@ -292,7 +292,7 @@
   (er--setup)
   (if (er--point-inside-string-p)
       (er--move-point-backward-out-of-string)
-    (when (and (er--first-invocation)
+    (when (and (not (use-region-p))
                (looking-back "\\s\""))
       (backward-char)
       (er--move-point-backward-out-of-string)))
@@ -330,7 +330,7 @@
 (defun er--looking-at-marked-pair ()
   "Is point looking at a pair that is entirely marked?"
   (and (er--looking-at-pair)
-       (not (er--first-invocation))
+       (use-region-p)
        (eq (mark)
            (save-excursion
              (forward-list)
@@ -388,7 +388,7 @@ before calling `er/expand-region' for the first time."
     (while (>= arg 1)
       (setq arg (- arg 1))
       (let ((start (point))
-            (end (if (er--first-invocation) (point) (mark)))
+            (end (if (use-region-p) (mark) (point)))
             (try-list er/try-expand-list)
             (best-start 0)
             (best-end (buffer-end 1)))
@@ -410,7 +410,8 @@ before calling `er/expand-region' for the first time."
             (condition-case nil
                 (progn
                   (funcall (car try-list))
-                  (when (and (<= (point) start)
+                  (when (and (region-active-p)
+                             (<= (point) start)
                              (>= (mark) end)
                              (> (- (mark) (point)) (- end start))
                              (or (> (point) best-start)
