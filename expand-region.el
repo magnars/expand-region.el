@@ -191,7 +191,21 @@
                  (looking-back prefix-regexp))
         (backward-char)))))
 
-;; Mark method call (can be improved further)
+;; Mark method call
+
+(defun er/mark-next-accessor ()
+  "Presumes that current symbol is already marked, skips over one
+period and marks next symbol."
+  (interactive)
+  ;; no er--setup since it does not set-mark
+  (when (use-region-p)
+    (when (< (point) (mark))
+      (exchange-point-and-mark))
+    (let ((symbol-regexp "\\s_\\|\\sw"))
+      (when (looking-at "\\.")
+        (forward-char 1)
+        (skip-syntax-forward "_w")
+        (exchange-point-and-mark)))))
 
 (defun er/mark-method-call ()
   "Mark the current symbol (including dots) and then paren to closing paren."
@@ -358,6 +372,7 @@
 (setq er/try-expand-list '(er/mark-word
                            er/mark-symbol
                            er/mark-symbol-with-prefix
+                           er/mark-next-accessor
                            er/mark-method-call
                            er/mark-comment
                            er/mark-comment-block
