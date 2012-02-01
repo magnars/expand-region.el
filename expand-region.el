@@ -385,6 +385,9 @@ before calling `er/expand-region' for the first time."
       (er/contract-region (- arg))
     ;; We handle everything else
     (er--setup)
+    (when (not transient-mark-mode)
+      (setq transient-mark-mode (cons 'only transient-mark-mode)))
+
     (while (>= arg 1)
       (setq arg (- arg 1))
       (let ((start (point))
@@ -431,7 +434,7 @@ before calling `er/expand-region' for the first time."
         ;; remove last marked positions if duplicated
         (when (equal (first er/history)
                      (second er/history))
-          (pop er/history))))))))
+          (pop er/history))))))
 
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.
@@ -448,6 +451,9 @@ before calling `er/expand-region' for the first time."
       (when (= arg 0)
         (setq arg (length er/history)))
       ;; Advance through the list the desired distance
+      (when (not transient-mark-mode)
+        (setq transient-mark-mode (cons 'only transient-mark-mode)))
+
       (while (and (cdr er/history)
                   (> arg 1))
         (setq arg (- arg 1))
