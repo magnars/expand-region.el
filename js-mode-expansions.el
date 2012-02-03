@@ -165,6 +165,7 @@ If point is inside the value, that will be marked first anyway."
                                                     er/mark-js-outer-return))))
 
 (add-hook 'js2-mode-hook 'er/add-js-mode-expansions)
+(add-hook 'js3-mode-hook 'er/add-js-mode-expansions)
 
 (provide 'js-mode-expansions)
 
