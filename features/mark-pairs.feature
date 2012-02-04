@@ -45,9 +45,9 @@ Feature: Mark pairs
     And I expand the region 3 times
     Then the region should be "(some (more parens))"
 
-#  Scenario: Mark outer parent in nested pairs (leftie)
-#    Given there is no region selected
-#    When I insert "... ((some more) parens) ..."
-#    And I go to point "6"
-#    And I expand the region 3 times
-#    Then the region should be "((some more) parens)"
+  Scenario: Mark outer parent in nested pairs (leftie)
+    Given there is no region selected
+    When I insert "... ((some more) parens) ..."
+    And I go to point "6"
+    And I expand the region 3 times
+    Then the region should be "((some more) parens)"

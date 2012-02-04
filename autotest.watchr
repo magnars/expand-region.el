@@ -12,7 +12,7 @@ def run_all_tests
 end
 
 run_all_tests
-watch('.*.feature') { run_all_tests }
+watch('.*.(feature|el)') { run_all_tests }
 
 # Ctrl-\
 Signal.trap 'QUIT' do

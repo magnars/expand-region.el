@@ -345,7 +345,7 @@ period and marks next symbol."
   "Is point looking at a pair that is entirely marked?"
   (and (er--looking-at-pair)
        (use-region-p)
-       (eq (mark)
+       (>= (mark)
            (save-excursion
              (forward-list)
              (point)))))
