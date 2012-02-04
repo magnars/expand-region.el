@@ -405,11 +405,13 @@ before calling `er/expand-region' for the first time."
 
     (while (>= arg 1)
       (setq arg (- arg 1))
-      (let ((start (point))
-            (end (if (use-region-p) (mark) (point)))
-            (try-list er/try-expand-list)
-            (best-start 0)
-            (best-end (buffer-end 1)))
+      (let* ((p1 (point))
+             (p2 (if (use-region-p) (mark) (point)))
+             (start (min p1 p2))
+             (end (max p1 p2))
+             (try-list er/try-expand-list)
+             (best-start 0)
+             (best-end (buffer-end 1)))
 
         ;; add hook to clear history on buffer changes
         (unless er/history
