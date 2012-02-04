@@ -40,12 +40,12 @@ Feature: Expand Region
     And I expand the region
     Then the region should be "some"
 
-#  Scenario: Skip white space forward if at beginning of buffer
-#    Given there is no region selected
-#    When I insert "   This is some text"
-#    And I go to point "1"
-#    And I expand the region
-#    Then the region should be "This"
+  Scenario: Skip white space forward if at beginning of buffer
+    Given there is no region selected
+    When I insert "   This is some text"
+    And I go to point "1"
+    And I expand the region
+    Then the region should be "This"
 
   Scenario: Skip white space forward if at beginning of line
     Given there is no region selected

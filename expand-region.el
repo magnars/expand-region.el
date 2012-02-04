@@ -420,13 +420,15 @@ before calling `er/expand-region' for the first time."
         ;; remember the start and end points so we can contract later
         (push (cons start end) er/history)
 
+        (let ((blank-list (append er--space-str nil)))
+          (when (and (or (memq (char-before) blank-list)
+                         (eq (point) (point-min)))
+                     (memq (char-after) blank-list))
+            (skip-chars-forward er--space-str)
+            (setq start (point))))
+
         (while try-list
           (save-excursion
-            (let ((blank-list (append er--space-str nil)))
-              (when (and (memq (char-before) blank-list)
-                         (memq (char-after) blank-list))
-                (skip-chars-forward er--space-str)
-                (setq start (point))))
             (condition-case nil
                 (progn
                   (funcall (car try-list))
