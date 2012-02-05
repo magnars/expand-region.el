@@ -366,10 +366,12 @@ before calling `er/expand-region' for the first time."
       (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
     (when (and (er--first-invocation)
-               (not (use-region-p)))
+               (or
+                (not (use-region-p))
+                (eq (car-safe transient-mark-mode)
+                    'only)))
       (push-mark nil t)  ;; one for keeping starting position
       (push-mark nil t)) ;; one for replace by set-mark in expansions
-
     (while (>= arg 1)
       (setq arg (- arg 1))
       (let* ((p1 (point))
