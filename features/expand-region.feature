@@ -67,14 +67,77 @@ Feature: Expand Region
     And I expand the region
     Then the region should be "This is    some text"
 
+  Scenario: Contract region once
+    Given there is no region selected
+    When I insert "(((45678)))"
+    And I go to point "6"
+    And I expand the region
+    And I expand the region
+    And I expand the region
+    And I contract the region
+    Then the region should be "(45678)"
+
+  Scenario: Contract region twice
+    Given there is no region selected
+    When I insert "(((45678)))"
+    And I go to point "6"
+    And I expand the region
+    And I expand the region
+    And I expand the region
+    And I contract the region
+    And I contract the region
+    Then the region should be "45678"
+
+  Scenario: Contract region all the way back to start
+    Given there is no region selected
+    When I insert "(((45678)))"
+    And I go to point "6"
+    And I expand the region
+    And I expand the region
+    And I expand the region
+    And I contract the region
+    And I contract the region
+    And I contract the region
+    Then the region should not be active
+    And cursor should be at point "6"
+
+  Scenario: Contract region should only contract previous expansions
+    Given there is no region selected
+    When I insert "This (is some) text"
+    And I go to point "7"
+    And I set the mark
+    And I go to point "14"
+    And I contract the region
+    Then the region should be "is some"
+
+  Scenario: Contract history should be reset when changing buffer
+    Given there is no region selected
+    When I insert "This is some text"
+    And I go to point "10"
+    And I expand the region
+    And I expand the region
+    And I deactivate the mark
+    And I insert "More text"
+    And I contract the region
+    Then the region should not be active
+
+  Scenario: Expanding past the entire buffer should not add duplicates to the history
+    Given there is no region selected
+    When I insert "This is some text"
+    And I expand the region
+    And I expand the region
+    And I expand the region
+    And I expand the region
+    And I expand the region
+    And I contract the region
+    Then the region should be "text"
+
   Scenario: Pop mark twice to get back to start of expansions
     Given there is no region selected
     When I insert "(((45678)))"
     And I go to point "6"
     And I expand the region
     And I expand the region
-    And I contract the region
-    And I contract the region
     And I contract the region
     And I expand the region
     And I expand the region
@@ -96,8 +159,6 @@ Feature: Expand Region
     And I go to point "6"
     And I expand the region
     And I expand the region
-    And I contract the region
-    And I contract the region
     And I contract the region
     And I expand the region
     And I expand the region

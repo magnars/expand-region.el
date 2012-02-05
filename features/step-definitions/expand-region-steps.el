@@ -9,16 +9,21 @@
           (er/expand-region (string-to-number arg)))))
 
 (And "^I contract the region$"
-       (lambda ()
-         (er/contract-region 1)))
+     (lambda ()
+       (er/contract-region 1)))
 
 (When "^I pop the mark$"
       (lambda ()
         (set-mark-command 4)))
 
 (When "^I deactivate the mark$"
+      (lambda ()
+        (deactivate-mark)))
+
+(Then "^the region should not be active$"
        (lambda ()
-         (deactivate-mark)))
+         (should
+          (not (region-active-p)))))
 
 (Then "^cursor should be at point \"\\(.+\\)\"$"
       (lambda (arg)

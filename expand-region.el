@@ -119,12 +119,8 @@
 ;; history is always local to a single buffer
 (make-variable-buffer-local 'er/history)
 
-(defvar er--cmds '(er/expand-region er/contract-region))
 (defvar er--space-str " \t\n")
-
-(defsubst er--first-invocation ()
-  "return t if this is the first invocation of er/* command"
-  (not (memq last-command er--cmds)))
+(defvar er--blank-list (append er--space-str nil))
 
 ;; Default expansions
 
@@ -369,7 +365,8 @@ before calling `er/expand-region' for the first time."
     (when (not transient-mark-mode)
       (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
-    (unless (use-region-p)
+    (when (and (er--first-invocation)
+               (not (use-region-p)))
       (push-mark nil t)  ;; one for keeping starting position
       (push-mark nil t)) ;; one for replace by set-mark in expansions
 
@@ -380,7 +377,7 @@ before calling `er/expand-region' for the first time."
              (start (min p1 p2))
              (end (max p1 p2))
              (try-list er/try-expand-list)
-             (best-start 0)
+             (best-start 1)
              (best-end (buffer-end 1)))
 
         ;; add hook to clear history on buffer changes
@@ -388,7 +385,10 @@ before calling `er/expand-region' for the first time."
           (add-hook 'after-change-functions 'er/clear-history t t))
 
         ;; remember the start and end points so we can contract later
-        (push (cons start end) er/history)
+        ;; unless we're already at maximum size
+        (unless (and (= start best-start)
+                     (= end best-end))
+          (push (cons start end) er/history))
 
         (when (and (er--point-is-surrounded-by-white-space)
                    (= start end))
@@ -412,15 +412,12 @@ before calling `er/expand-region' for the first time."
                   (message "%S" (car try-list))))))
           (setq try-list (cdr try-list)))
 
-        (if (= best-start 0) ;; We didn't find anything new, so exit early
-            (setq arg 0))
         (goto-char best-start)
         (set-mark best-end)
 
-        ;; remove last marked positions if duplicated
-        (when (equal (first er/history)
-                     (second er/history))
-          (pop er/history))))))
+        (when (and (= best-start 0)
+                   (= best-end (buffer-end 1))) ;; We didn't find anything new, so exit early
+          (setq arg 0))))))
 
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.
@@ -431,15 +428,15 @@ before calling `er/expand-region' for the first time."
   (interactive "p")
   (if (< arg 0)
       (er/expand-region (- arg))
-    (when (and er/history
-               (not (er--first-invocation)))
+    (when er/history
       ;; Be sure to reset them all if called with 0
       (when (= arg 0)
         (setq arg (length er/history)))
-      ;; Advance through the list the desired distance
+
       (when (not transient-mark-mode)
         (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
+      ;; Advance through the list the desired distance
       (while (and (cdr er/history)
                   (> arg 1))
         (setq arg (- arg 1))
@@ -459,11 +456,14 @@ before calling `er/expand-region' for the first time."
   (setq er/history '())
   (remove-hook 'after-change-functions 'er/clear-history t))
 
+(defsubst er--first-invocation ()
+  "t if this is the first invocation of er/expand-region or er/contract-region"
+  (not (memq last-command '(er/expand-region er/contract-region))))
+
 (defun er--point-is-surrounded-by-white-space ()
-  (let ((blank-list (append er--space-str nil)))
-    (and (or (memq (char-before) blank-list)
-             (eq (point) (point-min)))
-         (memq (char-after) blank-list))))
+  (and (or (memq (char-before) er--blank-list)
+           (eq (point) (point-min)))
+       (memq (char-after) er--blank-list)))
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)
