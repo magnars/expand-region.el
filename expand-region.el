@@ -119,9 +119,6 @@
 ;; history is always local to a single buffer
 (make-variable-buffer-local 'er/history)
 
-(defvar er--pushed-mark-p nil
-  "t when mark has been pushed for this command.")
-
 (defvar er--cmds '(er/expand-region er/contract-region))
 (defvar er--space-str " \t\n")
 
@@ -129,32 +126,11 @@
   "return t if this is the first invocation of er/* command"
   (not (memq last-command er--cmds)))
 
-(defsubst er--is-invocation ()
-  "return t if this is an er/* command"
-  (memq this-command er--cmds))
-
-(defun er--post-command-func ()
-  "function to be run on `post-command-hook'"
-  (setq er--pushed-mark-p nil)
-  (remove-hook 'post-command-hook 'er--post-command-func t))
-
-(defun er--setup ()
-  "push mark and add post-command-hook"
-
-  (when (and (not er--pushed-mark-p)
-             (or (not (er--is-invocation))
-                 (er--first-invocation)))
-    (push-mark nil t)
-    (push-mark nil t))
-  (setq er--pushed-mark-p t)
-  (add-hook 'post-command-hook 'er--post-command-func nil t))
-
 ;; Default expansions
 
 (defun er/mark-word ()
   "Mark the entire word around or in front of point."
   (interactive)
-  (er--setup)
   (let ((word-regexp "\\sw"))
     (when (or (looking-at word-regexp)
               (looking-back word-regexp))
@@ -166,7 +142,6 @@
 (defun er/mark-symbol ()
   "Mark the entire symbol around or in front of point."
   (interactive)
-  (er--setup)
   (let ((symbol-regexp "\\s_\\|\\sw"))
     (when (or (looking-at symbol-regexp)
               (looking-back symbol-regexp))
@@ -178,7 +153,6 @@
 (defun er/mark-symbol-with-prefix ()
   "Mark the entire symbol around or in front of point, including prefix."
   (interactive)
-  (er--setup)
   (let ((symbol-regexp "\\s_\\|\\sw")
         (prefix-regexp "\\s'"))
     (when (or (looking-at prefix-regexp)
@@ -197,7 +171,6 @@
   "Presumes that current symbol is already marked, skips over one
 period and marks next symbol."
   (interactive)
-  ;; no er--setup since it does not set-mark
   (when (use-region-p)
     (when (< (point) (mark))
       (exchange-point-and-mark))
@@ -210,7 +183,6 @@ period and marks next symbol."
 (defun er/mark-method-call ()
   "Mark the current symbol (including dots) and then paren to closing paren."
   (interactive)
-  (er--setup)
   (let ((symbol-regexp "\\s_\\|\\sw\\|\\."))
     (when (or (looking-at symbol-regexp)
               (looking-back symbol-regexp))
@@ -239,7 +211,6 @@ period and marks next symbol."
 (defun er/mark-comment ()
   "Mark the current comment."
   (interactive)
-  (er--setup)
   (when (or (er--point-is-in-comment-p)
             (looking-at "\\s<"))
     (er--move-point-backward-out-of-comment)
@@ -252,7 +223,6 @@ period and marks next symbol."
 (defun er/mark-comment-block ()
   "Mark the current block of comments."
   (interactive)
-  (er--setup)
   (when (or (er--point-is-in-comment-p)
             (looking-at "\\s<"))
     (er--move-point-backward-out-of-comment)
@@ -291,7 +261,6 @@ period and marks next symbol."
 (defun er/mark-inside-quotes ()
   "Mark the inside of the current string, not including the quotation marks."
   (interactive)
-  (er--setup)
   (when (er--point-inside-string-p)
     (er--move-point-backward-out-of-string)
     (forward-char)
@@ -303,7 +272,6 @@ period and marks next symbol."
 (defun er/mark-outside-quotes ()
   "Mark the current string, including the quotation marks."
   (interactive)
-  (er--setup)
   (if (er--point-inside-string-p)
       (er--move-point-backward-out-of-string)
     (when (and (not (use-region-p))
@@ -325,7 +293,6 @@ period and marks next symbol."
 (defun er/mark-inside-pairs ()
   "Mark inside pairs (as defined by the mode), not including the pairs."
   (interactive)
-  (er--setup)
   (when (er--point-inside-pairs-p)
     (goto-char (nth 1 (syntax-ppss)))
     (set-mark (save-excursion
@@ -353,7 +320,6 @@ period and marks next symbol."
 (defun er/mark-outside-pairs ()
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
-  (er--setup)
   (progn
     (if (looking-back "\\s)+\\=")
         (ignore-errors (backward-list 1))
@@ -399,9 +365,13 @@ before calling `er/expand-region' for the first time."
       ;; `er/contract-region' will take care of negative and 0 arguments
       (er/contract-region (- arg))
     ;; We handle everything else
-    (er--setup)
+
     (when (not transient-mark-mode)
       (setq transient-mark-mode (cons 'only transient-mark-mode)))
+
+    (unless (use-region-p)
+      (push-mark nil t)  ;; one for keeping starting position
+      (push-mark nil t)) ;; one for replace by set-mark in expansions
 
     (while (>= arg 1)
       (setq arg (- arg 1))
@@ -420,31 +390,28 @@ before calling `er/expand-region' for the first time."
         ;; remember the start and end points so we can contract later
         (push (cons start end) er/history)
 
-        (let ((blank-list (append er--space-str nil)))
-          (when (and (or (memq (char-before) blank-list)
-                         (eq (point) (point-min)))
-                     (memq (char-after) blank-list))
-            (skip-chars-forward er--space-str)
-            (setq start (point))))
+        (when (and (er--point-is-surrounded-by-white-space)
+                   (= start end))
+          (skip-chars-forward er--space-str)
+          (setq start (point)))
 
         (while try-list
           (save-excursion
-            (condition-case nil
-                (progn
-                  (funcall (car try-list))
-                  (when (and (region-active-p)
-                             (<= (point) start)
-                             (>= (mark) end)
-                             (> (- (mark) (point)) (- end start))
-                             (or (> (point) best-start)
-                                 (and (= (point) best-start)
-                                      (< (mark) best-end))))
-                    (setq best-start (point))
-                    (setq best-end (mark))
-                    (unless (minibufferp)
-                      (message "%S" (car try-list)))))
-              (error nil)))
+            (ignore-errors
+              (funcall (car try-list))
+              (when (and (region-active-p)
+                         (<= (point) start)
+                         (>= (mark) end)
+                         (> (- (mark) (point)) (- end start))
+                         (or (> (point) best-start)
+                             (and (= (point) best-start)
+                                  (< (mark) best-end))))
+                (setq best-start (point))
+                (setq best-end (mark))
+                (unless (minibufferp)
+                  (message "%S" (car try-list))))))
           (setq try-list (cdr try-list)))
+
         (if (= best-start 0) ;; We didn't find anything new, so exit early
             (setq arg 0))
         (goto-char best-start)
@@ -491,6 +458,12 @@ before calling `er/expand-region' for the first time."
   "Clear the history."
   (setq er/history '())
   (remove-hook 'after-change-functions 'er/clear-history t))
+
+(defun er--point-is-surrounded-by-white-space ()
+  (let ((blank-list (append er--space-str nil)))
+    (and (or (memq (char-before) blank-list)
+             (eq (point) (point-min)))
+         (memq (char-after) blank-list))))
 
 ;; Mode-specific expansions
 (require 'js-mode-expansions)

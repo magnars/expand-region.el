@@ -33,7 +33,6 @@
 ;;; Code:
 (defun er/mark-ruby-block ()
   (interactive)
-  (er--setup)
   (ruby-beginning-of-block)
   (set-mark (point))
   (ruby-end-of-block)
@@ -43,7 +42,6 @@
 (defun er/mark-ruby-function ()
   "Mark the current Ruby function."
   (interactive)
-  (er--setup)
   (condition-case nil
       (forward-char 3)
     (error nil))
@@ -66,4 +64,3 @@
 (add-hook 'ruby-mode-hook 'er/add-ruby-mode-expansions)
 
 (provide 'ruby-mode-expansions)
-

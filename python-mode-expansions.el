@@ -39,23 +39,16 @@
 (defun er/mark-python-statement ()
   "Marks one Python statement, eg. x = 3"
   (interactive)
-  (er--setup)
   (python-end-of-statement)
   (set-mark (point))
   (python-beginning-of-statement))
-
-(defun er/mark-python-block ()
-  "Marks one Python block, eg. if x==3: return 'A'"
-  (interactive)
-  (er--setup)
-  (python-mark-block))
 
 (defun er/add-python-mode-expansions ()
   "Adds Python-specific expansions for buffers in python-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
                                                   '(er/mark-python-statement
-                                                    er/mark-python-block))))
+                                                    python-mark-block))))
 
 (add-hook 'python-mode-hook 'er/add-python-mode-expansions)
 

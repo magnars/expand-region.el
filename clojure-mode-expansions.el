@@ -35,7 +35,6 @@
 (defun er/mark-clj-word ()
   "Mark the entire word around or in front of point, including dashes."
   (interactive)
-  (er--setup)
   (let ((word-regexp "\\(\\sw\\|-\\)"))
     (when (or (looking-at word-regexp)
               (looking-back word-regexp))
@@ -49,7 +48,6 @@
   "Mark clj-regexp-literal presumes that point is outside the string.
 If point is inside the string, the quotes will be marked first anyway."
   (interactive)
-  (er--setup)
   (when (or (looking-at "#\"")
             (looking-back "#"))
     (forward-char 1)
@@ -64,7 +62,6 @@ If point is inside the string, the quotes will be marked first anyway."
   "Mark clj-function-literal presumes that point is outside the parens.
 If point is inside the parens, they will be marked first anyway."
   (interactive)
-  (er--setup)
   (when (or (looking-at "#(")
             (looking-back "#"))
     (forward-char)
