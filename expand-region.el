@@ -418,39 +418,39 @@ before calling `er/expand-region' for the first time."
 
         (when (and (= best-start 0)
                    (= best-end (buffer-end 1))) ;; We didn't find anything new, so exit early
-          (setq arg 0)))))
+          (setq arg 0))))))
 
-  (defun er/contract-region (arg)
-    "Contract the selected region to its previous size.
+(defun er/contract-region (arg)
+  "Contract the selected region to its previous size.
 With prefix argument contracts that many times.
 If prefix argument is negative calls `er/expand-region'.
 If prefix argument is 0 it resets point and mark to their state
 before calling `er/expand-region' for the first time."
-    (interactive "p")
-    (if (< arg 0)
-        (er/expand-region (- arg))
-      (when er/history
-        ;; Be sure to reset them all if called with 0
-        (when (= arg 0)
-          (setq arg (length er/history)))
+  (interactive "p")
+  (if (< arg 0)
+      (er/expand-region (- arg))
+    (when er/history
+      ;; Be sure to reset them all if called with 0
+      (when (= arg 0)
+        (setq arg (length er/history)))
 
-        (when (not transient-mark-mode)
-          (setq transient-mark-mode (cons 'only transient-mark-mode)))
+      (when (not transient-mark-mode)
+        (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
-        ;; Advance through the list the desired distance
-        (while (and (cdr er/history)
-                    (> arg 1))
-          (setq arg (- arg 1))
-          (setq er/history (cdr er/history)))
-        ;; Reset point and mark
-        (let* ((last (pop er/history))
-               (start (car last))
-               (end (cdr last)))
-          (goto-char start)
-          (set-mark end)
-          (when (eq start end)
-            (deactivate-mark)
-            (er/clear-history)))))))
+      ;; Advance through the list the desired distance
+      (while (and (cdr er/history)
+                  (> arg 1))
+        (setq arg (- arg 1))
+        (setq er/history (cdr er/history)))
+      ;; Reset point and mark
+      (let* ((last (pop er/history))
+             (start (car last))
+             (end (cdr last)))
+        (goto-char start)
+        (set-mark end)
+        (when (eq start end)
+          (deactivate-mark)
+          (er/clear-history))))))
 
 (defun er/clear-history (&rest args)
   "Clear the history."
