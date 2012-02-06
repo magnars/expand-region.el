@@ -175,7 +175,6 @@ Feature: Expand Region
   Scenario: Transient mark mode deactivated
     Given transient mark mode is inactive
     And there is no region selected
-    And transient mark mode is inactive
     When I insert "This is some text"
     And I go to point "10"
     And I expand the region
