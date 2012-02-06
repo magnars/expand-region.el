@@ -362,13 +362,14 @@ before calling `er/expand-region' for the first time."
       (er/contract-region (- arg))
     ;; We handle everything else
 
-    (when (not transient-mark-mode)
-      (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
     (when (and (er--first-invocation)
                (not (use-region-p)))
       (push-mark nil t)  ;; one for keeping starting position
       (push-mark nil t)) ;; one for replace by set-mark in expansions
+
+    (when (not (eq t transient-mark-mode))
+      (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
     (while (>= arg 1)
       (setq arg (- arg 1))
