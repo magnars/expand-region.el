@@ -171,3 +171,32 @@ Feature: Expand Region
     And I pop the mark
     And I pop the mark
     Then cursor should be at point "8"
+
+  Scenario: Transient mark mode deactivated
+    Given transient mark mode is inactive
+    And there is no region selected
+    And transient mark mode is inactive
+    When I insert "This is some text"
+    And I go to point "10"
+    And I expand the region
+    Then the region should be "some"
+
+  Scenario: Expand from existing selection without transient-mark-mode
+    Given transient mark mode is inactive
+    And there is no region selected
+    When I insert "This (is some) text"
+    And I go to point "7"
+    And I activate the mark
+    And I go to point "14"
+    And I expand the region
+    Then the region should be "(is some)"
+
+  Scenario: Do not skip white space forward with active region without tmm
+    Given transient mark mode is inactive
+    And there is no region selected
+    When I insert "This is    some text"
+    And I go to point "10"
+    And I activate the mark
+    And I go to point "14"
+    And I expand the region
+    Then the region should be "This is    some text"
