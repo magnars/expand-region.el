@@ -30,10 +30,8 @@
 ;;  er/mark-feature-scenario
 ;;  er/mark-feature-step
 
-
-(defun er/mark-feature-scenario ()
-  (interactive)
-  (let* ((raw-key-words "\\(Background:\\|Scenario:\\|Feature:\\)")
+(defun er--block-between-keywords (keywords-regexp)
+  (let* ((raw-key-words keywords-regexp)
          (key-words (concatenate 'string "^\\( \\)*" raw-key-words)))
     (when (looking-at-p "[^\\s-]")
       (skip-syntax-forward "w."))
@@ -46,17 +44,15 @@
     (unless (re-search-forward key-words (point-max) t)
       (end-of-buffer))
    (forward-line 0)
-    (exchange-point-and-mark)
-    ))
+    (exchange-point-and-mark)))
 
-;; (goto-char (buffer-end 1))
+(defun er/mark-feature-scenario ()
+  (interactive)
+  (er--block-between-keywords "\\(Background:\\|Scenario:\\|Feature:\\)"))
 
 (defun er/mark-feature-step ()
   (interactive)
-  (beginning-of-line)
-  (set-mark (point))
-  (end-of-line)
-  (exchange-point-and-mark))
+   (er--block-between-keywords "\\(And\\|Given\\|When\\|Then\\)"))
 
 (defun er/add-feature-mode-expansions ()
   "Adds cucumber-specific expansions for buffers in feature-mode"
