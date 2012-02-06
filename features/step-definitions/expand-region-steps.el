@@ -31,3 +31,8 @@
          (=
           (string-to-number arg)
           (point)))))
+
+(When "^I activate the mark$"
+      (lambda ()
+        (set-mark (point))
+        (activate-mark)))
