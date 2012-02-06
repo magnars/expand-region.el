@@ -30,7 +30,6 @@
 (defun er/mark-text-sentence ()
   "Marks one sentence."
   (interactive)
-  (er--setup)
   ;; The obvious
   ;; (backward-sentence 1) (mark-end-of-sentence 1)
   ;; doesn't work here because it's repeated and the selection keeps
@@ -43,15 +42,8 @@
 (defun er/mark-text-paragraph ()
   "Marks one paragraph."
   (interactive)
-  (er--setup)
   (mark-paragraph)
   (skip-chars-forward er--space-str))
-
-(defun er/mark-text-page ()
-  "Marks one page (as delimited by ^L)."
-  (interactive)
-  (er--setup)
-  (mark-page))
 
 (defun er/add-text-mode-expansions ()
   "Adds expansions for buffers in text-mode"
@@ -59,7 +51,7 @@
                                                   er/try-expand-list
                                                   '(er/mark-text-sentence
                                                     er/mark-text-paragraph
-                                                    er/mark-text-page))))
+                                                    mark-page))))
 
 (add-hook 'text-mode-hook 'er/add-text-mode-expansions)
 

@@ -39,7 +39,6 @@
 (defun er/mark-python-statement ()
   "Marks one Python statement, eg. x = 3"
   (interactive)
-  (er--setup)
   (python-end-of-statement)
   (set-mark (point))
   (python-beginning-of-statement))

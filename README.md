@@ -90,6 +90,7 @@ great if you opened a pull-request. The repo is at:
 * [Le Wang](https://github.com/lewang) contributed consistent handling of the mark ring, expanding into pairs/quotes just left of the cursor, and general code clean-up.
 * [Matt Briggs](https://github.com/mbriggs) contributed expansions for ruby-mode.
 * [Ivan Andrus](https://github.com/gvol) contributed expansions for various modes.
+* [Raimon Grau](https://github.com/kidd) added support for when transient-mark-mode is off.
 
 Thanks!
 

@@ -42,7 +42,6 @@
 (defun er/mark-js-function ()
   "Mark the current JavaScript function."
   (interactive)
-  (er--setup)
   (condition-case nil
       (forward-char 8)
     (error nil))
@@ -58,7 +57,6 @@
 (defun er/mark-js-outer-return ()
   "Mark the current return statement, including return and ending semi-colon"
   (interactive)
-  (er--setup)
   (condition-case nil
       (forward-char 6)
     (error nil))
@@ -76,7 +74,6 @@
 (defun er/mark-js-inner-return ()
   "Mark contents of the current return statement, not including return or semi-colon"
   (interactive)
-  (er--setup)
   (condition-case nil
       (forward-char 6)
     (error nil))
@@ -94,7 +91,6 @@
 (defun er/mark-js-if ()
   "Mark the current if-statement."
   (interactive)
-  (er--setup)
   (condition-case nil
       (forward-char 2)
     (error nil))
@@ -113,7 +109,6 @@
 (defun er/mark-js-object-property-value ()
   "Mark the current object property value, ie. from : to , or }"
   (interactive)
-  (er--setup)
   (unless (er--inside-pairs-p)
     (error "Point is not inside an object"))
   (search-backward ":")
@@ -134,7 +129,6 @@
   "Mark js-object-property presumes that point is at the assignment part of key: value.
 If point is inside the value, that will be marked first anyway."
   (interactive)
-  (er--setup)
   (when (or (looking-at "\"?\\(\\s_\\|\\sw\\| \\)*\":")
             (looking-at "\\(\\s_\\|\\sw\\)*:")
             (looking-back ": ?"))
@@ -165,6 +159,7 @@ If point is inside the value, that will be marked first anyway."
                                                     er/mark-js-outer-return))))
 
 (add-hook 'js2-mode-hook 'er/add-js-mode-expansions)
+(add-hook 'js3-mode-hook 'er/add-js-mode-expansions)
 
 (provide 'js-mode-expansions)
 

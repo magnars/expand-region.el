@@ -29,24 +29,12 @@
 
 ;;; Code:
 
-(defun er/mark-latex-environment ()
-  "Marks the innermost LaTeX environment"
-  (interactive)
-  (er--setup)
-  (LaTeX-mark-environment))
-
-(defun er/mark-latex-section ()
-  "Marks the current section."
-  (interactive)
-  (er--setup)
-  (LaTeX-mark-section))
-
 (defun er/add-latex-mode-expansions ()
   "Adds expansions for buffers in latex-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
-                                                  '(er/mark-latex-environment
-                                                    er/mark-latex-section))))
+                                                  '(LaTeX-mark-environment
+                                                    LaTeX-mark-section))))
 
 (add-hook 'LaTeX-mode-hook 'er/add-latex-mode-expansions)
 

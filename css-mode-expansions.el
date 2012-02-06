@@ -31,7 +31,6 @@
 (defun er/mark-css-declaration ()
   "Marks one CSS declaration, eg. font-weight: bold;"
   (interactive)
-  (er--setup)
   (search-backward-regexp "[;{] ?" (line-beginning-position))
   (forward-char)
   (set-mark (point))
