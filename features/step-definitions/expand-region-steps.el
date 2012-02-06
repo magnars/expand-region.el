@@ -20,6 +20,10 @@
       (lambda ()
         (deactivate-mark)))
 
+(When "^I activate the mark$"
+      (lambda ()
+        (activate-mark)))
+
 (Then "^the region should not be active$"
        (lambda ()
          (should
@@ -31,8 +35,3 @@
          (=
           (string-to-number arg)
           (point)))))
-
-(When "^I activate the mark$"
-      (lambda ()
-        (set-mark (point))
-        (activate-mark)))

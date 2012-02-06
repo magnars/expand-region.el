@@ -185,6 +185,7 @@ Feature: Expand Region
     And there is no region selected
     When I insert "This (is some) text"
     And I go to point "7"
+    And I set the mark
     And I activate the mark
     And I go to point "14"
     And I expand the region
@@ -195,6 +196,7 @@ Feature: Expand Region
     And there is no region selected
     When I insert "This is    some text"
     And I go to point "10"
+    And I set the mark
     And I activate the mark
     And I go to point "14"
     And I expand the region
