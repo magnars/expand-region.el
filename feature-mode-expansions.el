@@ -30,21 +30,21 @@
 ;;  er/mark-feature-scenario
 ;;  er/mark-feature-step
 
-(defun er--block-between-keywords (keywords-regexp)
-  (let* ((raw-key-words keywords-regexp)
-         (key-words (concatenate 'string "^\\( \\)*" raw-key-words)))
+(defun er--block-between-keywords (start-keywords-regexp &optional end-keywords-regexp)
+  (let* ((start-key-words (concatenate 'string "^\\( \\)*" start-keywords-regexp))
+         (end-key-words (concatenate 'string "^\\( \\)*" (or end-keywords-regexp start-keywords-regexp))))
     (when (looking-at-p "[^\\s-]")
       (skip-syntax-forward "w."))
-    (if (looking-at-p raw-key-words)
+    (if (looking-at-p start-keywords-regexp)
         (progn (beginning-of-line)
                (exchange-point-and-mark))
-      (re-search-backward key-words)
+      (re-search-backward start-key-words)
       (set-mark (point))
-      (re-search-forward key-words))
-    (unless (re-search-forward key-words (point-max) t)
+      (re-search-forward start-key-words))
+    (unless (re-search-forward end-key-words (point-max) t)
       (end-of-buffer))
    (forward-line 0)
-    (exchange-point-and-mark)))
+   (exchange-point-and-mark)))
 
 (defun er/mark-feature-scenario ()
   (interactive)
@@ -52,7 +52,7 @@
 
 (defun er/mark-feature-step ()
   (interactive)
-  (er--block-between-keywords "\\(And\\|Given\\|When\\|Then\\|Scenario:\\)"))
+  (er--block-between-keywords "\\(And\\|Given\\|When\\|Then\\)"  "\\(And\\|Given\\|When\\|Then\\|Scenario:\\)"))
 
 (defun er/add-feature-mode-expansions ()
   "Adds cucumber-specific expansions for buffers in feature-mode"
