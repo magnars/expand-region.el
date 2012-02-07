@@ -52,7 +52,7 @@
 
 (defun er/mark-feature-step ()
   (interactive)
-   (er--block-between-keywords "\\(And\\|Given\\|When\\|Then\\|Scenario:\\)"))
+  (er--block-between-keywords "\\(And\\|Given\\|When\\|Then\\|Scenario:\\)"))
 
 (defun er/add-feature-mode-expansions ()
   "Adds cucumber-specific expansions for buffers in feature-mode"
