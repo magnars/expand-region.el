@@ -96,6 +96,7 @@ line and selecting the surrounding block."
                py-mark-statement
                py-mark-block
                er/mark-outer-python-block
+               py-mark-class
                ))))
 
 (add-hook 'python-mode-hook 'er/add-python-mode-expansions)
