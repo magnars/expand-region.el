@@ -36,34 +36,69 @@
 
 ;;; Code:
 
-(defun er/mark-python-statement ()
-  "Marks one Python statement, eg. x = 3"
+(defvar er--python-string-delimiter "'\"")
+
+(defun er/mark-outside-python-string ()
+  "Marks region outside a (possibly multi-line) Python string"
   (interactive)
-  (python-end-of-statement)
-  (set-mark (point))
-  (python-beginning-of-statement))
+  (let ((string-beginning (py-in-string-p)))
+    (when string-beginning
+      (goto-char string-beginning)
+      (set-mark (point))
+      (forward-sexp)
+      (exchange-point-and-mark))))
+
+(defun er/mark-inside-python-string ()
+  "Marks region inside a (possibly multi-line) Python string"
+  (interactive)
+  (let ((string-beginning (py-in-string-p)))
+    (when string-beginning
+      (goto-char string-beginning)
+      (forward-sexp)
+      (skip-chars-backward er--python-string-delimiter)
+      (set-mark (point))
+      (goto-char string-beginning)
+      (skip-chars-forward er--python-string-delimiter))))
+
+(defun er/mark-outer-python-block ()
+  "Attempts to mark a surrounding block by moving to the previous
+line and selecting the surrounding block."
+  (interactive)
+  (previous-line)
+  (let ((block-beginning (py-beginning-of-block-position)))
+    (when block-beginning
+      (py-end-of-block)
+      (set-mark (point))
+      (goto-char block-beginning))))
 
 (defun er/mark-python-block ()
-  "Marks one Python block, eg. if x==3: return 'A'"
+  "Marks the surrounding Python block"
   (interactive)
-  (er--setup)
-  (python-mark-block))
-
-(defun er/mark-python-string ()
-  "Marks one (possibly multi-line) Python string"
-  (er--setup)
-  (python-beginning-of-string)
-  (set-mark (point))
-  (forward-sexp)
-  (exchange-point-and-mark))
+  (if (= (region-end) (py-end-of-block))
+      (er/mark-outer-python-block)
+    (py-mark-block)))
 
 (defun er/add-python-mode-expansions ()
   "Adds Python-specific expansions for buffers in python-mode"
   (set (make-local-variable 'er/try-expand-list)
-       (append er/try-expand-list
-               '(er/mark-python-string
-                 er/mark-python-statement
-                 er/mark-python-block))))
+       (setq er/try-expand-list
+             '(
+               er/mark-word
+               er/mark-symbol
+               er/mark-symbol-with-prefix
+               er/mark-next-accessor
+               er/mark-method-call
+               er/mark-comment
+               er/mark-comment-block
+               er/mark-inside-python-string
+               er/mark-outside-python-string
+               er/mark-inside-pairs
+               er/mark-outside-pairs
+               py-mark-expression
+               py-mark-statement
+               py-mark-block
+               er/mark-outer-python-block
+               ))))
 
 (add-hook 'python-mode-hook 'er/add-python-mode-expansions)
 
