@@ -1,10 +1,10 @@
 ;;; python-mode-expansions.el --- Python-specific expansions for expand-region
 
-;; Copyright (C) 2012 Ivan Andrus
+;; Copyright (C) 2012 Felix Geller
 
-;; Author: Ivan Andrus
-;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
-;; Keywords: marking region
+;; Author: Felix Geller
+;; Based on python-mode-expansions by: Ivan Andrus
+;; Keywords: marking region Python python-mode
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
