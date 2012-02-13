@@ -28,12 +28,6 @@
 ;;
 ;;     https://github.com/magnars/expand-region.el
 
-;;; Bugs:
-
-;; Doesn't properly handle triple quoted strings -- need to patch or
-;; replace regular er/mark-inside-pairs since it marks inside the
-;; outermost pair of quotes.
-
 ;;; Code:
 
 (defvar er--python-string-delimiter "'\"")
