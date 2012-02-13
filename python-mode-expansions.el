@@ -54,16 +54,28 @@
       (goto-char string-beginning)
       (skip-chars-forward er--python-string-delimiter))))
 
+
+(defun er--move-to-beginning-of-outer-python-block (start-column)
+  "Assumes that point is in a python block that is surrounded by
+another that is not the entire module. Uses `py-indent-offset' to
+find the beginning of the surrounding block because
+`py-beginning-of-block-position' just looks for the previous
+block-starting key word syntactically."
+  (while (> (current-column) (- start-column py-indent-offset))
+    (previous-line)
+    (py-beginning-of-block)))
+
 (defun er/mark-outer-python-block ()
   "Attempts to mark a surrounding block by moving to the previous
 line and selecting the surrounding block."
   (interactive)
-  (previous-line)
-  (let ((block-beginning (py-beginning-of-block-position)))
-    (when block-beginning
-      (py-end-of-block)
-      (set-mark (point))
-      (goto-char block-beginning))))
+  (let ((start-column (current-column)))
+    (when (> start-column 0) ; outer block is the whole buffer
+      (er--move-to-beginning-of-outer-python-block start-column)
+      (let ((block-beginning (point)))
+        (py-end-of-block)
+        (set-mark (point))
+        (goto-char block-beginning)))))
 
 (defun er/mark-python-block ()
   "Marks the surrounding Python block"
