@@ -76,13 +76,6 @@ line and selecting the surrounding block."
         (set-mark (point))
         (goto-char block-beginning)))))
 
-(defun er/mark-python-block ()
-  "Marks the surrounding Python block"
-  (interactive)
-  (if (= (region-end) (py-end-of-block))
-      (er/mark-outer-python-block)
-    (py-mark-block)))
-
 (defun er/add-python-mode-expansions ()
   "Adds Python-specific expansions for buffers in python-mode"
   (set (make-local-variable 'er/try-expand-list)
