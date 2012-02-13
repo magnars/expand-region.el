@@ -362,7 +362,6 @@ before calling `er/expand-region' for the first time."
       (er/contract-region (- arg))
     ;; We handle everything else
 
-
     (when (and (er--first-invocation)
                (not (use-region-p)))
       (push-mark nil t)  ;; one for keeping starting position
@@ -475,6 +474,7 @@ before calling `er/expand-region' for the first time."
 (require 'python-mode-expansions)
 (require 'text-mode-expansions)
 (require 'latex-mode-expansions)
+(require 'feature-mode-expansions)
 
 (provide 'expand-region)
 
