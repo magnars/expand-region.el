@@ -54,7 +54,6 @@
       (goto-char string-beginning)
       (skip-chars-forward er--python-string-delimiter))))
 
-
 (defun er--move-to-beginning-of-outer-python-block (start-column)
   "Assumes that point is in a python block that is surrounded by
 another that is not the entire module. Uses `py-indent-offset' to
