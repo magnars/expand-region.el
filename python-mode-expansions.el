@@ -21,8 +21,21 @@
 
 ;;; Commentary:
 
-;; There is no need for a er/mark-python-defun since
-;; er/mark-python-block will mark it
+;; These expansion don't work with the built-in python.el but rather
+;; python-mode: https://launchpad.net/python-mode
+
+;; Features:
+;;  - Mark functionality taken from python-mode:
+;;    - `py-mark-expression'
+;;    - `py-mark-statement'
+;;    - `py-mark-block'
+;;    - `py-mark-class'
+;;  - Additions implemented here:
+;;    - `er/mark-inside-python-string'
+;;    - `er/mark-outside-python-string'
+;;    - `er/mark-outer-python-block'
+;;  - Supports multi-line strings
+;;  - Supports incremental expansion of nested blocks
 
 ;; Feel free to contribute any other expansions for Python at
 ;;
