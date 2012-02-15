@@ -1,10 +1,9 @@
 ;;; python-mode-expansions.el --- Python-specific expansions for expand-region
 
-;; Copyright (C) 2012 Felix Geller
+;; Copyright (C) 2012 Ivan Andrus, Felix Geller
 
-;; Author: Felix Geller
-;; Based on python-mode-expansions by: Ivan Andrus
-;; Keywords: marking region Python python-mode
+;; Author: Ivan Andrus, Felix Geller
+;; Keywords: marking region Python python-mode python.el
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -19,12 +18,18 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
+;; Commentary:
+;; cf. https://github.com/magnars/expand-region.el/pull/18
 
-;; These expansion don't work with the built-in python.el but rather
-;; python-mode: https://launchpad.net/python-mode
+;; For python.el:
+;;  - Mark functionality taken from python.el:
+;;    - `python-mark-block'
+;;  - Additions implemented here:
+;;    - `er/mark-python-string'
+;;    - `er/mark-python-statement'
+;;  - Supports multi-line strings
 
-;; Features:
+;; For python-mode: https://launchpad.net/python-mode
 ;;  - Mark functionality taken from python-mode:
 ;;    - `py-mark-expression'
 ;;    - `py-mark-statement'
@@ -42,6 +47,10 @@
 ;;     https://github.com/magnars/expand-region.el
 
 ;;; Code:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; python-mode specifics ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar er--python-string-delimiter "'\"")
 
@@ -90,7 +99,7 @@ line and selecting the surrounding block."
         (goto-char block-beginning)))))
 
 (defun er/add-python-mode-expansions ()
-  "Adds Python-specific expansions for buffers in python-mode"
+  "Adds python-mode-specific expansions for buffers in python-mode"
   (let ((try-expand-list-additions '(
                                      er/mark-inside-python-string
                                      er/mark-outside-python-string
@@ -105,7 +114,45 @@ line and selecting the surrounding block."
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-(add-hook 'python-mode-hook 'er/add-python-mode-expansions)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; python.el specifics ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defun er/mark-python-statement ()
+  "Marks one Python statement, eg. x = 3"
+  (interactive)
+  (python-end-of-statement)
+  (set-mark (point))
+  (python-beginning-of-statement))
+
+(defun er/mark-python-string ()
+  "Marks one (possibly multi-line) Python string"
+  (python-beginning-of-string)
+  (set-mark (point))
+  (forward-sexp)
+  (exchange-point-and-mark))
+
+(defun er/add-python-el-expansions ()
+  "Adds python.el-specific expansions for buffers in python-mode"
+  (let ((try-expand-list-additions '(
+                                     er/mark-python-string
+                                     er/mark-python-statement
+                                     python-mark-block
+                                     )))
+    (set (make-local-variable 'er/try-expand-list)
+         (append er/try-expand-list try-expand-list-additions))))
+
+
+;; python-mode
+(eval-after-load 'python-mode
+  '(add-hook 'python-mode-hook 'er/add-python-mode-expansions))
+
+;; python.el
+(eval-after-load 'python
+ '(add-hook 'python-mode-hook 'er/add-python-el-expansions))
+
 
 (provide 'python-mode-expansions)
 
