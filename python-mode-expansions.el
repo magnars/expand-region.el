@@ -91,15 +91,9 @@ line and selecting the surrounding block."
 
 (defun er/add-python-mode-expansions ()
   "Adds Python-specific expansions for buffers in python-mode"
-  (let ((try-expand-list-with-replacements
-         (mapcar (lambda (fun) (cond ((eq fun 'er/mark-inside-quotes)
-                                 'er/mark-inside-python-string)
-                                ((eq fun 'er/mark-outside-quotes)
-                                 'er/mark-outside-python-string)
-                                (t
-                                 fun)))
-                 er/try-expand-list))
-        (try-expand-list-additions '(
+  (let ((try-expand-list-additions '(
+                                     er/mark-inside-python-string
+                                     er/mark-outside-python-string
                                      py-mark-expression
                                      py-mark-statement
                                      py-mark-block
@@ -107,7 +101,9 @@ line and selecting the surrounding block."
                                      py-mark-class
                                      )))
     (set (make-local-variable 'er/try-expand-list)
-       (append try-expand-list-with-replacements try-expand-list-additions))))
+         (remove 'er/mark-inside-quotes
+                 (remove 'er/mark-outside-quotes
+                         (append er/try-expand-list try-expand-list-additions))))))
 
 (add-hook 'python-mode-hook 'er/add-python-mode-expansions)
 
