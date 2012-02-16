@@ -84,12 +84,28 @@ great if you opened a pull-request. The repo is at:
 
     https://github.com/magnars/expand-region.el
 
+Changes to `expand-region.el` must be accompanied by feature tests.
+They are written in [Ecukes](http://ecukes.info), a Cucumber for Emacs.
+
+To fetch the test dependencies:
+
+    $ cd /path/to/expand-region
+    $ git submodule init
+    $ git submodule update
+
+Run the tests with:
+
+    $ ./util/ecukes/ecukes features
+
+If you want to add feature-tests for your mode-specific expansions as well,
+that is utterly excellent.
+
 ## Contributors
 
 * [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
 * [Le Wang](https://github.com/lewang) contributed consistent handling of the mark ring, expanding into pairs/quotes just left of the cursor, and general code clean-up.
 * [Matt Briggs](https://github.com/mbriggs) contributed expansions for ruby-mode.
-* [Ivan Andrus](https://github.com/gvol) contributed expansions for various modes.
+* [Ivan Andrus](https://github.com/gvol) contributed expansions for python-mode, text-mode and LaTeX-mode.
 * [Raimon Grau](https://github.com/kidd) added support for when transient-mark-mode is off.
 * [Gleb Peregud](https://github.com/gleber) contributed expansions for erlang-mode.
 
