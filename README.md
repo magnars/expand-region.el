@@ -91,7 +91,7 @@ great if you opened a pull-request. The repo is at:
 * [Matt Briggs](https://github.com/mbriggs) contributed expansions for ruby-mode.
 * [Ivan Andrus](https://github.com/gvol) contributed expansions for various modes.
 * [Raimon Grau](https://github.com/kidd) added support for when transient-mark-mode is off.
-* [Gleb Peregud](https://github.com/gleber) contributed expansions for erland-mode.
+* [Gleb Peregud](https://github.com/gleber) contributed expansions for erlang-mode.
 
 Thanks!
 
