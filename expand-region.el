@@ -474,6 +474,7 @@ before calling `er/expand-region' for the first time."
 (require 'python-mode-expansions)
 (require 'text-mode-expansions)
 (require 'latex-mode-expansions)
+(require 'erlang-mode-expansions)
 (require 'feature-mode-expansions)
 
 (provide 'expand-region)
