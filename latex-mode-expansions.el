@@ -29,12 +29,62 @@
 
 ;;; Code:
 
+(defun er/mark-LaTeX-inside-environment ()
+  "Like `LaTeX-mark-environment' but marks the inside of the environment.
+Skips past [] and {} arguments to the environment."
+  (interactive)
+  (LaTeX-mark-environment)
+  (when (looking-at "\\\\begin{")
+    (forward-sexp 2)
+    ;; Assume these are arguments
+    (while (looking-at "[ \t\n]*[{[]")
+      (forward-sexp 1))
+    ;; Go to next line if there is nothing interesting on this one
+    (skip-syntax-forward " ") ;; newlines are ">" i.e. end comment
+    (when (looking-at "%\\|$")
+      (forward-line))
+    ;; Clean up the end portion
+    (exchange-point-and-mark)
+    (backward-sexp 2)
+    (skip-syntax-backward " ")
+    (exchange-point-and-mark)))
+
+(defun er/mark-LaTeX-math ()
+  "Mark current math environment."
+  (interactive)
+  (when (texmathp)
+    (let* ((string (car texmathp-why))
+           (pos (cdr texmathp-why))
+           (reason (assoc string texmathp-tex-commands1))
+           (type (cadr reason)))
+      (cond
+       ((eq type 'env-on) ;; environments equation, align, etc.
+        (er/mark-LaTeX-inside-environment))
+       ((eq type 'arg-on) ;; \ensuremath etc.
+        (goto-char pos)
+        (set-mark (point))
+        (forward-sexp 2)
+        (exchange-point-and-mark))
+       ((eq type 'sw-toggle) ;; $ and $$
+        (goto-char pos)
+        (set-mark (point))
+        (forward-sexp 1)
+        (exchange-point-and-mark))
+       ((eq type 'sw-on) ;; \( and \[
+        (re-search-forward texmathp-onoff-regexp)
+        (set-mark pos)
+        (exchange-point-and-mark))
+       (t (error (format "Unknown reason to be in math mode: %s" type)))))))
+
 (defun er/add-latex-mode-expansions ()
   "Adds expansions for buffers in latex-mode"
-  (set (make-local-variable 'er/try-expand-list) (append
-                                                  er/try-expand-list
-                                                  '(LaTeX-mark-environment
-                                                    LaTeX-mark-section))))
+  (set (make-local-variable 'er/try-expand-list)
+       (append
+        er/try-expand-list
+        '(LaTeX-mark-environment
+          LaTeX-mark-section
+          er/mark-LaTeX-inside-environment
+          er/mark-latex-math))))
 
 (add-hook 'LaTeX-mode-hook 'er/add-latex-mode-expansions)
 
