@@ -44,8 +44,9 @@ around the equal sign or unquotes attributes atm."
     (forward-char 1)
     (set-mark (point))
     (search-forward "=")
-    (forward-char 1)
-    (er--move-point-forward-out-of-string)
+    ;; (forward-char 1)
+    ;; (er--move-point-forward-out-of-string)
+    (forward-sexp 1)
     (exchange-point-and-mark)))
 
 (defun er--looking-at-marked-tag ()

@@ -42,7 +42,7 @@
       (set-mark (point))
       (re-search-forward start-key-words))
     (unless (re-search-forward end-key-words (point-max) t)
-      (end-of-buffer))
+      (goto-char (point-max)))
    (forward-line 0)
    (exchange-point-and-mark)))
 
