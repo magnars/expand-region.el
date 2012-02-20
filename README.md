@@ -105,7 +105,7 @@ that is utterly excellent.
 * [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
 * [Le Wang](https://github.com/lewang) contributed consistent handling of the mark ring, expanding into pairs/quotes just left of the cursor, and general code clean-up.
 * [Matt Briggs](https://github.com/mbriggs) contributed expansions for ruby-mode.
-* [Ivan Andrus](https://github.com/gvol) contributed expansions for python-mode, text-mode and LaTeX-mode.
+* [Ivan Andrus](https://github.com/gvol) contributed expansions for python-mode, text-mode, LaTeX-mode and nxml-mode.
 * [Raimon Grau](https://github.com/kidd) added support for when transient-mark-mode is off.
 * [Gleb Peregud](https://github.com/gleber) contributed expansions for erlang-mode.
 
