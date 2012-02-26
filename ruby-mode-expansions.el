@@ -31,6 +31,9 @@
 ;;  er/mark-ruby-function
 
 ;;; Code:
+
+(eval-when-compile (require 'cl))
+
 (defun er/mark-ruby-block ()
   (interactive)
   (ruby-beginning-of-block)
@@ -45,10 +48,10 @@
   (condition-case nil
       (forward-char 3)
     (error nil))
-  (word-search-backward "def")
-  (while (er--point-inside-string-p)
-    (word-search-backward "def"))
+  (loop do (word-search-backward "def")
+        while (er--point-inside-string-p))
   (set-mark (point))
+  (forward-line 1)
   (ruby-end-of-block)
   (end-of-line)
   (exchange-point-and-mark))
