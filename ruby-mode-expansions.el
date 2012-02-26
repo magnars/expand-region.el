@@ -31,6 +31,11 @@
 ;;  er/mark-ruby-function
 
 ;;; Code:
+
+(eval-when-compile (require 'cl))
+
+(provide 'ruby-mode-expansions)
+
 (defun er/mark-ruby-block ()
   (interactive)
   (ruby-beginning-of-block)
@@ -45,9 +50,8 @@
   (condition-case nil
       (forward-char 3)
     (error nil))
-  (word-search-backward "def")
-  (while (er--point-inside-string-p)
-    (word-search-backward "def"))
+  (loop do (word-search-backward "^[\t ]*def\\_>")
+        while (er--point-inside-string-p))
   (set-mark (point))
   (ruby-end-of-block)
   (end-of-line)
@@ -62,5 +66,3 @@
                                                     er/mark-ruby-function))))
 
 (add-hook 'ruby-mode-hook 'er/add-ruby-mode-expansions)
-
-(provide 'ruby-mode-expansions)
