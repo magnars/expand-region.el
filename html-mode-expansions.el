@@ -46,15 +46,13 @@ around the equal sign or unquotes attributes atm."
     (forward-char 1)
     (set-mark (point))
     (search-forward "=")
-    ;; (forward-char 1)
-    ;; (er--move-point-forward-out-of-string)
     (forward-sexp 1)
     (exchange-point-and-mark)))
 
 (defun er--looking-at-marked-tag ()
   "Is point looking at a tag that is entirely marked?"
   (and (looking-at "<")
-       (eq (mark)
+       (>= (mark)
            (save-excursion
              (sgml-skip-tag-forward 1)
              (point)))))
@@ -71,9 +69,10 @@ around the equal sign or unquotes attributes atm."
              (or (not (looking-at "<"))
                  (er--looking-at-marked-tag)))
     (goto-char (aref (car (last (sgml-get-context))) 2)))
-  (set-mark (point))
-  (sgml-skip-tag-forward 1)
-  (exchange-point-and-mark))
+  (when (looking-at "<")
+    (set-mark (point))
+    (sgml-skip-tag-forward 1)
+    (exchange-point-and-mark)))
 
 (defun er/mark-inner-tag ()
   "Mark the contents of an open tag, not including the tags."
