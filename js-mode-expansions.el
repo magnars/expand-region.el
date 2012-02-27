@@ -39,6 +39,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-js-function ()
   "Mark the current JavaScript function."
   (interactive)

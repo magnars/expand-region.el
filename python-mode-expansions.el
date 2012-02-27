@@ -36,6 +36,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-python-statement ()
   "Marks one Python statement, eg. x = 3"
   (interactive)

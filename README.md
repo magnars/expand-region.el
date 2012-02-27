@@ -84,7 +84,7 @@ great if you opened a pull-request. The repo is at:
 
     https://github.com/magnars/expand-region.el
 
-Changes to the `er/expand-region` functions itself must be accompanied by feature tests.
+Changes to `expand-region-core` itself must be accompanied by feature tests.
 They are written in [Ecukes](http://ecukes.info), a Cucumber for Emacs.
 
 To fetch the test dependencies:

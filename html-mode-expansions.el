@@ -32,6 +32,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-html-attribute ()
   "Mark html-attribute presumes that point is at the assignment part of attr=\"value\".
 If point is inside the value-string, the quotes will be marked

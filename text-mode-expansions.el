@@ -27,6 +27,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-text-sentence ()
   "Marks one sentence."
   (interactive)

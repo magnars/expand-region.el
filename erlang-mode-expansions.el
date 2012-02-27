@@ -31,6 +31,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/add-erlang-mode-expansions ()
   "Adds Erlang-specific expansions for buffers in erlang-mode"
   (set (make-local-variable 'er/try-expand-list) (append
