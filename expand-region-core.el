@@ -240,10 +240,9 @@ period and marks next symbol."
 (defun er/mark-outside-pairs ()
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
-  (progn
-    (if (looking-back "\\s)+\\=")
+  (if (looking-back "\\s)+\\=")
         (ignore-errors (backward-list 1))
-      (skip-chars-forward er--space-str)))
+      (skip-chars-forward er--space-str))
   (when (and (er--point-inside-pairs-p)
              (or (not (er--looking-at-pair))
                  (er--looking-at-marked-pair)))
