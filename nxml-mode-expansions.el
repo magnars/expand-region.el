@@ -27,6 +27,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-nxml-tag ()
   "Marks one nxml element e.g. <p>...</p>"
   (interactive)

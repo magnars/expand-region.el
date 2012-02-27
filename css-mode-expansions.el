@@ -28,6 +28,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-css-declaration ()
   "Marks one CSS declaration, eg. font-weight: bold;"
   (interactive)

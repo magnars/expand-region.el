@@ -30,6 +30,8 @@
 ;;  er/mark-feature-scenario
 ;;  er/mark-feature-step
 
+(require 'expand-region-core)
+
 (defun er--block-between-keywords (start-keywords-regexp &optional end-keywords-regexp)
   (let* ((start-key-words (concatenate 'string "^\\( \\)*" start-keywords-regexp))
          (end-key-words (concatenate 'string "^\\( \\)*" (or end-keywords-regexp start-keywords-regexp))))

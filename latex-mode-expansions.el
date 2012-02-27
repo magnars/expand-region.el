@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-LaTeX-inside-environment ()
   "Like `LaTeX-mark-environment' but marks the inside of the environment.
 Skips past [] and {} arguments to the environment."

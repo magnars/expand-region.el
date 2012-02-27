@@ -31,6 +31,9 @@
 ;;  er/mark-ruby-function
 
 ;;; Code:
+
+(require 'expand-region-core)
+
 (defun er/mark-ruby-block ()
   (interactive)
   (ruby-beginning-of-block)

@@ -32,6 +32,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/mark-clj-word ()
   "Mark the entire word around or in front of point, including dashes."
   (interactive)
