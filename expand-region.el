@@ -139,9 +139,6 @@
 (eval-after-load "css-mode"     '(require 'css-mode-expansions))
 (eval-after-load "erlang-mode"  '(require 'erlang-mode-expansions))
 (eval-after-load "feature-mode" '(require 'feature-mode-expansions))
-(eval-after-load "html-mode"    '(require 'html-mode-expansions))
-(eval-after-load "rhtml-mode"   '(require 'html-mode-expansions))
-(eval-after-load "nxhtml-mode"  '(require 'html-mode-expansions))
 (eval-after-load "js2-mode"     '(require 'js-mode-expansions))
 (eval-after-load "js3-mode"     '(require 'js-mode-expansions))
 (eval-after-load "LaTeX-mode"   '(require 'latex-mode-expansions))
@@ -150,6 +147,8 @@
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
 (eval-after-load "text-mode"    '(require 'text-mode-expansions))
+
+(require 'html-mode-expansions) ;; require directly because of trouble with (eval-after-load "html-mode")
 
 (provide 'expand-region)
 
