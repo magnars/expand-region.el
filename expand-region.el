@@ -149,7 +149,13 @@
 (eval-after-load "python"       '(require 'python-mode-expansions))
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
-(eval-after-load "text-mode"    '(require 'text-mode-expansions))
+
+;; unfortunately html-mode inherits from text-mode
+;; and text-mode-expansions don't work well in html-mode
+;; so if you want text-mode-expansions, add this to your
+;; own init:
+;;
+;; (eval-after-load "text-mode"    '(require 'text-mode-expansions))
 
 (provide 'expand-region)
 
