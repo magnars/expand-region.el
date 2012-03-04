@@ -48,9 +48,10 @@
   (condition-case nil
       (forward-char 3)
     (error nil))
-  (word-search-backward "def")
-  (while (er--point-inside-string-p)
-    (word-search-backward "def"))
+  (let ((ruby-method-regex "^[\t ]*def\\_>"))
+    (word-search-backward ruby-method-regex)
+    (while (syntax-ppss-context (syntax-ppss))
+      (word-search-backward ruby-method-regex)))
   (set-mark (point))
   (ruby-end-of-block)
   (end-of-line)
