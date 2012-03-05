@@ -143,6 +143,7 @@
 (eval-after-load "rhtml-mode"   '(require 'html-mode-expansions))
 (eval-after-load "nxhtml-mode"  '(require 'html-mode-expansions))
 (eval-after-load "js2-mode"     '(require 'js-mode-expansions))
+(eval-after-load "js2-mode"     '(require 'js2-mode-expansions))
 (eval-after-load "js3-mode"     '(require 'js-mode-expansions))
 (eval-after-load "LaTeX-mode"   '(require 'latex-mode-expansions))
 (eval-after-load "nxml-mode"    '(require 'nxml-mode-expansions))
