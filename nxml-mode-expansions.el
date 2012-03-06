@@ -83,9 +83,11 @@
           er/mark-nxml-element
           er/mark-nxml-attribute-string
           ;; Steal from html-mode-expansions
-          er/mark-html-attribute)))
-  ;; Selecting symbols is confusing since < and > symbols
-  (remove-from-list 'er/try-expand-list 'er/mark-symbol))
+          er/mark-html-attribute)
+        ;; some normal marks are more hindrance than help:
+        (remove 'er/mark-method-call
+                (remove 'er/mark-symbol-with-prefix
+                        (remove 'er/mark-symbol er/try-expand-list))))))
 
 (add-hook 'nxml-mode-hook 'er/add-nxml-mode-expansions)
 
