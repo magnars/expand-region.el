@@ -87,6 +87,30 @@ line and selecting the surrounding block."
         (set-mark (point))
         (goto-char block-beginning)))))
 
+(defun er/mark-x-python-compound-statement ()
+  "Mark the current compound statement (if, while, for, try) and all clauses."
+  (interactive)
+  (let ((secondary-re
+         (save-excursion
+           (py-mark-block-or-clause)
+           (cond ((looking-at "if\\|for\\|while\\|else\\|elif") "else\\|elif")
+                 ((looking-at "try\\|except\\|finally") "except\\|finally"))))
+        start-col)
+    (when secondary-re
+      (py-mark-block-or-clause)
+      (setq start-col (current-column))
+      (while (looking-at secondary-re)
+        (previous-line) (back-to-indentation)
+        (while (> (current-column) start-col)
+          (previous-line) (back-to-indentation)))
+      (set-mark (point))
+      (py-goto-beyond-clause) (next-line) (back-to-indentation)
+      (while (and (looking-at secondary-re)
+                  (>= (current-column) start-col))
+        (py-goto-beyond-clause) (next-line) (back-to-indentation))
+      (previous-line) (end-of-line)
+      (exchange-point-and-mark))))
+
 (defun er/add-python-mode-expansions ()
   "Adds python-mode-specific expansions for buffers in python-mode"
   (let ((try-expand-list-additions '(
@@ -95,6 +119,7 @@ line and selecting the surrounding block."
                                      py-mark-expression
                                      py-mark-statement
                                      py-mark-block
+                                     er/mark-x-python-compound-statement
                                      er/mark-outer-python-block
                                      py-mark-class
                                      )))
