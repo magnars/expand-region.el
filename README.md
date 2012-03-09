@@ -15,7 +15,7 @@ and finally to the entire sexp.
 You can set it up like this:
 
     (require 'expand-region)
-    (global-set-key (kbd "C-@") 'er/expand-region)
+    (global-set-key (kbd "C-+") 'er/expand-region)
 
 There's also `er/contract-region` if you expand too far.
 
