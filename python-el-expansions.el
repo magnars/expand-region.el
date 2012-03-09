@@ -28,12 +28,6 @@
 ;;
 ;;     https://github.com/magnars/expand-region.el
 
-;;; Bugs:
-
-;; Doesn't properly handle triple quoted strings -- need to patch or
-;; replace regular er/mark-inside-pairs since it marks inside the
-;; outermost pair of quotes.
-
 ;;; Code:
 
 (require 'expand-region-core)
@@ -45,11 +39,19 @@
   (set-mark (point))
   (python-beginning-of-statement))
 
+(defun er/mark-python-string ()
+  "Marks one (possibly multi-line) Python string"
+  (python-beginning-of-string)
+  (set-mark (point))
+  (forward-sexp)
+  (exchange-point-and-mark))
+
 (defun er/add-python-mode-expansions ()
   "Adds Python-specific expansions for buffers in python-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
                                                   '(er/mark-python-statement
+                                                    er/mark-python-string
                                                     python-mark-block))))
 
 (add-hook 'python-mode-hook 'er/add-python-mode-expansions)
