@@ -1,4 +1,4 @@
-;;; python-mode-expansions.el --- Python-specific expansions for expand-region
+;;; python-el-expansions.el --- Python-specific expansions for expand-region
 
 ;; Copyright (C) 2012 Ivan Andrus
 
@@ -54,6 +54,6 @@
 
 (add-hook 'python-mode-hook 'er/add-python-mode-expansions)
 
-(provide 'python-mode-expansions)
+(provide 'python-el-expansions)
 
-;; python-mode-expansions.el ends here
+;; python-el-expansions.el ends here
