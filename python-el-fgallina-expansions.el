@@ -19,6 +19,12 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+;;
+;;  - Additions implemented here:
+;;    - `er/mark-inside-python-string'
+;;    - `er/mark-outside-python-string'
+;;    - `er/mark-python-sentence'
+;;  - Supports multi-line strings
 
 ;;; Code:
 
