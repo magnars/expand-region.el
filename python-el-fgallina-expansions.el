@@ -46,11 +46,18 @@
       (forward-sexp)
       (exchange-point-and-mark))))
 
+(defun er/mark-python-sentence ()
+  (interactive)
+  (python-nav-sentence-end)
+  (set-mark (point))
+  (python-nav-sentence-start))
+
 (defun er/add-python-mode-expansions ()
   "Adds python-mode-specific expansions for buffers in python-mode"
   (let ((try-expand-list-additions '(
                                      er/mark-inside-python-string
                                      er/mark-outside-python-string
+                                     er/mark-python-sentence
                                      )))
     (set (make-local-variable 'er/try-expand-list)
          (remove 'er/mark-inside-quotes
