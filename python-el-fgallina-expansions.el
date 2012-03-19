@@ -58,12 +58,34 @@
   (set-mark (point))
   (python-nav-sentence-start))
 
+(defun er/mark-python-block ()
+  (interactive)
+  (let ((rx-block-start (python-rx block-start)))
+    (back-to-indentation)
+    (unless (looking-at rx-block-start)
+      (re-search-backward rx-block-start))
+    (set-mark (point))  ; mark beginnig-of-block
+    (let ((block-indentation (current-indentation)))
+      (end-of-line)
+      (while (and (re-search-forward rx-block-start (point-max) 'goto-end)
+                  (> (current-indentation) block-indentation)))
+      (beginning-of-line)
+      (python-util-forward-comment -1)
+      (exchange-point-and-mark))))
+
+(defun er/mark-outer-python-block ()
+  (interactive)
+  (forward-line -1)
+  (er/mark-python-block))
+
 (defun er/add-python-mode-expansions ()
   "Adds python-mode-specific expansions for buffers in python-mode"
   (let ((try-expand-list-additions '(
                                      er/mark-inside-python-string
                                      er/mark-outside-python-string
                                      er/mark-python-sentence
+                                     er/mark-python-block
+                                     er/mark-outer-python-block
                                      )))
     (set (make-local-variable 'er/try-expand-list)
          (remove 'er/mark-inside-quotes
