@@ -2,9 +2,9 @@
 
 ;; Copyright (C) 2012 Ivan Andrus
 
-;; Author: Ivan Andrus
+;; Authors: Ivan Andrus, Felix Geller, @edmccard
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
-;; Keywords: marking region
+;; Keywords: marking region python
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,6 +20,15 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+
+;; For python.el included with GNU Emacs
+;;  - Mark functionality taken from python.el:
+;;    - `python-mark-block'
+;;  - Additions implemented here:
+;;    - `er/mark-python-statement'
+;;    - `er/mark-inside-python-string'
+;;    - `er/mark-outside-python-string'
+;;  - Supports multi-line strings
 
 ;; There is no need for a er/mark-python-defun since
 ;; er/mark-python-block will mark it
