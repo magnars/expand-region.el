@@ -119,6 +119,8 @@ line and selecting the surrounding block."
                                      py-mark-expression
                                      py-mark-statement
                                      py-mark-block
+                                     py-mark-def
+                                     py-mark-clause
                                      er/mark-x-python-compound-statement
                                      er/mark-outer-python-block
                                      py-mark-class

@@ -32,6 +32,8 @@
 
 (require 'expand-region-core)
 
+(defvar er--python-string-delimiter "'\"")
+
 (defun er/mark-python-statement ()
   "Marks one Python statement, eg. x = 3"
   (interactive)
@@ -39,20 +41,36 @@
   (set-mark (point))
   (python-beginning-of-statement))
 
-(defun er/mark-python-string ()
-  "Marks one (possibly multi-line) Python string"
+(defun er/mark-outside-python-string ()
+  "Marks region outside a (possibly multi-line) Python string"
+  (interactive)
   (python-beginning-of-string)
   (set-mark (point))
   (forward-sexp)
   (exchange-point-and-mark))
 
+(defun er/mark-inside-python-string ()
+  "Marks region inside a (possibly multi-line) Python string"
+  (interactive)
+  (when (eq 'string (syntax-ppss-context (syntax-ppss)))
+    (python-beginning-of-string)
+    (let ((string-beginning (point)))
+      (forward-sexp)
+      (skip-chars-backward er--python-string-delimiter)
+      (set-mark (point))
+      (goto-char string-beginning)
+      (skip-chars-forward er--python-string-delimiter))))
+
 (defun er/add-python-mode-expansions ()
   "Adds Python-specific expansions for buffers in python-mode"
-  (set (make-local-variable 'er/try-expand-list) (append
-                                                  er/try-expand-list
-                                                  '(er/mark-python-statement
-                                                    er/mark-python-string
-                                                    python-mark-block))))
+  (let ((try-expand-list-additions '(er/mark-python-statement
+                                     er/mark-inside-python-string
+                                     er/mark-outside-python-string
+                                     python-mark-block)))
+    (set (make-local-variable 'er/try-expand-list)
+         (remove 'er/mark-inside-quotes
+                 (remove 'er/mark-outside-quotes
+                         (append er/try-expand-list try-expand-list-additions))))))
 
 (add-hook 'python-mode-hook 'er/add-python-mode-expansions)
 
