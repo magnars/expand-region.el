@@ -201,3 +201,11 @@ Feature: Expand Region
     And I go to point "14"
     And I expand the region
     Then the region should be "This is    some text"
+
+  Scenario: Set-mark-default-inactive
+    Given mark is inactive by default
+    And there is no region selected
+    When I insert "This (is some) text"
+    And I go to point "6"
+    And I expand the region
+    Then the region should be "(is some)"

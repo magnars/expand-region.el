@@ -301,7 +301,8 @@ before calling `er/expand-region' for the first time."
              (end (max p1 p2))
              (try-list er/try-expand-list)
              (best-start 1)
-             (best-end (buffer-end 1)))
+             (best-end (buffer-end 1))
+             (set-mark-default-inactive nil))
 
         ;; add hook to clear history on buffer changes
         (unless er/history

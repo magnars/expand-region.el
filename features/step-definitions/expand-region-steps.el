@@ -1,3 +1,7 @@
+(Given "^mark is inactive by default$"
+       (lambda ()
+         (setq set-mark-default-inactive t)))
+
 (When "^I expand the region$"
       (lambda ()
         (flet ((message (&rest args) nil))
