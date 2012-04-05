@@ -35,7 +35,7 @@
 ;; You can set it up like this:
 
 ;;     (require 'expand-region)
-;;     (global-set-key (kbd "C-@") 'er/expand-region)
+;;     (global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; There's also `er/contract-region` if you expand too far.
 
@@ -143,13 +143,21 @@
 (eval-after-load "rhtml-mode"   '(require 'html-mode-expansions))
 (eval-after-load "nxhtml-mode"  '(require 'html-mode-expansions))
 (eval-after-load "js2-mode"     '(require 'js-mode-expansions))
+(eval-after-load "js2-mode"     '(require 'js2-mode-expansions))
 (eval-after-load "js3-mode"     '(require 'js-mode-expansions))
 (eval-after-load "LaTeX-mode"   '(require 'latex-mode-expansions))
 (eval-after-load "nxml-mode"    '(require 'nxml-mode-expansions))
 (eval-after-load "python"       '(require 'python-mode-expansions))
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
-(eval-after-load "text-mode"    '(require 'text-mode-expansions))
+(eval-after-load "org-mode"     '(require 'org-mode-expansions))
+
+;; unfortunately html-mode inherits from text-mode
+;; and text-mode-expansions don't work well in html-mode
+;; so if you want text-mode-expansions, add this to your
+;; own init:
+;;
+;; (eval-after-load "text-mode"    '(require 'text-mode-expansions))
 
 (provide 'expand-region)
 

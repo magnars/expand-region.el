@@ -30,23 +30,34 @@
 (require 'expand-region-core)
 
 (defun er/mark-nxml-tag ()
-  "Marks one nxml element e.g. <p>...</p>"
+  "Marks one nxml element e.g. <p>"
   (interactive)
   (cond ((looking-at "<")
          (nxml-mark-token-after))
         ((looking-back ">")
          (backward-char 1)
+         (nxml-mark-token-after))
+        ((looking-back "<[^<>]*")
          (nxml-mark-token-after))))
 
 (defun er/mark-nxml-element ()
   "Marks one nxml element e.g. <p>...</p>"
+  (interactive)
+  (if (not (looking-at "<[^/]"))
+      (er/mark-nxml-containing-element)
+    (set-mark (point))
+    (nxml-forward-element)
+    (exchange-point-and-mark)))
+
+(defun er/mark-nxml-containing-element ()
+  "Marks one nxml element, but always e.g. <p>...</p>"
   (interactive)
   (nxml-up-element)
   (set-mark (point))
   (nxml-backward-element))
 
 (defun er/mark-nxml-inside-element ()
-  "Marks the inside Nxml statement, eg. x = 3"
+  "Marks the inside Nxml statement, eg. <p>...</p>"
   (interactive)
   (let ((nxml-sexp-element-flag nil))
     (nxml-up-element)
@@ -56,8 +67,13 @@
     (nxml-forward-balanced-item 1)))
 
 (defun er/mark-nxml-attribute-string ()
-  "Marks an attribute string"
+  "Marks an attribute string."
   (interactive)
+  (when (looking-back "[\"']")
+    (backward-char 1))
+  ;; Using syntax highlighting is a hack, but I can't figure out how
+  ;; to use nxml-mode functions to do it.
+  (font-lock-fontify-buffer)
   (when (member (get-char-property (point) 'face)
                 '((nxml-attribute-value)
                   (nxml-attribute-value-delimiter)))
@@ -81,11 +97,14 @@
           er/mark-nxml-tag
           er/mark-nxml-inside-element
           er/mark-nxml-element
+          er/mark-nxml-containing-element
           er/mark-nxml-attribute-string
           ;; Steal from html-mode-expansions
-          er/mark-html-attribute)))
-  ;; Selecting symbols is confusing since < and > symbols
-  (remove-from-list 'er/try-expand-list 'er/mark-symbol))
+          er/mark-html-attribute)
+        ;; some normal marks are more hindrance than help:
+        (remove 'er/mark-method-call
+                (remove 'er/mark-symbol-with-prefix
+                        (remove 'er/mark-symbol er/try-expand-list))))))
 
 (add-hook 'nxml-mode-hook 'er/add-nxml-mode-expansions)
 

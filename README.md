@@ -15,9 +15,9 @@ and finally to the entire sexp.
 You can set it up like this:
 
     (require 'expand-region)
-    (global-set-key (kbd "C-@") 'er/expand-region)
+    (global-set-key (kbd "C-=") 'er/expand-region)
 
-There's also `er/contract-region` if you expand too far.
+You can contract the region again with a negative prefix, if you expand too far.
 
 ## Video
 
@@ -70,7 +70,7 @@ text-mode. Incidentally Emacs already comes with `mark-paragraph` and
 
     (add-hook 'text-mode-hook 'er/add-text-mode-expansions)
 
-Add that to its own file, and require it at the bottom of this one,
+Add that to its own file, and add it to the `expand-region.el`-file,
 where it says "Mode-specific expansions"
 
 **Warning:** Badly written expansions might slow down expand-region
