@@ -12,6 +12,8 @@
 (require 'ert)
 
 (Before
+ (global-set-key (kbd "C-@") 'er/expand-region)
+ (global-set-key (kbd "C-S-@") 'er/contract-region)
  (switch-to-buffer
   (get-buffer-create "*expand-region*"))
  (erase-buffer)

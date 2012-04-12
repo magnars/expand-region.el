@@ -7,6 +7,11 @@
         (flet ((message (&rest args) nil))
           (er/expand-region 1))))
 
+(When "^I quit$"
+     (lambda ()
+       (flet ((signal (&rest args) nil))
+         (keyboard-quit))))
+
 (When "^I expand the region \\([0-9]+\\) times$"
       (lambda (arg)
         (flet ((message (&rest args) nil))
@@ -29,9 +34,9 @@
         (activate-mark)))
 
 (Then "^the region should not be active$"
-       (lambda ()
-         (should
-          (not (region-active-p)))))
+      (lambda ()
+        (should
+         (not (region-active-p)))))
 
 (Then "^cursor should be at point \"\\(.+\\)\"$"
       (lambda (arg)

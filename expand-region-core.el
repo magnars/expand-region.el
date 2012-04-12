@@ -375,6 +375,10 @@ before calling `er/expand-region' for the first time."
           (deactivate-mark)
           (er/clear-history))))))
 
+(defadvice keyboard-quit (before collapse-region activate)
+  (when (memq last-command '(er/expand-region er/contract-region))
+    (er/contract-region 0)))
+
 (defun er/clear-history (&rest args)
   "Clear the history."
   (setq er/history '())
