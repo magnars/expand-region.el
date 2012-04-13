@@ -134,6 +134,7 @@
 ;;; Code:
 
 (require 'expand-region-core)
+(require 'expand-region-custom)
 
 (eval-after-load "clojure-mode" '(require 'clojure-mode-expansions))
 (eval-after-load "css-mode"     '(require 'css-mode-expansions))
@@ -147,7 +148,12 @@
 (eval-after-load "js3-mode"     '(require 'js-mode-expansions))
 (eval-after-load "LaTeX-mode"   '(require 'latex-mode-expansions))
 (eval-after-load "nxml-mode"    '(require 'nxml-mode-expansions))
-(eval-after-load "python"       '(require 'python-mode-expansions))
+(eval-after-load "python"       '(progn
+                                   (when expand-region-guess-python-mode
+                                     (expand-region-guess-python-mode))
+                                   (if (eq 'python expand-region-preferred-python-mode)
+                                       (require 'python-el-expansions)
+                                     (require 'python-el-fgallina-expansions))))
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
 (eval-after-load "org-mode"     '(require 'org-mode-expansions))
