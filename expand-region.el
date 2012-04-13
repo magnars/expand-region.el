@@ -134,30 +134,7 @@
 ;;; Code:
 
 (require 'expand-region-core)
-
-(defgroup expand-region nil
-  "Increase selected region by semantic units."
-  :group 'tools)
-
-(defcustom expand-region-preferred-python-mode 'python
-  "The name of your preferred python mode"
-  :group 'expand-region
-  :type '(choice (const :tag "Emacs' python.el" 'python)
-                 (const :tag "fgallina's python.el" 'fgallina-python)
-                 (const :tag "python-mode.el" 'python-mode)))
-
-(defcustom expand-region-guess-python-mode t
-  "If expand-region should attempt to guess your preferred python mode"
-  :group 'expand-region
-  :type '(choice (const :tag "Guess" t)
-                 (const :tag "Do not guess" nil)))
-
-(defun expand-region-guess-python-mode ()
-  "Guess the user's preferred python mode."
-  (setq expand-region-preferred-python-mode
-        (if (fboundp 'python-setup-brm)
-            'python
-          'fgallina-python)))
+(require 'expand-region-custom)
 
 (eval-after-load "clojure-mode" '(require 'clojure-mode-expansions))
 (eval-after-load "css-mode"     '(require 'css-mode-expansions))
