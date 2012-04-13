@@ -57,3 +57,14 @@ Feature: Mark pairs
     And I press "C-@"
     And I press "C-@"
     Then the region should be "((some more) parens)"
+
+  Scenario: Mark from behind multiline
+    Given there is no region selected
+    When I insert:
+    """
+    (let ((test :test))
+      (testing))
+    """
+    And I place the cursor after ":test))"
+    And I press "C-@"
+    Then the region should be "((test :test))"
