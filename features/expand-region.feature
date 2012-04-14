@@ -144,6 +144,17 @@ Feature: Expand Region
     Then the region should not be active
     And cursor should be at point "6"
 
+  Scenario: C-g to move back to start of expansions also with cua-mode
+    Given there is no region selected
+    When I turn on cua-mode
+    And I insert "(((45678)))"
+    And I go to point "6"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-g"
+    Then the region should not be active
+    And cursor should be at point "6"
+
   Scenario: Pop mark twice to get back to start of expansions
     Given there is no region selected
     When I insert "(((45678)))"
