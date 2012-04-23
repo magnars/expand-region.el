@@ -8,7 +8,8 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "<div id="5">"
     And I place the cursor between " " and "id"
-    And I expand the region 2 times
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "id="5""
 
   Scenario: Mark xml attribute from end
@@ -16,8 +17,8 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "<div id="5" bob="er">"
     And I go to point "12"
-    # And I place the cursor between "'" and ">"
-    And I expand the region 2 times
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "id="5""
 
   Scenario: Mark xml tags, part 1
@@ -25,7 +26,7 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "... <div class='hi'><div>before <span></span></div> after</div> ..."
     And I place the cursor between "before " and "<span>"
-    And I expand the region
+    And I press "C-@"
     Then the region should be "<span>"
 
   Scenario: Mark xml tags, part 2
@@ -33,7 +34,8 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "... <div class='hi'><div>before <span></span></div> after</div> ..."
     And I place the cursor between "before " and "<span>"
-    And I expand the region 2 times
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "<span></span>"
 
   Scenario: Mark xml tags, part 3
@@ -41,7 +43,9 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "... <div class='hi'><div>before <span></span></div> after</div> ..."
     And I place the cursor between "before " and "<span>"
-    And I expand the region 3 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "before <span></span>"
 
   Scenario: Mark xml tags, part 4
@@ -49,7 +53,10 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "... <div class='hi'><div>before <span></span></div> after</div> ..."
     And I place the cursor between "before " and "<span>"
-    And I expand the region 4 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "<div>before <span></span></div>"
 
   Scenario: Mark xml tags, part 5
@@ -57,7 +64,11 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "... <div class='hi'><div>before <span></span></div> after</div> ..."
     And I place the cursor between "before " and "<span>"
-    And I expand the region 5 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "<div>before <span></span></div> after"
 
   Scenario: Mark xml tags, part 6
@@ -65,5 +76,10 @@ Feature: nxml-mode expansions
     And there is no region selected
     When I insert "... <div class='hi'><div>before <span></span></div> after</div> ..."
     And I place the cursor between "before " and "<span>"
-    And I expand the region 6 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "<div class='hi'><div>before <span></span></div> after</div>"
