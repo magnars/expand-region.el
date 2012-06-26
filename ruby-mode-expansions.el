@@ -24,48 +24,56 @@
 
 ;; Idiomatic ruby has a lot of nested blocks, and its function marking seems a bit buggy.
 ;;
+;; LeWang:
+;;
+;;      I think `er/ruby-backward-up' and `er/ruby-forward-up' are very
+;;      nifty functions in their own right.
+;;
+;;      I would bind them to C-M-u and C-M-n respectively.
+
 ;; Expansions:
 ;;
 ;;
-;;  er/mark-ruby-block
-;;  er/mark-ruby-function
+;;  er/mark-ruby-block-up
+;;
 
 ;;; Code:
 
 (require 'expand-region-core)
 
-(defun er/mark-ruby-block ()
+(defvar er/ruby-block-end-re
+  "like ruby-mode's but also for '}'"
+  (concat ruby-block-end-re "\\|}"))
+
+(defsubst er/ruby-skip-past-block-end ()
+  (if (looking-at-p er/ruby-skip-past-block-end)
+      (forward-line 1)
+    (forward-line 0)))
+
+(defun er/ruby-backward-up ()
+  "a la paredit-backward-up"
   (interactive)
   (forward-line 1)
   (beginning-of-line)
   (ruby-beginning-of-block)
   (set-mark (point))
   (ruby-end-of-block)
-  (end-of-line)
-  (exchange-point-and-mark))
+  (ruby-skip-past-block-end))
 
-(defun er/mark-ruby-function ()
-  "Mark the current Ruby function."
+(defun er/mark-ruby-block-up ()
   (interactive)
-  (condition-case nil
-      (forward-char 3)
-    (error nil))
-  (let ((ruby-method-regex "^[\t ]*def\\_>"))
-    (word-search-backward ruby-method-regex)
-    (while (syntax-ppss-context (syntax-ppss))
-      (word-search-backward ruby-method-regex)))
-  (set-mark (point))
+  "mark the next level up."
+  (ruby-backward-up)
+  (set-mark (point-at-bol 1))
   (ruby-end-of-block)
-  (end-of-line)
+  (ruby-skip-past-block-end)
   (exchange-point-and-mark))
-
 
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
-                                                  '(er/mark-ruby-block
-                                                    er/mark-ruby-function))))
+                                                  '(er/mark-ruby-block-up))))
 
 (add-hook 'ruby-mode-hook 'er/add-ruby-mode-expansions)
 
