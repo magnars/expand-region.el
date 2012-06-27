@@ -46,17 +46,33 @@
   (concat ruby-block-end-re "\\|}"))
 
 (defsubst er/ruby-skip-past-block-end ()
+  "ensure that point is at bol"
   (if (looking-at-p er/ruby-skip-past-block-end)
       (forward-line 1)
     (forward-line 0)))
 
 (defun er/ruby-backward-up ()
-  "a la paredit-backward-up"
+  "a la `paredit-backward-up'"
   (interactive)
-  (forward-line 1)
-  (beginning-of-line)
-  (ruby-beginning-of-block)
-  (set-mark (point))
+  (loop do
+        (let ((orig-point (point))
+              progress-beg
+              progress-end)
+          (ruby-beginning-of-block)
+          (setq progress-beg (point))
+          (ruby-end-of-block)
+          (ruby-skip-past-block-end)
+          (setq progress-end (point))
+          (goto-char progress-beg)
+          (if (> progress-end orig-point)
+              (return)))))
+
+;;; This command isn't used here explicitly, but it's symmetrical with
+;;; `er/ruby-backward-up', and nifty for interactive use.
+(defun er/ruby-forward-up ()
+  "a la `paredit-forward-up'"
+  (interactive)
+  (ruby-backward-up)
   (ruby-end-of-block)
   (ruby-skip-past-block-end))
 
