@@ -84,7 +84,7 @@ great if you opened a pull-request. The repo is at:
 
     https://github.com/magnars/expand-region.el
 
-Changes to `expand-region-core` itself must be accompanied by feature tests.
+All changes must be accompanied by feature tests.
 They are written in [Ecukes](http://ecukes.info), a Cucumber for Emacs.
 
 To fetch the test dependencies:
@@ -97,8 +97,8 @@ Run the tests with:
 
     $ ./util/ecukes/ecukes features
 
-If you want to add feature-tests for your mode-specific expansions as well,
-that is utterly excellent.
+If feature tests are missing for the mode you are changing, please make
+sure to add a set of basic tests around the functionality you're changing.
 
 ## Contributors
 
