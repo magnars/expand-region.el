@@ -24,72 +24,48 @@
 
 ;; Idiomatic ruby has a lot of nested blocks, and its function marking seems a bit buggy.
 ;;
-;; LeWang:
-;;
-;;      I think `er/ruby-backward-up' and `er/ruby-forward-up' are very
-;;      nifty functions in their own right.
-;;
-;;      I would bind them to C-M-u and C-M-n respectively.
-
 ;; Expansions:
 ;;
 ;;
-;;  er/mark-ruby-block-up
-;;
+;;  er/mark-ruby-block
+;;  er/mark-ruby-function
 
 ;;; Code:
 
 (require 'expand-region-core)
 
-(defvar er/ruby-block-end-re
-  "like ruby-mode's but also for '}'"
-  (concat ruby-block-end-re "\\|}"))
-
-(defsubst er/ruby-skip-past-block-end ()
-  "ensure that point is at bol"
-  (if (looking-at-p er/ruby-skip-past-block-end)
-      (forward-line 1)
-    (forward-line 0)))
-
-(defun er/ruby-backward-up ()
-  "a la `paredit-backward-up'"
+(defun er/mark-ruby-block ()
   (interactive)
-  (loop do
-        (let ((orig-point (point))
-              progress-beg
-              progress-end)
-          (ruby-beginning-of-block)
-          (setq progress-beg (point))
-          (ruby-end-of-block)
-          (ruby-skip-past-block-end)
-          (setq progress-end (point))
-          (goto-char progress-beg)
-          (if (> progress-end orig-point)
-              (return)))))
-
-;;; This command isn't used here explicitly, but it's symmetrical with
-;;; `er/ruby-backward-up', and nifty for interactive use.
-(defun er/ruby-forward-up ()
-  "a la `paredit-forward-up'"
-  (interactive)
-  (ruby-backward-up)
+  (forward-line 1)
+  (beginning-of-line)
+  (ruby-beginning-of-block)
+  (set-mark (point))
   (ruby-end-of-block)
-  (ruby-skip-past-block-end))
-
-(defun er/mark-ruby-block-up ()
-  (interactive)
-  "mark the next level up."
-  (ruby-backward-up)
-  (set-mark (point-at-bol 1))
-  (ruby-end-of-block)
-  (ruby-skip-past-block-end)
+  (end-of-line)
   (exchange-point-and-mark))
+
+(defun er/mark-ruby-function ()
+  "Mark the current Ruby function."
+  (interactive)
+  (condition-case nil
+      (forward-char 3)
+    (error nil))
+  (let ((ruby-method-regex "^[\t ]*def\\_>"))
+    (word-search-backward ruby-method-regex)
+    (while (syntax-ppss-context (syntax-ppss))
+      (word-search-backward ruby-method-regex)))
+  (set-mark (point))
+  (ruby-end-of-block)
+  (end-of-line)
+  (exchange-point-and-mark))
+
 
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
-                                                  '(er/mark-ruby-block-up))))
+                                                  '(er/mark-ruby-block
+                                                    er/mark-ruby-function))))
 
 (add-hook 'ruby-mode-hook 'er/add-ruby-mode-expansions)
 
