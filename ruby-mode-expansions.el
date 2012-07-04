@@ -44,6 +44,18 @@
   (end-of-line)
   (exchange-point-and-mark))
 
+(defun er/mark-ruby-symbol ()
+  "Mark the entire symbol around or in front of point."
+  (interactive)
+  (let ((symbol-regexp ":\\|\\s_\\|\\sw"))
+    (when (or (looking-at symbol-regexp)
+              (looking-back symbol-regexp))
+      (while (looking-at symbol-regexp)
+        (forward-char))
+      (set-mark (point))
+      (while (looking-back symbol-regexp)
+        (backward-char)))))
+
 (defun er/mark-ruby-function ()
   "Mark the current Ruby function."
   (interactive)
@@ -64,7 +76,8 @@
   "Adds Ruby-specific expansions for buffers in ruby-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
-                                                  '(er/mark-ruby-block
+                                                  '(er/mark-ruby-symbol
+                                                    er/mark-ruby-block
                                                     er/mark-ruby-function))))
 
 (add-hook 'ruby-mode-hook 'er/add-ruby-mode-expansions)
