@@ -40,6 +40,18 @@
 (defvar er/history '()
   "A history of start and end points so we can contract after expanding.")
 
+(defvar er--start-pos nil
+  "Saves the start of the region between invocations.")
+
+(defvar er--end-pos nil
+  "Saves the end of the region between invocations.")
+
+(defvar er--last-command-funcs '(er/expand-region
+                                 er/contract-region
+                                 er/expand-isearch-string
+                                 er/contract-isearch-string)
+  "List of functions to check against `last-command'.")
+                                 
 ;; history is always local to a single buffer
 (make-variable-buffer-local 'er/history)
 
@@ -268,6 +280,11 @@ period and marks next symbol."
 
 ;; The magic expand-region method
 
+(defun er--update-region (start end)
+  "Region update function for `er/expand-region' and `er/contract-region'."
+  (set-mark end)
+  (goto-char start))
+
 ;;;###autoload
 (defun er/expand-region (arg)
   "Increase selected region by semantic units.
@@ -285,63 +302,69 @@ before calling `er/expand-region' for the first time."
       (er/contract-region (- arg))
     ;; We handle everything else
 
+    (when (er--first-invocation)
+      (er/clear-history))
+    
     (when (and (er--first-invocation)
                (not (use-region-p)))
       (push-mark nil t)  ;; one for keeping starting position
       (push-mark nil t)) ;; one for replace by set-mark in expansions
-
+    
     (when (not (eq t transient-mark-mode))
       (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
-    (while (>= arg 1)
-      (setq arg (- arg 1))
-      (let* ((p1 (point))
-             (p2 (if (use-region-p) (mark) (point)))
-             (start (min p1 p2))
-             (end (max p1 p2))
-             (try-list er/try-expand-list)
-             (best-start 1)
-             (best-end (buffer-end 1))
-             (set-mark-default-inactive nil))
+    (er--expand arg 'er--update-region)))
 
-        ;; add hook to clear history on buffer changes
-        (unless er/history
-          (add-hook 'after-change-functions 'er/clear-history t t))
+(defun er--expand (arg update-func)
+  "Finds the next biggest region candidate and applies UPDATE-FUNC to it."
+  (while (>= arg 1)
+    (setq arg (- arg 1))
+    (let* ((start (or er--start-pos (point)))
+           (end (or er--end-pos (point)))
+           (try-list er/try-expand-list)
+           (best-start 1)
+           (best-end (buffer-end 1))
+           (set-mark-default-inactive nil))
 
-        ;; remember the start and end points so we can contract later
-        ;; unless we're already at maximum size
-        (unless (and (= start best-start)
-                     (= end best-end))
-          (push (cons start end) er/history))
+      ;; add hook to clear history on buffer changes
+      (unless er/history
+        (add-hook 'after-change-functions 'er/clear-history t t))
 
-        (when (and (er--point-is-surrounded-by-white-space)
-                   (= start end))
-          (skip-chars-forward er--space-str)
-          (setq start (point)))
+      ;; remember the start and end points so we can contract later
+      ;; unless we're already at maximum size
+      (unless (and (= start best-start)
+                 (= end best-end))
+        (push (cons start end) er/history))
 
-        (while try-list
-          (save-excursion
-            (ignore-errors
-              (funcall (car try-list))
-              (when (and (region-active-p)
-                         (<= (point) start)
-                         (>= (mark) end)
-                         (> (- (mark) (point)) (- end start))
-                         (or (> (point) best-start)
-                             (and (= (point) best-start)
-                                  (< (mark) best-end))))
-                (setq best-start (point))
-                (setq best-end (mark))
-                (unless (minibufferp)
-                  (message "%S" (car try-list))))))
-          (setq try-list (cdr try-list)))
+      (when (and (er--point-is-surrounded-by-white-space)
+               (= start end))
+        (skip-chars-forward er--space-str)
+        (setq start (point)))
 
-        (goto-char best-start)
-        (set-mark best-end)
+      (while try-list
+        (save-excursion
+          (ignore-errors
+            (funcall (car try-list))
+            (when (and (region-active-p)
+                     (<= (point) start)
+                     (>= (mark) end)
+                     (> (- (mark) (point)) (- end start))
+                     (or (> (point) best-start)
+                        (and (= (point) best-start)
+                           (< (mark) best-end))))
+              (setq best-start (point))
+              (setq best-end (mark))
+              (unless nil;; DEBUG (minibufferp)
+                (message "%S" (car try-list))))))
+        (setq try-list (cdr try-list)))
 
-        (when (and (= best-start 0)
-                   (= best-end (buffer-end 1))) ;; We didn't find anything new, so exit early
-          (setq arg 0))))))
+      (apply update-func (list best-start best-end))
+      (setq er--start-pos best-start
+            er--end-pos best-end)
+      
+      (when (and (= best-start 0)
+               (= best-end (buffer-end 1))) ;; We didn't find anything new, so exit early
+        (setq arg 0)))))
 
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.
@@ -352,45 +375,54 @@ before calling `er/expand-region' for the first time."
   (interactive "p")
   (if (< arg 0)
       (er/expand-region (- arg))
-    (when er/history
-      ;; Be sure to reset them all if called with 0
-      (when (= arg 0)
-        (setq arg (length er/history)))
+    (er--contract arg 'er--update-region)
+    (when (eq er--start-pos er--end-pos)
+      (deactivate-mark))))
 
-      (when (not transient-mark-mode)
-        (setq transient-mark-mode (cons 'only transient-mark-mode)))
+(defun er--contract (arg update-func)
+  "Applies UPDATE-FUNC to the most recent region in `er/history'."
+  (when er/history
+    ;; Be sure to reset them all if called with 0
+    (when (= arg 0)
+      (setq arg (length er/history)))
 
-      ;; Advance through the list the desired distance
-      (while (and (cdr er/history)
-                  (> arg 1))
-        (setq arg (- arg 1))
-        (setq er/history (cdr er/history)))
-      ;; Reset point and mark
-      (let* ((last (pop er/history))
-             (start (car last))
-             (end (cdr last)))
-        (goto-char start)
-        (set-mark end)
-        (when (eq start end)
-          (deactivate-mark)
-          (er/clear-history))))))
+    (when (not transient-mark-mode)
+      (setq transient-mark-mode (cons 'only transient-mark-mode)))
+
+    ;; Advance through the list the desired distance
+    (while (and (cdr er/history)
+              (> arg 1))
+      (setq arg (- arg 1))
+      (setq er/history (cdr er/history)))
+    ;; Reset point and mark
+    (let* ((last (pop er/history))
+           (start (car last))
+           (end (cdr last)))
+      (apply update-func (list start end))
+      (setq er--start-pos start
+            er--end-pos end)
+      (when (eq start end)
+        (er/clear-history)))))
 
 (defadvice keyboard-quit (before collapse-region activate)
-  (when (memq last-command '(er/expand-region er/contract-region))
+  (when (memq last-command er--last-command-funcs)
     (er/contract-region 0)))
 
 (defadvice cua-cancel (before collapse-region activate)
-  (when (memq last-command '(er/expand-region er/contract-region))
+  (when (memq last-command er--last-command-funcs)
     (er/contract-region 0)))
 
 (defun er/clear-history (&rest args)
   "Clear the history."
-  (setq er/history '())
+  (setq er/history '()
+        er--start-pos nil
+        er--end-pos nil)
   (remove-hook 'after-change-functions 'er/clear-history t))
 
 (defsubst er--first-invocation ()
-  "t if this is the first invocation of er/expand-region or er/contract-region"
-  (not (memq last-command '(er/expand-region er/contract-region))))
+  "t if this is the first invocation of any of the `er--last-command-funcs'
+  (i.e., top-level expand-region commands)."
+  (not (memq last-command er--last-command-funcs)))
 
 (defun er--point-is-surrounded-by-white-space ()
   (and (or (memq (char-before) er--blank-list)
