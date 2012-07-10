@@ -285,6 +285,14 @@ period and marks next symbol."
   (set-mark end)
   (goto-char start))
 
+(defun er--update-isearch-string (start end)
+  "Region update function for `er/expand-isearch-string' and `er/contract-isearch-string'."
+  (setq isearch-initial-string (buffer-substring-no-properties start end))
+  (setq isearch-string isearch-initial-string
+        isearch-message isearch-initial-string)
+  (isearch-update)
+  (isearch-highlight start end))
+
 ;;;###autoload
 (defun er/expand-region (arg)
   "Increase selected region by semantic units.
@@ -314,6 +322,24 @@ before calling `er/expand-region' for the first time."
       (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
     (er--expand arg 'er--update-region)))
+
+;;;###autoload
+(defun er/expand-isearch-string (arg)
+  "Like `er/expand-region', but does not affect the region and instead expands the isearch string.
+Expected to be run in `isearch-mode'."
+  (interactive "p")
+  (if (< arg 1)
+      ;; `er/contract-isearch-string' will take care of negative and 0 arguments
+      (er/contract-isearch-string (- arg))
+    ;; We handle everything else
+
+    (when (er--first-invocation)
+      (er/clear-history))
+    
+    (when (not (eq t transient-mark-mode))
+      (setq transient-mark-mode (cons 'only transient-mark-mode)))
+
+    (er--expand arg 'er--update-isearch-string)))
 
 (defun er--expand (arg update-func)
   "Finds the next biggest region candidate and applies UPDATE-FUNC to it."
@@ -378,6 +404,14 @@ before calling `er/expand-region' for the first time."
     (er--contract arg 'er--update-region)
     (when (eq er--start-pos er--end-pos)
       (deactivate-mark))))
+
+(defun er/contract-isearch-string (arg)
+  "Like `er/contract-region', but does not affect the region and instead contracts the isearch string.
+Expected to be run from `isearch-mode'."
+  (interactive "p")
+  (if (< arg 0)
+      (er/expand-isearch-string (- arg))
+    (er--contract arg 'er--update-isearch-string)))
 
 (defun er--contract (arg update-func)
   "Applies UPDATE-FUNC to the most recent region in `er/history'."
