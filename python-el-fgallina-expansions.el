@@ -52,11 +52,11 @@
       (forward-sexp)
       (exchange-point-and-mark))))
 
-(defun er/mark-python-sentence ()
+(defun er/mark-python-statement ()
   (interactive)
-  (python-nav-sentence-end)
+  (python-nav-statement-end)
   (set-mark (point))
-  (python-nav-sentence-start))
+  (python-nav-statement-start))
 
 (defun er/mark-python-block ()
   (interactive)
@@ -83,7 +83,7 @@
   (let ((try-expand-list-additions '(
                                      er/mark-inside-python-string
                                      er/mark-outside-python-string
-                                     er/mark-python-sentence
+                                     er/mark-python-statement
                                      er/mark-python-block
                                      er/mark-outer-python-block
                                      )))
