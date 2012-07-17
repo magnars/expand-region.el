@@ -32,25 +32,29 @@
 
 (defvar er--python-string-delimiter "'\"")
 
-(defun er/mark-inside-python-string ()
-  (interactive)
+(defun er/match-python-string-delimiter ()
+  "Returns the Python string delimiter at point, if there is one."
+  (looking-at "\\(\"\"\"\\|\"\\|'''\\|'\\)")
+  (match-string 1))
+
+(defun er/mark-python-string (mark-inside)
   (let ((beginning-of-string (python-info-ppss-context 'string (syntax-ppss))))
     (when beginning-of-string
       (goto-char beginning-of-string)
-      (forward-sexp)
-      (skip-chars-backward er--python-string-delimiter)
-      (set-mark (point))
-      (goto-char beginning-of-string)
-      (skip-chars-forward er--python-string-delimiter))))
+      (let ((string-delimiter (er/match-python-string-delimiter)))
+        (search-forward string-delimiter nil nil 2)
+        (when mark-inside (skip-chars-backward er--python-string-delimiter))
+        (set-mark (point))
+        (goto-char beginning-of-string)
+        (when mark-inside (skip-chars-forward er--python-string-delimiter))))))
+
+(defun er/mark-inside-python-string ()
+  (interactive)
+  (er/mark-python-string t))
 
 (defun er/mark-outside-python-string ()
   (interactive)
-  (let ((beginning-of-string (python-info-ppss-context 'string (syntax-ppss))))
-    (when beginning-of-string
-      (goto-char beginning-of-string)
-      (set-mark (point))
-      (forward-sexp)
-      (exchange-point-and-mark))))
+  (er/mark-python-string nil))
 
 (defun er/mark-python-statement ()
   (interactive)
