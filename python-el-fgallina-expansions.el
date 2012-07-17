@@ -32,6 +32,16 @@
 
 (defvar er--python-string-delimiter "'\"")
 
+; copied from @fgallina's python.el as a quick fix. The variable
+; `python-rx-constituents' is not bound when we use the python-rx
+; macro from here, so we have to construct the regular expression
+; manually.
+(defvar er--python-block-start-regex
+  (rx symbol-start
+      (or "def" "class" "if" "elif" "else" "try"
+          "except" "finally" "for" "while" "with")
+      symbol-end))
+
 (defun er/match-python-string-delimiter ()
   "Returns the Python string delimiter at point, if there is one."
   (looking-at "\\(\"\"\"\\|\"\\|'''\\|'\\)")
@@ -62,25 +72,51 @@
   (set-mark (point))
   (python-nav-statement-start))
 
-(defun er/mark-python-block ()
+(defun er/mark-python-block (&optional next-indent-level)
+  "Mark the Python block that surrounds point.
+
+If the optional NEXT-INDENT-LEVEL is given, select the
+surrounding block that is defined at an indentation that is less
+than NEXT-INDENT-LEVEL."
   (interactive)
-  (let ((rx-block-start (python-rx block-start)))
-    (back-to-indentation)
-    (unless (looking-at rx-block-start)
-      (re-search-backward rx-block-start))
-    (set-mark (point))  ; mark beginnig-of-block
+  (back-to-indentation)
+  (let ((next-indent-level
+         (or
+          ;; Use the given level
+          next-indent-level
+          ;; Check whether point is at the start of a Python block.
+          (if (looking-at er--python-block-start-regex)
+              ;; Block start means that the next level is deeper.
+              (+ (current-indentation) python-indent)
+            ;; Assuming we're inside the block that we want to mark
+            (current-indentation)))))
+    ;; Move point to next Python block start at the correct indent-level
+    (while (>= (current-indentation) next-indent-level)
+      (re-search-backward er--python-block-start-regex))
+    ;; Mark the beginning of the block
+    (set-mark (point))
+    ;; Save indentation and look for the end of this block
     (let ((block-indentation (current-indentation)))
-      (end-of-line)
-      (while (and (re-search-forward rx-block-start (point-max) 'goto-end)
-                  (> (current-indentation) block-indentation)))
+      (forward-line 1)
+      (cond
+       ;; When there is no indent, look for next start of a block,
+       ;; without indent, or end of buffer.
+       ((= 0 block-indentation)
+        (while (and (re-search-forward er--python-block-start-regex (point-max) 'goto-end)
+                    (> (current-indentation) block-indentation))))
+       ;; When indentation > 0, skip empty and lines with more indent
+       (t
+        (while (or (> (current-indentation) block-indentation)
+                   (looking-at (rx line-start (* whitespace) line-end)))
+          (forward-line 1))))
+      ;; Find the end of the block by skipping comments backwards
       (beginning-of-line)
       (python-util-forward-comment -1)
       (exchange-point-and-mark))))
 
 (defun er/mark-outer-python-block ()
   (interactive)
-  (forward-line -1)
-  (er/mark-python-block))
+  (er/mark-python-block (current-indentation)))
 
 (defun er/add-python-mode-expansions ()
   "Adds python-mode-specific expansions for buffers in python-mode"
