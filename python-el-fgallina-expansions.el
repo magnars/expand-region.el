@@ -30,7 +30,9 @@
 
 (require 'expand-region-core)
 
-(defvar er--python-string-delimiter "'\"")
+(defvar er--python-string-delimiter
+  "'\""
+  "Characters that delimit a Python string.")
 
 ; copied from @fgallina's python.el as a quick fix. The variable
 ; `python-rx-constituents' is not bound when we use the python-rx
@@ -42,21 +44,24 @@
           "except" "finally" "for" "while" "with")
       symbol-end))
 
-(defun er/match-python-string-delimiter ()
-  "Returns the Python string delimiter at point, if there is one."
-  (looking-at "\\(\"\"\"\\|\"\\|'''\\|'\\)")
-  (match-string 1))
-
 (defun er/mark-python-string (mark-inside)
+  "Mark the Python string that surrounds point.
+
+If the optional MARK-INSIDE is not nil, only mark the region
+between the string delimiters, otherwise the region includes the
+delimiters as well."
   (let ((beginning-of-string (python-info-ppss-context 'string (syntax-ppss))))
     (when beginning-of-string
       (goto-char beginning-of-string)
-      (let ((string-delimiter (er/match-python-string-delimiter)))
-        (search-forward string-delimiter nil nil 2)
-        (when mark-inside (skip-chars-backward er--python-string-delimiter))
-        (set-mark (point))
-        (goto-char beginning-of-string)
-        (when mark-inside (skip-chars-forward er--python-string-delimiter))))))
+      ;; Move inside the string, so we can use ppss to find the end of
+      ;; the string.
+      (skip-chars-forward er--python-string-delimiter)
+      (while (python-info-ppss-context 'string (syntax-ppss))
+        (forward-char 1))
+      (when mark-inside (skip-chars-backward er--python-string-delimiter))
+      (set-mark (point))
+      (goto-char beginning-of-string)
+      (when mark-inside (skip-chars-forward er--python-string-delimiter)))))
 
 (defun er/mark-inside-python-string ()
   (interactive)

@@ -21,6 +21,15 @@ Feature: fgallinas python.el expansions
     And I press "C-@"
     Then the region should be "X-Men: Wolverine"
 
+  Scenario: Mark region inside a string with escape delimiter.
+    Given I turn on python-mode
+    And there is no region selected
+    When I insert "'pre' + 'X-Men: Wol\'verine' + 'post'"
+    And I place the cursor between "r" and "i"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be "X-Men: Wol\'verine"
+
   Scenario: Mark region outside a string.
     Given I turn on python-mode
     And there is no region selected
