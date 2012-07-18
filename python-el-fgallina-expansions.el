@@ -23,7 +23,9 @@
 ;;  - Additions implemented here:
 ;;    - `er/mark-inside-python-string'
 ;;    - `er/mark-outside-python-string'
-;;    - `er/mark-python-sentence'
+;;    - `er/mark-python-statement'
+;;    - `er/mark-python-block'
+;;    - `er/mark-outer-python-block'
 ;;  - Supports multi-line strings
 
 ;;; Code:
@@ -42,7 +44,8 @@
   (rx symbol-start
       (or "def" "class" "if" "elif" "else" "try"
           "except" "finally" "for" "while" "with")
-      symbol-end))
+      symbol-end)
+  "Regular expression string to match the beginning of a Python block.")
 
 (defun er/mark-python-string (mark-inside)
   "Mark the Python string that surrounds point.
@@ -64,14 +67,21 @@ delimiters as well."
       (when mark-inside (skip-chars-forward er--python-string-delimiter)))))
 
 (defun er/mark-inside-python-string ()
+  "Mark the inside of the Python string that surrounds point.
+
+Command that wraps `er/mark-python-string'."
   (interactive)
   (er/mark-python-string t))
 
 (defun er/mark-outside-python-string ()
+  "Mark the outside of the Python string that surrounds point.
+
+Command that wraps `er/mark-python-string'."
   (interactive)
   (er/mark-python-string nil))
 
 (defun er/mark-python-statement ()
+  "Mark the Python statement that surrounds point."
   (interactive)
   (python-nav-statement-end)
   (set-mark (point))
@@ -113,6 +123,9 @@ than NEXT-INDENT-LEVEL."
       (exchange-point-and-mark))))
 
 (defun er/mark-outer-python-block ()
+  "Mark the Python block that surrounds the Python block around point.
+
+Command that wraps `er/mark-python-block'."
   (interactive)
   (er/mark-python-block (current-indentation)))
 
