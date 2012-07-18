@@ -98,17 +98,10 @@ than NEXT-INDENT-LEVEL."
     ;; Save indentation and look for the end of this block
     (let ((block-indentation (current-indentation)))
       (forward-line 1)
-      (cond
-       ;; When there is no indent, look for next start of a block,
-       ;; without indent, or end of buffer.
-       ((= 0 block-indentation)
-        (while (and (re-search-forward er--python-block-start-regex (point-max) 'goto-end)
-                    (> (current-indentation) block-indentation))))
-       ;; When indentation > 0, skip empty and lines with more indent
-       (t
-        (while (or (> (current-indentation) block-indentation)
-                   (looking-at (rx line-start (* whitespace) line-end)))
-          (forward-line 1))))
+      (while (and (or (> (current-indentation) block-indentation)
+                      (looking-at (rx line-start (* whitespace) line-end)))
+                  (not (looking-at er--python-block-start-regex)))
+        (forward-line 1))
       ;; Find the end of the block by skipping comments backwards
       (beginning-of-line)
       (python-util-forward-comment -1)
