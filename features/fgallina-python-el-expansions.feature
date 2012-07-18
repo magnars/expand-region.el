@@ -36,9 +36,13 @@ Feature: fgallinas python.el expansions
     And there is no region selected
     When I insert:
       """
+      print('lalelu')
+
       '''This is a multi-line Python string
       with lots of useless content.
       '''
+
+      print('lalelu')
       """
     And I place the cursor between "-" and "l"
     And I press "C-@"
