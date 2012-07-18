@@ -8,7 +8,8 @@ Feature: fgallinas python.el expansions
     And there is no region selected
     When I insert "run(23)"
     And I place the cursor between "n" and "("
-    And I expand the region 2 times
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "run(23)"
 
   Scenario: Mark region inside a string.
@@ -16,7 +17,8 @@ Feature: fgallinas python.el expansions
     And there is no region selected
     When I insert "'X-Men: Wolverine'"
     And I place the cursor between "r" and "i"
-    And I expand the region 2 times
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "X-Men: Wolverine"
 
   Scenario: Mark region outside a string.
@@ -24,7 +26,9 @@ Feature: fgallinas python.el expansions
     And there is no region selected
     When I insert "run('X-Men: ' + 'Wolverine')"
     And I place the cursor between "M" and "e"
-    And I expand the region 3 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be "'X-Men: '"
 
   Scenario: Mark region inside a multi-line string.
@@ -37,7 +41,8 @@ Feature: fgallinas python.el expansions
       '''
       """
     And I place the cursor between "-" and "l"
-    And I expand the region 2 times
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be:
       """
       This is a multi-line Python string
@@ -55,7 +60,9 @@ Feature: fgallinas python.el expansions
       '''
       """
     And I place the cursor between "-" and "l"
-    And I expand the region 3 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be:
       """
       '''This is a multi-line Python string
@@ -74,7 +81,9 @@ Feature: fgallinas python.el expansions
           print('Booyah.')
       """
     And I go to point "1"
-    And I expand the region 3 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be:
       """
       if True:
@@ -94,7 +103,9 @@ Feature: fgallinas python.el expansions
           print('Booyah.')
       """
     And I go to point "1"
-    And I expand the region 3 times
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
     Then the region should be:
       """
       if True:
@@ -119,23 +130,23 @@ Feature: fgallinas python.el expansions
       print('Even more stuff.')
       """
     And I go to point "42"
-    And I expand the region 1 times
+    And I press "C-@"
     Then the region should be:
       """
       if
       """
-    And I expand the region 1 times
+    And I press "C-@"
     Then the region should be:
       """
       if True:
       """
-    And I expand the region 1 times
+    And I press "C-@"
     Then the region should be:
       """
       if True:
               print('To be, or not to be...')
       """
-    And I expand the region 1 times
+    And I press "C-@"
     Then the region should be:
       """
       def the_truth():
