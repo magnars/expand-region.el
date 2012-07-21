@@ -117,7 +117,15 @@ Feature: fgallinas python.el expansions
       """
     And I go to point "1"
     And I press "C-@"
+    Then the region should be:
+      """
+      if
+      """
     And I press "C-@"
+    Then the region should be:
+      """
+      if True:
+      """
     And I press "C-@"
     Then the region should be:
       """

@@ -83,9 +83,9 @@ Command that wraps `er/mark-python-string'."
 (defun er/mark-python-statement ()
   "Mark the Python statement that surrounds point."
   (interactive)
-  (python-nav-statement-end)
+  (python-nav-end-of-statement)
   (set-mark (point))
-  (python-nav-statement-start))
+  (python-nav-beginning-of-statement))
 
 (defun er/mark-python-block (&optional next-indent-level)
   "Mark the Python block that surrounds point.
