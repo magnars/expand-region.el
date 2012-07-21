@@ -113,12 +113,20 @@ than NEXT-INDENT-LEVEL."
     ;; Save indentation and look for the end of this block
     (let ((block-indentation (current-indentation)))
       (forward-line 1)
-      (while (and (or (> (current-indentation) block-indentation)
-                      (looking-at (rx line-start (* whitespace) line-end)))
-                  (not (looking-at er--python-block-start-regex)))
-        (forward-line 1))
+      (while (and
+              ;; No need to go beyond the end of the buffer. Can't use
+              ;; eobp as the loop places the point at the beginning of
+              ;; line, but eob might be at the end of the line.
+              (not (= (point-max) (point-at-eol)))
+              ;; Proceed if: indentation is too deep
+              (or (> (current-indentation) block-indentation)
+                  ;; Looking at an empty line
+                  (looking-at (rx line-start (* whitespace) line-end))
+                  ;; We're not looking at the start of a Python block
+                  (not (looking-at er--python-block-start-regex))))
+        (forward-line 1)
+        (back-to-indentation))
       ;; Find the end of the block by skipping comments backwards
-      (beginning-of-line)
       (python-util-forward-comment -1)
       (exchange-point-and-mark))))
 

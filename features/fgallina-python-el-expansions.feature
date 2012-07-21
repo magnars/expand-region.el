@@ -135,6 +135,27 @@ Feature: fgallinas python.el expansions
           print('To be, or not to be...')
       """
 
+  Scenario: Mark another Python block with a nested block
+    Given I turn on python-mode
+    And there is no region selected
+    When I insert:
+      """
+      def moo(data):
+          for foo in data.items():
+              print(foo)
+
+      """
+    And I go to point "1"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+      """
+      def moo(data):
+          for foo in data.items():
+              print(foo)
+      """
+
   Scenario: Mark an outer Python block
     Given I turn on python-mode
     And there is no region selected
