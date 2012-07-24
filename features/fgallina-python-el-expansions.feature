@@ -197,3 +197,34 @@ Feature: fgallinas python.el expansions
           else:
               print('Booyah.')
       """
+
+  Scenario: Mark nested Python block with subsequent statements in outer block
+    Given I turn on python-mode
+    And there is no region selected
+    When I insert:
+      """
+      def outer_foo():
+      
+          def inner_foo():
+              return 23
+      
+          return inner_foo()
+
+      """
+    And I go to point "23"
+    And I press "C-@"
+    Then the region should be:
+      """
+      def
+      """
+    And I press "C-@"
+    Then the region should be:
+      """
+      def inner_foo():
+      """
+    And I press "C-@"
+    Then the region should be:
+      """
+      def inner_foo():
+              return 23
+      """

@@ -123,7 +123,9 @@ than NEXT-INDENT-LEVEL."
                   ;; Looking at an empty line
                   (looking-at (rx line-start (* whitespace) line-end))
                   ;; We're not looking at the start of a Python block
-                  (not (looking-at er--python-block-start-regex))))
+                  ;; and the indent is deeper than the block's indent
+                  (and (not (looking-at er--python-block-start-regex))
+                       (> (current-indentation) block-indentation))))
         (forward-line 1)
         (back-to-indentation))
       ;; Find the end of the block by skipping comments backwards
