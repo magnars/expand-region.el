@@ -157,6 +157,7 @@
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
 (eval-after-load "org"          '(require 'org-mode-expansions))
+(eval-after-load "cc-mode"      '(require 'c-mode-expansions))
 
 ;; unfortunately html-mode inherits from text-mode
 ;; and text-mode-expansions don't work well in html-mode
