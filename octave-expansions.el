@@ -13,6 +13,13 @@
   ;; Hmm, actually, probably need to do a bit more parsing using syntax-tables...
   ;; Difficulty: LHS could be [vars], or arr(exp), or sym...
   ;; See, eg, er/mark-method-call
+  ;;
+  ;; Perhaps: find the =, and then find the trailing ;.  Then, from
+  ;; the = again look to the left and go by cases:
+  ;; - if we see ']' can just go backward-list
+  ;; - if ')' then backwards-list and look again (eg, wind up with | in sym|(idx))
+  ;; - if sym then backwards-sexp I think would do it.
+
   (let ((assignment-re "\\w+\\s *=\\s *.*;"))
     (unless (looking-at (concat "\\s *" assignment-re))
       (re-search-backward ";[ \t\n\r]*\\w+"))
