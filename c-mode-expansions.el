@@ -24,18 +24,20 @@
 ;; Extra expansions for C-like modes that I've found useful so far:
 ;;
 ;; er/c-mark-statement
-;;     captures simple and more complex statements
+;;     Captures simple and more complex statements.
 ;;
 ;; er/c-mark-fully-qualified-name
-;;     captures identifiers composed of several '::'-separated parts
+;;     Captures identifiers composed of several '::'-separated parts.
 ;;
-;; er/c-mark-next-block
-;;     if a statement is followed by a '{}'-enclosed block, mark it
-;;     captures function definitions and if/for/... constructs
+;; er/c-mark-function-call[-1|-2]
+;;     Captures an identifier followed by a '()'-enclosed block.
 ;;
-;; er/c-mark-prev-statement
-;;     if a '{}'-enclosed block is preceded by a statement, mark it
-;;     captures function definitions and if/for/... constructs
+;; er/c-mark-statement-block[-1|-2]
+;;     Captures a statement followed by a '{}'-enclosed block.
+;;     This matches function definitions and if/for/... constructs.
+;;
+;; er/c-mark-vector-access[-1|-2]
+;;     Captures an identifier followed by a '[]'-enclosed block.
 ;;
 ;; Feel free to contribute any other expansions for C at
 ;;
@@ -93,6 +95,7 @@ either fully inside or fully outside the statement."
 This function captures identifiers composed of multiple
 '::'-separated parts."
   (interactive)
+  (er/mark-word)
   (when (use-region-p)
     (when (> (point) (mark))
       (exchange-point-and-mark))
@@ -105,39 +108,53 @@ This function captures identifiers composed of multiple
       (skip-syntax-forward "_w"))
     (exchange-point-and-mark)))
 
-(defun er/c-mark-next-block ()
-  "Mark the current statement and the following block.
+(defmacro er/c-define-construct (name mark-first-part open-brace doc)
+  (let ((docstring (make-symbol "docstring-tmp")))
+    (setq docstring
+          (concat
+           doc "\n\n"
+           "This function tries to mark a region consisting of two parts:\n"
+           (format " - the first part is marked using `%s'\n" (symbol-name mark-first-part))
+           (format " - the second part is a block beginning with '%s'\n\n" open-brace)))
+    `(progn
+       (defun ,(intern (concat (symbol-name name) "-1")) ()
+         ,(concat docstring
+                  "This function assumes that point is in the first part and the\n"
+                  "region is active.\n\n"
+                  (format "See also `%s'." (concat (symbol-name name) "-2")))
+         (interactive)
+         (when (use-region-p)
+           (,mark-first-part)
+           (exchange-point-and-mark)
+           (let ((oldpos (point)))
+             (skip-syntax-forward " ")
+             (if (looking-at ,open-brace)
+                 (progn (forward-sexp)
+                        (exchange-point-and-mark))
+               (goto-char oldpos)))))
+       (defun ,(intern (concat (symbol-name name) "-2")) ()
+         ,(concat docstring
+                  "This function assumes that the block constituting the second part\n"
+                  "is already marked and active.\n\n"
+                  (format "See also `%s'." (concat (symbol-name name) "-1")))
+         (interactive)
+         (when (use-region-p)
+           (when (> (point) (mark))
+             (exchange-point-and-mark))
+           (when (looking-at ,open-brace)
+             (let ((end (mark)))
+               (skip-syntax-backward " ")
+               (backward-char)
+               (set-mark (point))
+               (,mark-first-part)
+               (set-mark end))))))))
 
-This captures function definitions and if/for/... constructs
-when point and mark are in the statement part."
-  (interactive)
-  (when (use-region-p)
-    (er/c-mark-statement)
-    (when (< (point) (mark))
-      (exchange-point-and-mark))
-    (let ((oldpos (point)))
-      (skip-syntax-forward " ")
-      (if (looking-at "{")
-          (progn (forward-sexp)
-                 (exchange-point-and-mark))
-        (goto-char oldpos)))))
-
-(defun er/c-mark-prev-statement ()
-  "Mark the statement preceding current block.
-
-This captures function definitions and if/for/... constructs
-when the body is already marked."
-  (interactive)
-  (when (use-region-p)
-    (when (> (point) (mark))
-      (exchange-point-and-mark))
-    (when (looking-at "{")
-      (let ((end (mark)))
-        (skip-syntax-backward " ")
-        (backward-char)
-        (set-mark (point))
-        (er/c-mark-statement)
-        (set-mark end)))))
+(er/c-define-construct er/c-mark-function-call er/c-mark-fully-qualified-name "("
+                       "Mark the current function call.")
+(er/c-define-construct er/c-mark-statement-block er/c-mark-statement "{"
+                       "Mark the current block construct (like if, for, etc.)")
+(er/c-define-construct er/c-mark-vector-access er/c-mark-fully-qualified-name "\\["
+                       "Mark the current vector access.")
 
 (defun er/add-c-mode-expansions ()
   "Adds expansions for buffers in c-mode."
@@ -145,8 +162,9 @@ when the body is already marked."
        (append er/try-expand-list
                '(er/c-mark-statement
                  er/c-mark-fully-qualified-name
-                 er/c-mark-next-block
-                 er/c-mark-prev-statement))))
+                 er/c-mark-function-call-1   er/c-mark-function-call-2
+                 er/c-mark-statement-block-1 er/c-mark-statement-block-2
+                 er/c-mark-vector-access-1   er/c-mark-vector-access-2))))
 
 (add-hook 'c-mode-common-hook 'er/add-c-mode-expansions)
 
