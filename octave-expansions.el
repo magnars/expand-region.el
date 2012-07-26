@@ -1,0 +1,44 @@
+(require 'expand-region-core)
+(require 'octave-mod)
+
+;;; mark statement (var = exp;)
+
+(defun er/octave-mark-assignment ()
+  "Mark a single assignment statement, including the trailing semi-colon."
+  (interactive)
+  ;; search back until on first non-whiteespace not a ';'
+  ;; search forward for <word><whitespace>=<anything not ';'>
+  ;; (probably need to exchange point and mark at this stage)
+
+  ;; Hmm, actually, probably need to do a bit more parsing using syntax-tables...
+  ;; Difficulty: LHS could be [vars], or arr(exp), or sym...
+  ;; See, eg, er/mark-method-call
+  (let ((assignment-re "\\w+\\s *=\\s *.*;"))
+    (unless (looking-at (concat "\\s *" assignment-re))
+      (re-search-backward ";[ \t\n\r]*\\w+"))
+    (when (re-search-forward assignment-re nil t)
+      (push-mark (match-beginning 0))
+      (exchange-point-and-mark))))
+
+
+(defun er/octave-mark-block ()
+  "Essentially uses `octave-mark-block', but works around the
+  built-in restriction that it won't successively expand over
+  containing blocks."
+  (interactive)
+  (when (octave-in-block-p)
+    (octave-up-block -1)             ; -1 means move up to _beginning_
+    (octave-mark-block)))
+
+
+(defun er/add-octave-expansions ()
+  "Adds octave/matlab-specific expansions for buffers in octave-mode"
+  (let ((try-expand-list-additions '(er/octave-mark-block
+                                     octave-mark-defun)))
+    (set (make-local-variable 'er/try-expand-list)
+         (append er/try-expand-list try-expand-list-additions))))
+
+(add-hook 'octave-mode-hook 'er/add-octave-expansions)
+
+(provide 'octave-expansions)
+
