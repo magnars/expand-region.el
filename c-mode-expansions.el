@@ -61,7 +61,7 @@ either fully inside or fully outside the statement."
 
   ;; Contract the region a bit to make the
   ;; er/c-mark-statement function idempotent
-  (when (> (- (point) (mark)) 2)
+  (when (>= (- (point) (mark)) 2)
     (exchange-point-and-mark)
     (forward-char)
     (exchange-point-and-mark)
@@ -70,6 +70,7 @@ either fully inside or fully outside the statement."
   (let (beg end)
     ;; Determine boundaries of the outside-pairs region
     (save-excursion
+      (c-end-of-statement)
       (er/mark-outside-pairs)
       (setq beg (point)
             end (mark)))
@@ -78,7 +79,7 @@ either fully inside or fully outside the statement."
     ;; by c-beginning-of-statement/c-end-of-statement
     (c-end-of-statement)
     (exchange-point-and-mark)
-    (c-beginning-of-statement 1)
+    (c-end-of-statement)(c-beginning-of-statement 1)
 
     ;; If the two regions overlap, expand the region
     (cond ((and (<= (point) beg)
@@ -87,6 +88,7 @@ either fully inside or fully outside the statement."
           ((and (>  (point) beg)
                 (>= (mark)  end))
            (goto-char beg)
+           (c-end-of-statement)
            (c-beginning-of-statement 1)))))
 
 (defun er/c-mark-fully-qualified-name ()
@@ -95,7 +97,7 @@ either fully inside or fully outside the statement."
 This function captures identifiers composed of multiple
 '::'-separated parts."
   (interactive)
-  (er/mark-word)
+  (er/mark-symbol)
   (when (use-region-p)
     (when (> (point) (mark))
       (exchange-point-and-mark))
@@ -145,7 +147,7 @@ This function captures identifiers composed of multiple
              (let ((end (mark)))
                (skip-syntax-backward " ")
                (backward-char)
-               (set-mark (point))
+               (deactivate-mark)
                (,mark-first-part)
                (set-mark end))))))))
 
