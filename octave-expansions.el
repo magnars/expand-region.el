@@ -1,6 +1,8 @@
 (require 'expand-region-core)
 (require 'octave-mod)
 
+(message "loading octave-specific expansions")
+
 ;;; mark statement (var = exp;)
 
 (defun er/octave-mark-assignment ()
@@ -28,19 +30,21 @@
       (exchange-point-and-mark))))
 
 
-(defun er/octave-mark-block ()
-  "Essentially uses `octave-mark-block', but works around the
-  built-in restriction that it won't successively expand over
-  containing blocks."
+(defun er/octave-mark-up-block ()
+  "Mark the containing block, assuming the current block has
+already been marked."
   (interactive)
-  (when (octave-in-block-p)
-    (octave-up-block -1)             ; -1 means move up to _beginning_
+  (when (use-region-p)
+    (when (< (point) (mark))
+      (exchange-point-and-mark))
+    (octave-up-block -1)              ; -1 means move up to _beginning_
     (octave-mark-block)))
 
 
 (defun er/add-octave-expansions ()
   "Adds octave/matlab-specific expansions for buffers in octave-mode"
-  (let ((try-expand-list-additions '(er/octave-mark-block
+  (let ((try-expand-list-additions '(octave-mark-block
+                                     er/octave-mark-up-block
                                      octave-mark-defun)))
     (set (make-local-variable 'er/try-expand-list)
          (append er/try-expand-list try-expand-list-additions))))
