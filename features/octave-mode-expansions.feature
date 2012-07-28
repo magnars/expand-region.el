@@ -14,7 +14,7 @@ Feature: octave-mod expansions
     end;
     exprAfter;
     """
-    And I go to point "25"
+    And I go to point "26"
     And I press "C-@"
     And I press "C-@"
     Then the region should be:
@@ -36,7 +36,7 @@ Feature: octave-mod expansions
     end;
     exprAfter;
     """
-    And I go to point "12"
+    And I go to point "13"
     And I press "C-@"
     And I press "C-@"
     Then the region should be:
@@ -60,14 +60,14 @@ Feature: octave-mod expansions
     end;
     exprAfter;
     """
-    And I go to point "25"
+    And I go to point "26"
     And I press "C-@"
     And I press "C-@"
     Then the region should be:
     """
-    for i=i:k,
-      something;
-    end
+    for j=i:k,
+        something;
+      end
     """
 
 
@@ -84,7 +84,7 @@ Feature: octave-mod expansions
     end;
     exprAfter;
     """
-    And I go to point "25"
+    And I go to point "26"
     And I press "C-@"
     And I press "C-@"
     And I press "C-@"
