@@ -48,6 +48,13 @@
             'python
           'fgallina-python)))
 
+(defcustom expand-region-autocopy-register ""
+  "If set to a string of a single character (try \"e\"), then the
+contents of the most recent expand or contract command will
+always be copied to the register named after that character."
+  :group 'expand-region
+  :type 'string)
+
 (provide 'expand-region-custom)
 
 ;;; expand-region-custom.el ends here
