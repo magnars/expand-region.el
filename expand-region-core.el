@@ -339,6 +339,10 @@ before calling `er/expand-region' for the first time."
         (goto-char best-start)
         (set-mark best-end)
 
+        (when (and (stringp expand-region-autocopy-register)
+                   (> (length expand-region-autocopy-register) 0))
+          (copy-to-register (aref expand-region-autocopy-register 0) (region-beginning) (region-end)))
+
         (when (and (= best-start 0)
                    (= best-end (buffer-end 1))) ;; We didn't find anything new, so exit early
           (setq arg 0))))))
@@ -371,6 +375,9 @@ before calling `er/expand-region' for the first time."
              (end (cdr last)))
         (goto-char start)
         (set-mark end)
+        (when (and (stringp expand-region-autocopy-register)
+                   (> (length expand-region-autocopy-register) 0))
+          (copy-to-register (aref expand-region-autocopy-register 0) (region-beginning) (region-end)))
         (when (eq start end)
           (deactivate-mark)
           (er/clear-history))))))
