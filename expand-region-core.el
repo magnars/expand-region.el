@@ -314,12 +314,7 @@ moving point or mark as little as possible."
         (ignore-errors
           (funcall (car try-list))
           (when (and (region-active-p)
-                     (<= (point) start)
-                     (>= (mark) end)
-                     (> (- (mark) (point)) (- end start))
-                     (or (> (point) best-start)
-                         (and (= (point) best-start)
-                              (< (mark) best-end))))
+                     (er--this-expansion-is-better))
             (setq best-start (point))
             (setq best-end (mark))
             (unless (minibufferp)
@@ -334,6 +329,19 @@ moving point or mark as little as possible."
     (when (and (= best-start (point-min))
                (= best-end (point-max))) ;; We didn't find anything new, so exit early
       (setq arg 0))))
+
+(defun er--this-expansion-is-better ()
+  "t if the current region is an improvement on previous expansions.
+
+This is provided as a separate function for those that would like
+to override the heuristic."
+  (and
+   (<= (point) start)
+   (>= (mark) end)
+   (> (- (mark) (point)) (- end start))
+   (or (> (point) best-start)
+       (and (= (point) best-start)
+            (< (mark) best-end)))))
 
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.
