@@ -300,7 +300,7 @@ before calling `er/expand-region' for the first time."
              (start (min p1 p2))
              (end (max p1 p2))
              (try-list er/try-expand-list)
-             (best-start 1)
+             (best-start (buffer-end -1))
              (best-end (buffer-end 1))
              (set-mark-default-inactive nil))
 
@@ -339,7 +339,7 @@ before calling `er/expand-region' for the first time."
         (goto-char best-start)
         (set-mark best-end)
 
-        (when (and (= best-start 0)
+        (when (and (= best-start (buffer-end -1))
                    (= best-end (buffer-end 1))) ;; We didn't find anything new, so exit early
           (setq arg 0))))))
 
