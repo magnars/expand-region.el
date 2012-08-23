@@ -324,12 +324,25 @@ before calling `er/expand-region' for the first time."
             (ignore-errors
               (funcall (car try-list))
               (when (and (region-active-p)
-                         (<= (point) start)
-                         (>= (mark) end)
-                         (> (- (mark) (point)) (- end start))
-                         (or (> (point) best-start)
-                             (and (= (point) best-start)
-                                  (< (mark) best-end))))
+                         (cond
+                           ((eq expand-region-algorithm 'conservative)
+                            (and
+                             ;; point did not move inward
+                             (not (> (point) start))
+                             ;; mark did not move inward
+                             (not (< (mark) end))
+                             ;; new region is larger than the original
+                             (> (- (mark) (point)) (- end start))
+                             ;; new region is smaller than others considered
+                             (< (- (mark) (point)) (- best-end best-start))))
+                           (t                     ; 'classic
+                            (and
+                             (<= (point) start)
+                             (>= (mark) end)
+                             (> (- (mark) (point)) (- end start))
+                             (or (> (point) best-start)
+                                 (and (= (point) best-start)
+                                      (< (mark) best-end)))))))
                 (setq best-start (point))
                 (setq best-end (mark))
                 (unless (minibufferp)
