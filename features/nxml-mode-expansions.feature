@@ -12,15 +12,6 @@ Feature: nxml-mode expansions
     And I press "C-@"
     Then the region should be "id="5""
 
-  Scenario: Mark xml attribute from end
-    Given I turn on nxml-mode
-    And there is no region selected
-    When I insert "<div id="5" bob="er">"
-    And I go to point "12"
-    And I press "C-@"
-    And I press "C-@"
-    Then the region should be "id="5""
-
   Scenario: Mark xml tags, part 1
     Given I turn on nxml-mode
     And there is no region selected

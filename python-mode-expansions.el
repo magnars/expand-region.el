@@ -72,7 +72,7 @@ find the beginning of the surrounding block because
 `py-beginning-of-block-position' just looks for the previous
 block-starting key word syntactically."
   (while (> (current-column) (- start-column py-indent-offset))
-    (previous-line)
+    (forward-line -1)
     (py-beginning-of-block)))
 
 (defun er/mark-outer-python-block ()
@@ -100,15 +100,15 @@ line and selecting the surrounding block."
       (py-mark-block-or-clause)
       (setq start-col (current-column))
       (while (looking-at secondary-re)
-        (previous-line) (back-to-indentation)
+        (forward-line -1) (back-to-indentation)
         (while (> (current-column) start-col)
-          (previous-line) (back-to-indentation)))
+          (forward-line -1) (back-to-indentation)))
       (set-mark (point))
-      (py-goto-beyond-clause) (next-line) (back-to-indentation)
+      (py-goto-beyond-clause) (forward-line) (back-to-indentation)
       (while (and (looking-at secondary-re)
                   (>= (current-column) start-col))
-        (py-goto-beyond-clause) (next-line) (back-to-indentation))
-      (previous-line) (end-of-line)
+        (py-goto-beyond-clause) (forward-line) (back-to-indentation))
+      (forward-line -1) (end-of-line)
       (exchange-point-and-mark))))
 
 (defun er/add-python-mode-expansions ()

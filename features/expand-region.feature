@@ -151,7 +151,7 @@ Feature: Expand Region
     And I go to point "6"
     And I press "C-@"
     And I press "C-@"
-    And I press "C-g"
+    And I quit
     Then the region should not be active
     And cursor should be at point "6"
 

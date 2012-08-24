@@ -4,3 +4,6 @@
 [submodule "util/espuds"]
 	path = util/espuds
 	url = git://github.com/rejeep/espuds.git
+[submodule "features/support/vendor/python-el"]
+	path = features/support/vendor/python-el
+	url = git://github.com/fgallina/python.el.git
