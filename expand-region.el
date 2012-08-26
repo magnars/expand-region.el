@@ -157,7 +157,7 @@
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
 (eval-after-load "org"          '(require 'org-mode-expansions))
-(eval-after-load "cc-mode"      '(require 'c-mode-expansions))
+(eval-after-load "cc-mode"      '(require 'cc-mode-expansions))
 
 (defadvice javascript-mode (after enable-expand-region activate)
   (require 'js-mode-expansions)

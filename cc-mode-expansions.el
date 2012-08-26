@@ -1,4 +1,4 @@
-;;; c-mode-expansions.el --- C-specific expansions for expand-region
+;;; cc-mode-expansions.el --- C-specific expansions for expand-region
 
 ;; Copyright (C) 2012 François Févotte
 
@@ -158,7 +158,7 @@ This function captures identifiers composed of multiple
 (er/c-define-construct er/c-mark-vector-access er/c-mark-fully-qualified-name "\\["
                        "Mark the current vector access.")
 
-(defun er/add-c-mode-expansions ()
+(defun er/add-cc-mode-expansions ()
   "Adds expansions for buffers in c-mode."
   (set (make-local-variable 'er/try-expand-list)
        (append er/try-expand-list
@@ -168,8 +168,8 @@ This function captures identifiers composed of multiple
                  er/c-mark-statement-block-1 er/c-mark-statement-block-2
                  er/c-mark-vector-access-1   er/c-mark-vector-access-2))))
 
-(add-hook 'c-mode-common-hook 'er/add-c-mode-expansions)
+(add-hook 'c-mode-common-hook 'er/add-cc-mode-expansions)
 
-(provide 'c-mode-expansions)
+(provide 'cc-mode-expansions)
 
-;; c-mode-expansions.el ends here
+;; cc-mode-expansions.el ends here
