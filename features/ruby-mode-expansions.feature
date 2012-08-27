@@ -87,3 +87,45 @@ Feature: html-mode expansions
         foo
       }
     """
+
+  Scenario: Mark ruby function at the beginning
+    Given I turn on ruby-mode
+    And there is no region selected
+    When I insert:
+    """
+    module Bar
+      def foo
+        bar
+      end
+    end
+    """
+    And I go to word "def"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+    """
+    def foo
+        bar
+      end
+    """
+
+  Scenario: Mark ruby function at definition
+    Given I turn on ruby-mode
+    And there is no region selected
+    When I insert:
+    """
+    module Bar
+      def foo
+        bar
+      end
+    end
+    """
+    And I go to line "3"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+    """
+    def foo
+        bar
+      end
+    """
