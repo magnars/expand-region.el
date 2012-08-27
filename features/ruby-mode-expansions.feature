@@ -8,8 +8,10 @@ Feature: html-mode expansions
     And there is no region selected
     When I insert:
     """
-    something do
-      foo
+    module Bar
+      something do
+        foo
+      end
     end
     """
     And I place the cursor after "something"
@@ -18,8 +20,8 @@ Feature: html-mode expansions
     Then the region should be:
     """
     something do
-      foo
-    end
+        foo
+      end
     """
 
   Scenario: Mark ruby block from end
@@ -27,8 +29,10 @@ Feature: html-mode expansions
     And there is no region selected
     When I insert:
     """
-    something do
-      foo
+    module Bar
+      something do
+        foo
+      end
     end
     """
     And I place the cursor after "end"
@@ -37,8 +41,8 @@ Feature: html-mode expansions
     Then the region should be:
     """
     something do
-      foo
-    end
+        foo
+      end
     """
 
   Scenario: Mark ruby block from within
@@ -46,8 +50,10 @@ Feature: html-mode expansions
     And there is no region selected
     When I insert:
     """
-    something do
-      foo
+    module Bar
+      something do
+        foo
+      end
     end
     """
     And I go to line "2"
@@ -56,8 +62,8 @@ Feature: html-mode expansions
     Then the region should be:
     """
     something do
-      foo
-    end
+        foo
+      end
     """
 
   Scenario: Mark ruby block with using curly brackets
@@ -65,17 +71,19 @@ Feature: html-mode expansions
     And there is no region selected
     When I insert:
     """
-    something {
-      foo
-    }
+    module Bar
+      something {
+        foo
+      }
+    end
     """
-    And I go to line "2"
+    And I go to line "3"
     And I press "C-@"
     And I press "C-@"
     And I press "C-@"
     Then the region should be:
     """
     something {
-      foo
-    }
+        foo
+      }
     """
