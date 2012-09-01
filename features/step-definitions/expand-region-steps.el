@@ -51,3 +51,13 @@
          (=
           (string-to-number arg)
           (point)))))
+
+(And "^autocopy-register is \"\\(.\\)\"$"
+      (lambda (reg)
+        (setq expand-region-autocopy-register reg)
+        (set-register (aref reg 0) nil)))
+
+(Then "^register \"\\(.\\)\" should be \"\\(.+\\)\"$"
+      (lambda (reg contents)
+        (should
+         (equal contents (get-register (aref reg 0))))))

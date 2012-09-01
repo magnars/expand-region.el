@@ -232,3 +232,11 @@ Feature: Expand Region
     And I go to point "6"
     And I press "C-@"
     Then the region should be "(is some)"
+
+  Scenario: Autocopy-register
+    Given there is no region selected
+    And autocopy-register is "e"
+    When I insert "This is some text"
+    And I go to point "10"
+    And I press "C-@"
+    Then register "e" should be "some"
