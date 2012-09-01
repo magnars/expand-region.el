@@ -48,19 +48,6 @@
             'python
           'fgallina-python)))
 
-(defcustom expand-region-algorithm 'classic
-  "How expand-region chooses from multiple possible expansions.
-
-In \"Classic\" mode, expand-region prefers expansions which move
-the point to the left.
-
-In \"Conservative\" mode, expand-region prefers the minimum
-possible expansion, and never allows the region to shrink
-at either boundary."
-  :group 'expand-region
-  :type '(choice (const :tag "Classic"      'classic)
-                 (const :tag "Conservative" 'conservative)))
-
 (provide 'expand-region-custom)
 
 ;;; expand-region-custom.el ends here
