@@ -324,12 +324,7 @@ before calling `er/expand-region' for the first time."
             (ignore-errors
               (funcall (car try-list))
               (when (and (region-active-p)
-                         (<= (point) start)
-                         (>= (mark) end)
-                         (> (- (mark) (point)) (- end start))
-                         (or (> (point) best-start)
-                             (and (= (point) best-start)
-                                  (< (mark) best-end))))
+                         (er--this-expansion-is-better))
                 (setq best-start (point))
                 (setq best-end (mark))
                 (unless (minibufferp)
@@ -396,6 +391,19 @@ before calling `er/expand-region' for the first time."
   (and (or (memq (char-before) er--blank-list)
            (eq (point) (point-min)))
        (memq (char-after) er--blank-list)))
+
+(defun er--this-expansion-is-better ()
+  "t if the current region is an improvement on previous expansions.
+
+This is provided as a separate function for those that would like
+to override the heuristic."
+  (and
+   (<= (point) start)
+   (>= (mark) end)
+   (> (- (mark) (point)) (- end start))
+   (or (> (point) best-start)
+       (and (= (point) best-start)
+            (< (mark) best-end)))))
 
 (provide 'expand-region-core)
 
