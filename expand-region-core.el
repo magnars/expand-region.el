@@ -278,8 +278,18 @@ moving point or mark as little as possible.
 With prefix argument expands the region that many times.
 If prefix argument is negative calls `er/contract-region'.
 If prefix argument is 0 it resets point and mark to their state
-before calling `er/expand-region' for the first time."
+before calling `er/expand-region' for the first time.
+
+After initial expansion, repeating the last key lets the user
+continue expanding. Additionaly, two others keys are bound to
+contract and reset the selection (see
+`expand-region-contract-fast-key' and
+`expand-region-reset-fast-key' for more information)."
   (interactive "p")
+  (er/expand-region-internal arg)
+  (er/prepare-for-more-expansions))
+
+(defun er/expand-region-internal (arg)
   (if (< arg 1)
       ;; `er/contract-region' will take care of negative and 0 arguments
       (er/contract-region (- arg))
@@ -374,6 +384,40 @@ before calling `er/expand-region' for the first time."
         (when (eq start end)
           (deactivate-mark)
           (er/clear-history))))))
+
+(defun er/prepare-for-more-expansions-internal (repeat-key-str)
+  "Return bindings and a message to inform user about them"
+  (let ((msg (format "Type %s to expand again" repeat-key-str))
+	(bindings (list (cons repeat-key-str '(er/expand-region 1)))))
+    ;; If contract and expand are on the same binding, ignore contract
+    (unless (string-equal repeat-key-str expand-region-contract-fast-key)
+      (setq msg (concat msg (format ", %s to contract" expand-region-contract-fast-key)))
+      (push (cons expand-region-contract-fast-key '(er/contract-region 1)) bindings))
+    ;; If reset and either expand or contract are on the same binding, ignore reset
+    (unless (or (string-equal repeat-key-str expand-region-reset-fast-key)
+		(string-equal expand-region-contract-fast-key expand-region-reset-fast-key))
+      (setq msg (concat msg (format ", %s to reset" expand-region-reset-fast-key)))
+      (push (cons expand-region-reset-fast-key '(er/expand-region 0)) bindings))
+    (cons msg bindings)))
+
+(defun er/prepare-for-more-expansions ()
+  "Let one expand more by just pressing the last key."
+  (let* ((repeat-key (event-basic-type last-input-event))
+	 (repeat-key-str (format-kbd-macro (vector repeat-key)))
+	 (msg-and-bindings (er/prepare-for-more-expansions-internal repeat-key-str))
+	 (msg (car msg-and-bindings))
+	 (bindings (cdr msg-and-bindings)))
+    (when repeat-key
+      (set-temporary-overlay-map
+       (let ((map (make-sparse-keymap)))
+	        (dolist (binding bindings map)
+		  (define-key map (kbd (car binding))
+		    `(lambda ()
+		       (interactive)
+		       (eval `,(cdr ',binding))
+		       (message ,msg)))))
+       t)
+      (message "%s" msg))))
 
 (defadvice keyboard-quit (before collapse-region activate)
   (when (memq last-command '(er/expand-region er/contract-region))
