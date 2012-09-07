@@ -1,4 +1,4 @@
-Feature: html-mode expansions
+Feature: ruby-mode expansions
   In order to quickly and precisely mark ruby code blocks
   As an Emacs user
   I want to expand to them
