@@ -86,7 +86,7 @@ Skips past [] and {} arguments to the environment."
         '(LaTeX-mark-environment
           LaTeX-mark-section
           er/mark-LaTeX-inside-environment
-          er/mark-latex-math))))
+          er/mark-LaTeX-math))))
 
 (add-hook 'LaTeX-mode-hook 'er/add-latex-mode-expansions)
 
