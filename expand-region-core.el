@@ -275,6 +275,11 @@ period and marks next symbol."
   (when (not (eq t transient-mark-mode))
     (setq transient-mark-mode (cons 'only transient-mark-mode))))
 
+(defun er--copy-region-to-register ()
+  (when (and (stringp expand-region-autocopy-register)
+             (> (length expand-region-autocopy-register) 0))
+    (copy-to-register (aref expand-region-autocopy-register 0) (region-beginning) (region-end))))
+
 (defun er--expand-region-1 ()
   "Increase selected region by semantic units.
 Basically it runs all the mark-functions in `er/try-expand-list'
@@ -324,9 +329,7 @@ moving point or mark as little as possible."
     (goto-char best-start)
     (set-mark best-end)
 
-    (when (and (stringp expand-region-autocopy-register)
-               (> (length expand-region-autocopy-register) 0))
-      (copy-to-register (aref expand-region-autocopy-register 0) (region-beginning) (region-end)))
+    (er--copy-region-to-register)
 
     (when (and (= best-start (point-min))
                (= best-end (point-max))) ;; We didn't find anything new, so exit early
@@ -360,9 +363,9 @@ before calling `er/expand-region' for the first time."
              (end (cdr last)))
         (goto-char start)
         (set-mark end)
-        (when (and (stringp expand-region-autocopy-register)
-                   (> (length expand-region-autocopy-register) 0))
-          (copy-to-register (aref expand-region-autocopy-register 0) (region-beginning) (region-end)))
+
+        (er--copy-region-to-register)
+
         (when (eq start end)
           (deactivate-mark)
           (er/clear-history))))))
