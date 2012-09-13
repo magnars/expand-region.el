@@ -241,8 +241,8 @@ period and marks next symbol."
   "Mark pairs (as defined by the mode), including the pair chars."
   (interactive)
   (if (looking-back "\\s)+\\=")
-        (ignore-errors (backward-list 1))
-      (skip-chars-forward er--space-str))
+      (ignore-errors (backward-list 1))
+    (skip-chars-forward er--space-str))
   (when (and (er--point-inside-pairs-p)
              (or (not (er--looking-at-pair))
                  (er--looking-at-marked-pair)))
@@ -266,82 +266,67 @@ period and marks next symbol."
                            er/mark-inside-pairs
                            er/mark-outside-pairs))
 
-;; The magic expand-region method
+(defun er--prepare-expanding ()
+  (when (and (er--first-invocation)
+             (not (use-region-p)))
+    (push-mark nil t)  ;; one for keeping starting position
+    (push-mark nil t)) ;; one for replace by set-mark in expansions
 
-;;;###autoload
-(defun er/expand-region (arg)
+  (when (not (eq t transient-mark-mode))
+    (setq transient-mark-mode (cons 'only transient-mark-mode))))
+
+(defun er--expand-region-1 ()
   "Increase selected region by semantic units.
 Basically it runs all the mark-functions in `er/try-expand-list'
 and chooses the one that increases the size of the region while
-moving point or mark as little as possible.
+moving point or mark as little as possible."
+  (let* ((p1 (point))
+         (p2 (if (use-region-p) (mark) (point)))
+         (start (min p1 p2))
+         (end (max p1 p2))
+         (try-list er/try-expand-list)
+         (best-start (point-min))
+         (best-end (point-max))
+         (set-mark-default-inactive nil))
 
-With prefix argument expands the region that many times.
-If prefix argument is negative calls `er/contract-region'.
-If prefix argument is 0 it resets point and mark to their state
-before calling `er/expand-region' for the first time."
-  (interactive "p")
-  (if (< arg 1)
-      ;; `er/contract-region' will take care of negative and 0 arguments
-      (er/contract-region (- arg))
-    ;; We handle everything else
+    ;; add hook to clear history on buffer changes
+    (unless er/history
+      (add-hook 'after-change-functions 'er/clear-history t t))
 
-    (when (and (er--first-invocation)
-               (not (use-region-p)))
-      (push-mark nil t)  ;; one for keeping starting position
-      (push-mark nil t)) ;; one for replace by set-mark in expansions
+    ;; remember the start and end points so we can contract later
+    ;; unless we're already at maximum size
+    (unless (and (= start best-start)
+                 (= end best-end))
+      (push (cons start end) er/history))
 
-    (when (not (eq t transient-mark-mode))
-      (setq transient-mark-mode (cons 'only transient-mark-mode)))
+    (when (and (er--point-is-surrounded-by-white-space)
+               (= start end))
+      (skip-chars-forward er--space-str)
+      (setq start (point)))
 
-    (while (>= arg 1)
-      (setq arg (- arg 1))
-      (let* ((p1 (point))
-             (p2 (if (use-region-p) (mark) (point)))
-             (start (min p1 p2))
-             (end (max p1 p2))
-             (try-list er/try-expand-list)
-             (best-start (buffer-end -1))
-             (best-end (buffer-end 1))
-             (set-mark-default-inactive nil))
+    (while try-list
+      (save-excursion
+        (ignore-errors
+          (funcall (car try-list))
+          (when (and (region-active-p)
+                     (<= (point) start)
+                     (>= (mark) end)
+                     (> (- (mark) (point)) (- end start))
+                     (or (> (point) best-start)
+                         (and (= (point) best-start)
+                              (< (mark) best-end))))
+            (setq best-start (point))
+            (setq best-end (mark))
+            (unless (minibufferp)
+              (message "%S" (car try-list))))))
+      (setq try-list (cdr try-list)))
 
-        ;; add hook to clear history on buffer changes
-        (unless er/history
-          (add-hook 'after-change-functions 'er/clear-history t t))
+    (goto-char best-start)
+    (set-mark best-end)
 
-        ;; remember the start and end points so we can contract later
-        ;; unless we're already at maximum size
-        (unless (and (= start best-start)
-                     (= end best-end))
-          (push (cons start end) er/history))
-
-        (when (and (er--point-is-surrounded-by-white-space)
-                   (= start end))
-          (skip-chars-forward er--space-str)
-          (setq start (point)))
-
-        (while try-list
-          (save-excursion
-            (ignore-errors
-              (funcall (car try-list))
-              (when (and (region-active-p)
-                         (<= (point) start)
-                         (>= (mark) end)
-                         (> (- (mark) (point)) (- end start))
-                         (or (> (point) best-start)
-                             (and (= (point) best-start)
-                                  (< (mark) best-end))))
-                (setq best-start (point))
-                (setq best-end (mark))
-                (unless (minibufferp)
-                  (message "%S" (car try-list))))))
-          (setq try-list (cdr try-list)))
-
-        (goto-char best-start)
-        (set-mark best-end)
-
-        (when (and (= best-start (buffer-end -1))
-                   (= best-end (buffer-end 1))) ;; We didn't find anything new, so exit early
-          (setq arg 0))))))
+    (when (and (= best-start (point-min))
+               (= best-end (point-max))) ;; We didn't find anything new, so exit early
+      (setq arg 0))))
 
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.

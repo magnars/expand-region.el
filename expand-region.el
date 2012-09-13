@@ -136,6 +136,22 @@
 (require 'expand-region-core)
 (require 'expand-region-custom)
 
+;;;###autoload
+(defun er/expand-region (arg)
+  "Increase selected region by semantic units.
+
+With prefix argument expands the region that many times.
+If prefix argument is negative calls `er/contract-region'.
+If prefix argument is 0 it resets point and mark to their state
+before calling `er/expand-region' for the first time."
+  (interactive "p")
+  (if (< arg 1)
+      (er/contract-region (- arg))
+    (er--prepare-expanding)
+    (while (>= arg 1)
+      (setq arg (- arg 1))
+      (er--expand-region-1))))
+
 (eval-after-load "clojure-mode" '(require 'clojure-mode-expansions))
 (eval-after-load "css-mode"     '(require 'css-mode-expansions))
 (eval-after-load "erlang-mode"  '(require 'erlang-mode-expansions))
