@@ -109,6 +109,7 @@ sure to add a set of basic tests around the functionality you're changing.
 * [Raimon Grau](https://github.com/kidd) added support for when transient-mark-mode is off.
 * [Gleb Peregud](https://github.com/gleber) contributed expansions for erlang-mode.
 * [fgeller](https://github.com/fgeller) and [edmccard](https://github.com/edmccard) contributed better support for python and its multiple modes.
+* [François Févotte](https://github.com/ffevotte) contributed expansions for C and C++.
 
 Thanks!
 
