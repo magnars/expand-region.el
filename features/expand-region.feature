@@ -232,3 +232,45 @@ Feature: Expand Region
     And I go to point "6"
     And I press "C-@"
     Then the region should be "(is some)"
+
+  Scenario: Allow pressing the last key of the sequence continuously
+    Given there is no region selected
+    When I insert "This (is (some)) text"
+    And I go to point "12"
+    And I press "C-@"
+    Then the region should be "some"
+    And I press "@"
+    Then the region should be "(some)"
+    And I press "@"
+    Then the region should be "is (some)"
+    And I press "@"
+    Then the region should be "(is (some))"
+
+  Scenario: Allow pressing `-' to contract region
+    Given there is no region selected
+    When I insert "This (is (some)) text"
+    And I go to point "12"
+    And I press "C-@"
+    Then the region should be "some"
+    And I press "@"
+    Then the region should be "(some)"
+    And I press "@"
+    Then the region should be "is (some)"
+    And I press "-"
+    Then the region should be "(some)"
+    And I press "-"
+    Then the region should be "some"
+
+  Scenario: Allow pressing `0' to reset region
+    Given there is no region selected
+    When I insert "This (is (some)) text"
+    And I go to point "12"
+    And I press "C-@"
+    Then the region should be "some"
+    And I press "@"
+    Then the region should be "(some)"
+    And I press "@"
+    Then the region should be "is (some)"
+    And I press "0"
+    Then there is no region selected
+    And cursor should be at point "12"
