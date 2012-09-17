@@ -274,3 +274,11 @@ Feature: Expand Region
     And I press "0"
     Then there is no region selected
     And cursor should be at point "12"
+
+  Scenario: Autocopy-register
+    Given there is no region selected
+    And autocopy-register is "e"
+    When I insert "This is some text"
+    And I go to point "10"
+    And I press "C-@"
+    Then register "e" should be "some"

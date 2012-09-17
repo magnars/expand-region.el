@@ -136,6 +136,26 @@
 (require 'expand-region-core)
 (require 'expand-region-custom)
 
+;;;###autoload
+(defun er/expand-region (arg)
+  "Increase selected region by semantic units.
+
+With prefix argument expands the region that many times.
+If prefix argument is negative calls `er/contract-region'.
+If prefix argument is 0 it resets point and mark to their state
+before calling `er/expand-region' for the first time."
+  (interactive "p")
+  (er/expand-region-internal arg)
+  (er/prepare-for-more-expansions))
+
+(defun er/expand-region-internal (arg)
+  (if (< arg 1)
+      (er/contract-region (- arg))
+    (er--prepare-expanding)
+    (while (>= arg 1)
+      (setq arg (- arg 1))
+      (er--expand-region-1))))
+
 (eval-after-load "clojure-mode" '(require 'clojure-mode-expansions))
 (eval-after-load "css-mode"     '(require 'css-mode-expansions))
 (eval-after-load "erlang-mode"  '(require 'erlang-mode-expansions))
@@ -146,7 +166,7 @@
 (eval-after-load "js2-mode"     '(require 'js-mode-expansions))
 (eval-after-load "js2-mode"     '(require 'js2-mode-expansions))
 (eval-after-load "js3-mode"     '(require 'js-mode-expansions))
-(eval-after-load "LaTeX-mode"   '(require 'latex-mode-expansions))
+(eval-after-load "latex"        '(require 'latex-mode-expansions))
 (eval-after-load "nxml-mode"    '(require 'nxml-mode-expansions))
 (eval-after-load "python"       '(progn
                                    (when expand-region-guess-python-mode
@@ -157,6 +177,7 @@
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
 (eval-after-load "org"          '(require 'org-mode-expansions))
+(eval-after-load "cc-mode"      '(require 'cc-mode-expansions))
 
 (defadvice javascript-mode (after enable-expand-region activate)
   (require 'js-mode-expansions)

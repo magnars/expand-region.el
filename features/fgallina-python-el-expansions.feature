@@ -171,7 +171,7 @@ Feature: fgallinas python.el expansions
 
       print('Even more stuff.')
       """
-    And I go to point "42"
+    And I go to the front of the word "if"
     And I press "C-@"
     Then the region should be:
       """
@@ -204,10 +204,10 @@ Feature: fgallinas python.el expansions
     When I insert:
       """
       def outer_foo():
-      
+
           def inner_foo():
               return 23
-      
+
           return inner_foo()
 
       """

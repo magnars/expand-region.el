@@ -48,6 +48,19 @@
             'python
           'fgallina-python)))
 
+(defcustom expand-region-autocopy-register ""
+  "If set to a string of a single character (try \"e\"), then the
+contents of the most recent expand or contract command will
+always be copied to the register named after that character."
+  :group 'expand-region
+  :type 'string)
+
+(defcustom expand-region-skip-whitespace t
+  "If expand-region should skip past whitespace on initial expansion"
+  :group 'expand-region
+  :type '(choice (const :tag "Skip whitespace" t)
+                 (const :tag "Do not skip whitespace" nil)))
+
 ;;;###autoload
 (defcustom expand-region-contract-fast-key "-"
   "Key to use after an initial expand/contract to contract once more."

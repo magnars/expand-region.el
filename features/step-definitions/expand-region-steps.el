@@ -28,6 +28,13 @@
               (message "Can not place cursor after '%s', because there is no such point: '%s'"))
           (assert search nil message arg (espuds-buffer-contents)))))
 
+(When "^I place the cursor before \"\\(.+\\)\"$"
+      (lambda (arg)
+	(goto-char (point-max))
+	(let ((search (search-backward arg nil t))
+	      (message "Can not place cursor before '%s', because there is no such point: '%s'"))
+	  (assert search nil message arg (espuds-buffer-contents)))))
+
 (When "^I pop the mark$"
       (lambda ()
         (set-mark-command 4)))
@@ -51,3 +58,13 @@
          (=
           (string-to-number arg)
           (point)))))
+
+(And "^autocopy-register is \"\\(.\\)\"$"
+      (lambda (reg)
+        (setq expand-region-autocopy-register reg)
+        (set-register (aref reg 0) nil)))
+
+(Then "^register \"\\(.\\)\" should be \"\\(.+\\)\"$"
+      (lambda (reg contents)
+        (should
+         (equal contents (get-register (aref reg 0))))))

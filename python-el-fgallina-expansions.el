@@ -36,10 +36,10 @@
   "'\""
   "Characters that delimit a Python string.")
 
-; copied from @fgallina's python.el as a quick fix. The variable
-; `python-rx-constituents' is not bound when we use the python-rx
-; macro from here, so we have to construct the regular expression
-; manually.
+;; copied from @fgallina's python.el as a quick fix. The variable
+;; `python-rx-constituents' is not bound when we use the python-rx
+;; macro from here, so we have to construct the regular expression
+;; manually.
 (defvar er--python-block-start-regex
   (rx symbol-start
       (or "def" "class" "if" "elif" "else" "try"
@@ -154,7 +154,10 @@ Command that wraps `er/mark-python-block'."
                          (append er/try-expand-list try-expand-list-additions))))))
 
 
-(add-hook 'python-mode-hook 'er/add-python-mode-expansions)
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (set (make-local-variable 'expand-region-skip-whitespace) nil)
+              (er/add-python-mode-expansions)))
 
 (provide 'python-el-fgallina-expansions)
 

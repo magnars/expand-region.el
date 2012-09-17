@@ -81,7 +81,10 @@
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-(add-hook 'python-mode-hook 'er/add-python-mode-expansions)
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (set (make-local-variable 'expand-region-skip-whitespace) nil)
+              (er/add-python-mode-expansions)))
 
 (provide 'python-el-expansions)
 
