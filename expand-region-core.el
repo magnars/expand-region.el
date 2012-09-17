@@ -304,7 +304,8 @@ moving point or mark as little as possible."
                  (= end best-end))
       (push (cons start end) er/history))
 
-    (when (and (er--point-is-surrounded-by-white-space)
+    (when (and expand-region-skip-whitespace
+               (er--point-is-surrounded-by-white-space)
                (= start end))
       (skip-chars-forward er--space-str)
       (setq start (point)))

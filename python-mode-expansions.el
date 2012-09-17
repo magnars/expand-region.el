@@ -131,7 +131,10 @@ line and selecting the surrounding block."
                          (append er/try-expand-list try-expand-list-additions))))))
 
 
-(add-hook 'python-mode-hook 'er/add-python-mode-expansions)
+(add-hook 'python-mode-hook
+          #'(lambda ()
+              (set (make-local-variable 'expand-region-skip-whitespace) nil)
+              (er/add-python-mode-expansions)))
 
 (provide 'python-mode-expansions)
 

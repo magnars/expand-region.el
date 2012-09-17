@@ -55,6 +55,12 @@ always be copied to the register named after that character."
   :group 'expand-region
   :type 'string)
 
+(defcustom expand-region-skip-whitespace t
+  "If expand-region should skip past whitespace on initial expansion"
+  :group 'expand-region
+  :type '(choice (const :tag "Skip whitespace" t)
+                 (const :tag "Do not skip whitespace" nil)))
+
 (provide 'expand-region-custom)
 
 ;;; expand-region-custom.el ends here
