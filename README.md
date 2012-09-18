@@ -1,4 +1,4 @@
-# expand-region.el
+# expand-region.el [![Build Status](https://secure.travis-ci.org/magnars/expand-region.el.png)](http://travis-ci.org/magnars/expand-region.el)
 
 Expand region increases the selected region by semantic units. Just keep
 pressing the key until it selects what you want.
