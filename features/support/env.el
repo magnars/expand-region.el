@@ -5,6 +5,7 @@
   (setq expand-region-util-path (expand-file-name "util" project-directory)))
 
 (add-to-list 'load-path expand-region-root-path)
+(add-to-list 'load-path expand-region-util-path)
 (add-to-list 'load-path (expand-file-name "espuds" expand-region-util-path))
 (add-to-list 'load-path (expand-file-name "features/support/vendor/python-el" expand-region-root-path))
 
