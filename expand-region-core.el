@@ -405,7 +405,7 @@ before calling `er/expand-region' for the first time."
       (set-temporary-overlay-map
        (let ((map (make-sparse-keymap)))
 	        (dolist (binding bindings map)
-		  (define-key map (kbd (car binding))
+		  (define-key map (read-kbd-macro (car binding))
 		    `(lambda ()
 		       (interactive)
 		       (eval `,(cdr ',binding))
