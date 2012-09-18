@@ -7,3 +7,6 @@
 [submodule "features/support/vendor/python-el"]
 	path = features/support/vendor/python-el
 	url = git://github.com/fgallina/python.el.git
+[submodule "util/ert"]
+	path = util/ert
+	url = http://github.com/ohler/ert.git
