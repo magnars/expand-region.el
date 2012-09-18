@@ -10,4 +10,4 @@ env:
   - EMACS=emacs
   - EMACS=emacs-snapshot
 script:
-  run-travis-ci.sh
+  ./run-travis-ci.sh
