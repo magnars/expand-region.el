@@ -145,16 +145,14 @@ If prefix argument is negative calls `er/contract-region'.
 If prefix argument is 0 it resets point and mark to their state
 before calling `er/expand-region' for the first time."
   (interactive "p")
-  (er/expand-region-internal arg)
-  (er/prepare-for-more-expansions))
-
-(defun er/expand-region-internal (arg)
   (if (< arg 1)
       (er/contract-region (- arg))
     (er--prepare-expanding)
     (while (>= arg 1)
       (setq arg (- arg 1))
-      (er--expand-region-1))))
+      (er--expand-region-1))
+    (when expand-region-fast-keys-enabled
+      (er/prepare-for-more-expansions))))
 
 (eval-after-load "clojure-mode" '(require 'clojure-mode-expansions))
 (eval-after-load "css-mode"     '(require 'css-mode-expansions))

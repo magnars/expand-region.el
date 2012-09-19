@@ -46,6 +46,8 @@
 (defvar er--space-str " \t\n")
 (defvar er--blank-list (append er--space-str nil))
 
+(set-default 'er--show-expansion-message nil)
+
 ;; Default expansions
 
 (defun er/mark-word ()
@@ -318,7 +320,7 @@ moving point or mark as little as possible."
                      (er--this-expansion-is-better))
             (setq best-start (point))
             (setq best-end (mark))
-            (unless (minibufferp)
+            (when (and er--show-expansion-message (not (minibufferp)))
               (message "%S" (car try-list))))))
       (setq try-list (cdr try-list)))
 
@@ -382,14 +384,14 @@ before calling `er/expand-region' for the first time."
 (defun er/prepare-for-more-expansions-internal (repeat-key-str)
   "Return bindings and a message to inform user about them"
   (let ((msg (format "Type %s to expand again" repeat-key-str))
-	(bindings (list (cons repeat-key-str '(er/expand-region 1)))))
+        (bindings (list (cons repeat-key-str '(er/expand-region 1)))))
     ;; If contract and expand are on the same binding, ignore contract
     (unless (string-equal repeat-key-str expand-region-contract-fast-key)
       (setq msg (concat msg (format ", %s to contract" expand-region-contract-fast-key)))
       (push (cons expand-region-contract-fast-key '(er/contract-region 1)) bindings))
     ;; If reset and either expand or contract are on the same binding, ignore reset
     (unless (or (string-equal repeat-key-str expand-region-reset-fast-key)
-		(string-equal expand-region-contract-fast-key expand-region-reset-fast-key))
+                (string-equal expand-region-contract-fast-key expand-region-reset-fast-key))
       (setq msg (concat msg (format ", %s to reset" expand-region-reset-fast-key)))
       (push (cons expand-region-reset-fast-key '(er/expand-region 0)) bindings))
     (cons msg bindings)))
@@ -397,19 +399,19 @@ before calling `er/expand-region' for the first time."
 (defun er/prepare-for-more-expansions ()
   "Let one expand more by just pressing the last key."
   (let* ((repeat-key (event-basic-type last-input-event))
-	 (repeat-key-str (format-kbd-macro (vector repeat-key)))
-	 (msg-and-bindings (er/prepare-for-more-expansions-internal repeat-key-str))
-	 (msg (car msg-and-bindings))
-	 (bindings (cdr msg-and-bindings)))
+         (repeat-key-str (format-kbd-macro (vector repeat-key)))
+         (msg-and-bindings (er/prepare-for-more-expansions-internal repeat-key-str))
+         (msg (car msg-and-bindings))
+         (bindings (cdr msg-and-bindings)))
     (when repeat-key
       (set-temporary-overlay-map
        (let ((map (make-sparse-keymap)))
-	        (dolist (binding bindings map)
-		  (define-key map (read-kbd-macro (car binding))
-		    `(lambda ()
-		       (interactive)
-		       (eval `,(cdr ',binding))
-		       (message ,msg)))))
+         (dolist (binding bindings map)
+           (define-key map (read-kbd-macro (car binding))
+             `(lambda ()
+                (interactive)
+                (eval `,(cdr ',binding))
+                (message ,msg)))))
        t)
       (message "%s" msg))))
 
@@ -432,19 +434,19 @@ remove the keymap depends on user input and KEEP-PRED:
   each key sequence."
 
     (let* ((clearfunsym (make-symbol "clear-temporary-overlay-map"))
-	   (overlaysym (make-symbol "t"))
-	   (alist (list (cons overlaysym map)))
-	   (clearfun
-	    `(lambda ()
-	       (unless ,(cond ((null keep-pred) nil)
-			      ((eq t keep-pred)
-			       `(eq this-command
-				    (lookup-key ',map
-						(this-command-keys-vector))))
-			      (t `(funcall ',keep-pred)))
-		 (remove-hook 'pre-command-hook ',clearfunsym)
-		 (setq emulation-mode-map-alists
-		       (delq ',alist emulation-mode-map-alists))))))
+           (overlaysym (make-symbol "t"))
+           (alist (list (cons overlaysym map)))
+           (clearfun
+            `(lambda ()
+               (unless ,(cond ((null keep-pred) nil)
+                              ((eq t keep-pred)
+                               `(eq this-command
+                                    (lookup-key ',map
+                                                (this-command-keys-vector))))
+                              (t `(funcall ',keep-pred)))
+                 (remove-hook 'pre-command-hook ',clearfunsym)
+                 (setq emulation-mode-map-alists
+                       (delq ',alist emulation-mode-map-alists))))))
       (set overlaysym overlaysym)
       (fset clearfunsym clearfun)
       (add-hook 'pre-command-hook clearfunsym)

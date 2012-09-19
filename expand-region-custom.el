@@ -24,10 +24,12 @@
 
 ;;; Code:
 
+;;;###autoload
 (defgroup expand-region nil
   "Increase selected region by semantic units."
   :group 'tools)
 
+;;;###autoload
 (defcustom expand-region-preferred-python-mode 'python
   "The name of your preferred python mode"
   :group 'expand-region
@@ -35,6 +37,7 @@
                  (const :tag "fgallina's python.el" 'fgallina-python)
                  (const :tag "python-mode.el" 'python-mode)))
 
+;;;###autoload
 (defcustom expand-region-guess-python-mode t
   "If expand-region should attempt to guess your preferred python mode"
   :group 'expand-region
@@ -48,6 +51,7 @@
             'python
           'fgallina-python)))
 
+;;;###autoload
 (defcustom expand-region-autocopy-register ""
   "If set to a string of a single character (try \"e\"), then the
 contents of the most recent expand or contract command will
@@ -55,11 +59,19 @@ always be copied to the register named after that character."
   :group 'expand-region
   :type 'string)
 
+;;;###autoload
 (defcustom expand-region-skip-whitespace t
   "If expand-region should skip past whitespace on initial expansion"
   :group 'expand-region
   :type '(choice (const :tag "Skip whitespace" t)
                  (const :tag "Do not skip whitespace" nil)))
+
+;;;###autoload
+(defcustom expand-region-fast-keys-enabled t
+  "If expand-region should bind fast keys after initial expand/contract"
+  :group 'expand-region
+  :type '(choice (const :tag "Enable fast keys" t)
+                 (const :tag "Disable fast keys" nil)))
 
 ;;;###autoload
 (defcustom expand-region-contract-fast-key "-"
