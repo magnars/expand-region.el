@@ -379,6 +379,78 @@ before calling `er/expand-region' for the first time."
           (deactivate-mark)
           (er/clear-history))))))
 
+(defun er/prepare-for-more-expansions-internal (repeat-key-str)
+  "Return bindings and a message to inform user about them"
+  (let ((msg (format "Type %s to expand again" repeat-key-str))
+	(bindings (list (cons repeat-key-str '(er/expand-region 1)))))
+    ;; If contract and expand are on the same binding, ignore contract
+    (unless (string-equal repeat-key-str expand-region-contract-fast-key)
+      (setq msg (concat msg (format ", %s to contract" expand-region-contract-fast-key)))
+      (push (cons expand-region-contract-fast-key '(er/contract-region 1)) bindings))
+    ;; If reset and either expand or contract are on the same binding, ignore reset
+    (unless (or (string-equal repeat-key-str expand-region-reset-fast-key)
+		(string-equal expand-region-contract-fast-key expand-region-reset-fast-key))
+      (setq msg (concat msg (format ", %s to reset" expand-region-reset-fast-key)))
+      (push (cons expand-region-reset-fast-key '(er/expand-region 0)) bindings))
+    (cons msg bindings)))
+
+(defun er/prepare-for-more-expansions ()
+  "Let one expand more by just pressing the last key."
+  (let* ((repeat-key (event-basic-type last-input-event))
+	 (repeat-key-str (format-kbd-macro (vector repeat-key)))
+	 (msg-and-bindings (er/prepare-for-more-expansions-internal repeat-key-str))
+	 (msg (car msg-and-bindings))
+	 (bindings (cdr msg-and-bindings)))
+    (when repeat-key
+      (set-temporary-overlay-map
+       (let ((map (make-sparse-keymap)))
+	        (dolist (binding bindings map)
+		  (define-key map (read-kbd-macro (car binding))
+		    `(lambda ()
+		       (interactive)
+		       (eval `,(cdr ',binding))
+		       (message ,msg)))))
+       t)
+      (message "%s" msg))))
+
+(when (not (fboundp 'set-temporary-overlay-map))
+  ;; Backport this function from newer emacs versions
+  (defun set-temporary-overlay-map (map &optional keep-pred)
+    "Set a new keymap that will only exist for a short period of time.
+The new keymap to use must be given in the MAP variable. When to
+remove the keymap depends on user input and KEEP-PRED:
+
+- if KEEP-PRED is nil (the default), the keymap disappears as
+  soon as any key is pressed, whether or not the key is in MAP;
+
+- if KEEP-PRED is t, the keymap disappears as soon as a key *not*
+  in MAP is pressed;
+
+- otherwise, KEEP-PRED must be a 0-arguments predicate that will
+  decide if the keymap should be removed (if predicate returns
+  nil) or kept (otherwise). The predicate will be called after
+  each key sequence."
+
+    (let* ((clearfunsym (make-symbol "clear-temporary-overlay-map"))
+	   (overlaysym (make-symbol "t"))
+	   (alist (list (cons overlaysym map)))
+	   (clearfun
+	    `(lambda ()
+	       (unless ,(cond ((null keep-pred) nil)
+			      ((eq t keep-pred)
+			       `(eq this-command
+				    (lookup-key ',map
+						(this-command-keys-vector))))
+			      (t `(funcall ',keep-pred)))
+		 (remove-hook 'pre-command-hook ',clearfunsym)
+		 (setq emulation-mode-map-alists
+		       (delq ',alist emulation-mode-map-alists))))))
+      (set overlaysym overlaysym)
+      (fset clearfunsym clearfun)
+      (add-hook 'pre-command-hook clearfunsym)
+
+      (push alist emulation-mode-map-alists))))
+
 (defadvice keyboard-quit (before collapse-region activate)
   (when (memq last-command '(er/expand-region er/contract-region))
     (er/contract-region 0)))

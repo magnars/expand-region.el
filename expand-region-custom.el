@@ -61,6 +61,18 @@ always be copied to the register named after that character."
   :type '(choice (const :tag "Skip whitespace" t)
                  (const :tag "Do not skip whitespace" nil)))
 
+;;;###autoload
+(defcustom expand-region-contract-fast-key "-"
+  "Key to use after an initial expand/contract to contract once more."
+  :group 'expand-region
+  :type 'string)
+
+;;;###autoload
+(defcustom expand-region-reset-fast-key "0"
+  "Key to use after an initial expand/contract to undo."
+  :group 'expand-region
+  :type 'string)
+
 (provide 'expand-region-custom)
 
 ;;; expand-region-custom.el ends here
