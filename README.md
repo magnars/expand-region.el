@@ -115,6 +115,19 @@ sure to add a set of basic tests around the functionality you're changing.
 
 Thanks!
 
+## Changelist
+
+### From 0.7 to 0.8
+
+* Improve js-, ruby-, python- and latex-modes
+* Support built-in javascript-mode
+* Handle narrowed buffers correctly
+* Include mode-specific expansions when autoloading
+* Provide option to copy the contents of the most recent action to a register
+* Add cc-mode specific expansions
+* Add customization to turn off skipping whitespace when expanding
+* Continue expanding/contracting with one key press (optional)
+
 ## License
 
 Copyright (C) 2011 Magnar Sveen
