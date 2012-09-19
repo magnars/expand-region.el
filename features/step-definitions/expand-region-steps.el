@@ -30,10 +30,10 @@
 
 (When "^I place the cursor before \"\\(.+\\)\"$"
       (lambda (arg)
-	(goto-char (point-max))
-	(let ((search (search-backward arg nil t))
-	      (message "Can not place cursor before '%s', because there is no such point: '%s'"))
-	  (assert search nil message arg (espuds-buffer-contents)))))
+        (goto-char (point-max))
+        (let ((search (search-backward arg nil t))
+              (message "Can not place cursor before '%s', because there is no such point: '%s'"))
+          (assert search nil message arg (espuds-buffer-contents)))))
 
 (When "^I pop the mark$"
       (lambda ()
@@ -68,3 +68,11 @@
       (lambda (reg contents)
         (should
          (equal contents (get-register (aref reg 0))))))
+
+(When "^I go to the \\(front\\|end\\) of the word \"\\(.+\\)\"$"
+      (lambda (pos word)
+        (goto-char (point-min))
+        (let ((search (re-search-forward (format "%s" word) nil t))
+              (message "Can not go to character '%s' since it does not exist in the current buffer: %s"))
+          (assert search nil message word (espuds-buffer-contents))
+          (if (string-equal "front" pos) (backward-word)))))
