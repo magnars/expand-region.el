@@ -410,6 +410,7 @@ before calling `er/expand-region' for the first time."
            (define-key map (read-kbd-macro (car binding))
              `(lambda ()
                 (interactive)
+                (setq this-command `,(cadr ',binding))
                 (eval `,(cdr ',binding))
                 (message ,msg)))))
        t)
