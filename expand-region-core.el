@@ -399,7 +399,7 @@ before calling `er/expand-region' for the first time."
 (defun er/prepare-for-more-expansions ()
   "Let one expand more by just pressing the last key."
   (let* ((repeat-key (event-basic-type last-input-event))
-         (repeat-key-str (format-kbd-macro (vector repeat-key)))
+         (repeat-key-str (single-key-description repeat-key))
          (msg-and-bindings (er/prepare-for-more-expansions-internal repeat-key-str))
          (msg (car msg-and-bindings))
          (bindings (cdr msg-and-bindings)))
