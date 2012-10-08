@@ -275,6 +275,34 @@ Feature: Expand Region
     Then there is no region selected
     And cursor should be at point "12"
 
+  Scenario: Allow pressing C-g to reset region after pressing `@'
+    Given there is no region selected
+    When I insert "This (is (some)) text"
+    And I go to point "12"
+    And I press "C-@"
+    Then the region should be "some"
+    And I press "@"
+    Then the region should be "(some)"
+    And I press "@"
+    Then the region should be "is (some)"
+    And I quit
+    Then there is no region selected
+    And cursor should be at point "12"
+
+  Scenario: Allow pressing C-g to reset region after pressing `-'
+    Given there is no region selected
+    When I insert "This (is (some)) text"
+    And I go to point "12"
+    And I press "C-@"
+    Then the region should be "some"
+    And I press "@"
+    Then the region should be "(some)"
+    And I press "-"
+    Then the region should be "some"
+    And I quit
+    Then there is no region selected
+    And cursor should be at point "12"
+
   Scenario: Autocopy-register
     Given there is no region selected
     And autocopy-register is "e"
