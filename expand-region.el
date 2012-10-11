@@ -155,7 +155,8 @@ before calling `er/expand-region' for the first time."
     (while (>= arg 1)
       (setq arg (- arg 1))
       (er--expand-region-1))
-    (when expand-region-fast-keys-enabled
+    (when (and expand-region-fast-keys-enabled
+               (not (memq last-command '(er/expand-region er/contract-region))))
       (er/prepare-for-more-expansions))))
 
 (eval-after-load "clojure-mode" '(require 'clojure-mode-expansions))
