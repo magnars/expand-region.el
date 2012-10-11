@@ -411,10 +411,10 @@ before calling `er/expand-region' for the first time."
              `(lambda ()
                 (interactive)
                 (setq this-command `,(cadr ',binding))
-                (eval `,(cdr ',binding))
-                (message ,msg)))))
+                (or (minibufferp) (message "%s" ,msg))
+                (eval `,(cdr ',binding))))))
        t)
-      (message "%s" msg))))
+      (or (minibufferp) (message "%s" msg)))))
 
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
