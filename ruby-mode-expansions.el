@@ -53,10 +53,16 @@
 (defun er/ruby-backward-up ()
   "a la `paredit-backward-up'"
   (interactive)
+  ;; if our current line ends a block, we back a line, otherwise we
+  (when (save-excursion
+          (back-to-indentation)
+          (looking-at-p ruby-block-end-re))
+    (goto-char (point-at-eol 0)))
   (let ((orig-point (point))
         progress-beg
         progress-end)
-    ;; cover the case when point is in begining of block
+
+    ;; cover the case when point is in the line of beginning of block
     (unless (progn (ruby-end-of-block)
                    (ruby-beginning-of-block)
                    (< (point) orig-point))
