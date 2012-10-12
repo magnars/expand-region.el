@@ -24,63 +24,107 @@
 
 ;; Idiomatic ruby has a lot of nested blocks, and its function marking seems a bit buggy.
 ;;
+;; LeWang:
+;;
+;;      I think `er/ruby-backward-up' and `er/ruby-forward-up' are very
+;;      nifty functions in their own right.
+;;
+;;      I would bind them to C-M-u and C-M-d respectively.
+
 ;; Expansions:
 ;;
 ;;
-;;  er/mark-ruby-block
-;;  er/mark-ruby-function
+;;  er/mark-ruby-block-up
+;;
 
 ;;; Code:
 
 (require 'expand-region-core)
 
-(defun er/mark-ruby-block ()
+(defvar er/ruby-block-end-re
+  (concat ruby-block-end-re "\\|}")
+  "like ruby-mode's but also for '}'")
+
+(defun er/ruby-skip-past-block-end ()
+  "ensure that point is at bol"
+  (when (looking-at er/ruby-block-end-re)
+    (goto-char (match-end 0))))
+
+(defun er/ruby-backward-up ()
+  "a la `paredit-backward-up'"
   (interactive)
-  ;; we do this since ruby-beginning-of-block doesn't work on the same line where the block starts
-  (if (string-match-p " do\\|{" (thing-at-point 'line))
-      (forward-line 1))
-  (beginning-of-line)
-  (ruby-beginning-of-block)
+  ;; if our current line ends a block, we back a line, otherwise we
+  (when (save-excursion
+          (back-to-indentation)
+          (looking-at-p ruby-block-end-re))
+    (goto-char (point-at-eol 0)))
+  (let ((orig-point (point))
+        progress-beg
+        progress-end)
+
+    ;; cover the case when point is in the line of beginning of block
+    (unless (progn (ruby-end-of-block)
+                   (ruby-beginning-of-block)
+                   (< (point) orig-point))
+      (loop do
+            (ruby-beginning-of-block)
+            (setq progress-beg (point))
+            (ruby-end-of-block)
+            (setq progress-end (if (looking-at-p er/ruby-block-end-re)
+                                   (point-at-bol 2)
+                                 (point-at-bol 1)))
+            (goto-char progress-beg)
+            (if (> progress-end orig-point)
+                (return))))))
+
+;;; This command isn't used here explicitly, but it's symmetrical with
+;;; `er/ruby-backward-up', and nifty for interactive use.
+(defun er/ruby-forward-up ()
+  "a la `paredit-forward-up'"
+  (interactive)
+  (er/ruby-backward-up)
+  (ruby-end-of-block)
+  (er/ruby-skip-past-block-end))
+
+(defun er/get-ruby-block (&optional pos)
+  "return (beg . end) of current block"
+  (setq pos (or pos (point)))
+  (save-excursion
+    (goto-char pos)
+    (let (beg end)
+      (cons (progn
+              (er/ruby-backward-up)
+              (point))
+            (progn
+              (ruby-end-of-block)
+              (er/ruby-skip-past-block-end)
+              (point))))))
+
+(defun er/mark-ruby-block-up-1 ()
+  (er/ruby-backward-up)
   (set-mark (point))
   (ruby-end-of-block)
-  (end-of-line)
+  (er/ruby-skip-past-block-end)
   (exchange-point-and-mark))
 
-(defun er/mark-ruby-symbol ()
-  "Mark the entire symbol around or in front of point."
+(defun er/mark-ruby-block-up ()
+  "mark the next level up."
   (interactive)
-  (let ((symbol-regexp ":\\|\\s_\\|\\sw"))
-    (when (or (looking-at symbol-regexp)
-              (looking-back symbol-regexp))
-      (while (looking-at symbol-regexp)
-        (forward-char))
-      (set-mark (point))
-      (while (looking-back symbol-regexp)
-        (backward-char)))))
-
-(defun er/mark-ruby-function ()
-  "Mark the current Ruby function."
-  (interactive)
-  (condition-case nil
-      (forward-char 3)
-    (error nil))
-  (let ((ruby-method-regex "^[\t ]*def\\_>"))
-    (word-search-backward ruby-method-regex)
-    (while (syntax-ppss-context (syntax-ppss))
-      (word-search-backward ruby-method-regex)))
-  (set-mark (point))
-  (ruby-end-of-block)
-  (end-of-line)
-  (exchange-point-and-mark))
-
+  (if (use-region-p)
+      (let ((old-end (region-end)))
+        (if (> (cdr (er/get-ruby-block old-end)) old-end)
+            (progn
+              (deactivate-mark)
+              (goto-char old-end)
+              (er/mark-ruby-block-up))
+          (er/mark-ruby-block-up-1)))
+    (er/mark-ruby-block-up-1)))
 
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
-                                                  '(er/mark-ruby-symbol
-                                                    er/mark-ruby-block
-                                                    er/mark-ruby-function))))
+                                                  '(er/mark-ruby-block-up))))
 
 (add-hook 'ruby-mode-hook 'er/add-ruby-mode-expansions)
 
