@@ -135,3 +135,104 @@ Feature: ruby-mode expansions
       end
 
     """
+
+  Scenario: Mark ruby expand up 1 level
+    Given I turn on ruby-mode
+    And there is no region selected
+    When I insert:
+    """
+    #comment foo
+    module Bar
+      def foo
+        bar
+      end
+    end
+    """
+    And I go to line "3"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+    """
+    module Bar
+      def foo
+        bar
+      end
+    end
+
+    """
+
+  Scenario: Mark ruby expand up 3 levels
+    Given I turn on ruby-mode
+    And there is no region selected
+    When I insert:
+    """
+    #comment foo
+    module Bar
+
+      attr_reader :blah
+
+      foo_arr.each do |element|
+        blah {
+          puts something
+        }
+      end
+
+      def foo
+        bar
+      end
+    end
+    """
+    And I go to line "7"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+    """
+    module Bar
+
+      attr_reader :blah
+
+      foo_arr.each do |element|
+        blah {
+          puts something
+        }
+      end
+
+      def foo
+        bar
+      end
+    end
+
+    """
+
+  Scenario: Mark ruby expand to whole buffer
+    Given I turn on ruby-mode
+    And there is no region selected
+    When I insert:
+    """
+    #comment foo
+    module Bar
+      def foo
+        bar
+      end
+    end
+    """
+    And I go to line "3"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+    """
+    #comment foo
+    module Bar
+      def foo
+        bar
+      end
+    end
+
+    """
