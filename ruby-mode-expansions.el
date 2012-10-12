@@ -22,12 +22,10 @@
 ;;; Commentary:
 
 
-;; Idiomatic ruby has a lot of nested blocks, and its function marking seems a bit buggy.
-;;
 ;; LeWang:
 ;;
-;;      I think `er/ruby-backward-up' and `er/ruby-forward-up' are very
-;;      nifty functions in their own right.
+;;      I think `er/ruby-backward-up' and `er/ruby-forward-up' are nifty
+;;      functions in their own right.
 ;;
 ;;      I would bind them to C-M-u and C-M-d respectively.
 
@@ -48,7 +46,7 @@
 (defun er/ruby-skip-past-block-end ()
   "ensure that point is at bol"
   (when (looking-at er/ruby-block-end-re)
-    (goto-char (match-end 0))))
+    (forward-line 1)))
 
 (defun er/ruby-backward-up ()
   "a la `paredit-backward-up'"
@@ -57,7 +55,7 @@
   (when (save-excursion
           (back-to-indentation)
           (looking-at-p ruby-block-end-re))
-    (goto-char (point-at-eol 0)))
+    (forward-line -1))
   (let ((orig-point (point))
         progress-beg
         progress-end)
@@ -69,13 +67,15 @@
       (loop do
             (ruby-beginning-of-block)
             (setq progress-beg (point))
+            (when (= (point) (point-min))
+              (return))
             (ruby-end-of-block)
             (setq progress-end (if (looking-at-p er/ruby-block-end-re)
-                                   (point-at-bol 2)
+                                   (point-at-bol 0)
                                  (point-at-bol 1)))
             (goto-char progress-beg)
-            (if (> progress-end orig-point)
-                (return))))))
+            (when (> progress-end orig-point)
+              (return))))))
 
 ;;; This command isn't used here explicitly, but it's symmetrical with
 ;;; `er/ruby-backward-up', and nifty for interactive use.
@@ -107,16 +107,40 @@
   (er/ruby-skip-past-block-end)
   (exchange-point-and-mark))
 
-(defun er/mark-ruby-block-up ()
+(defun er/mark-ruby-block-up (&optional no-recurse)
   "mark the next level up."
   (interactive)
   (if (use-region-p)
-      (let ((old-end (region-end)))
-        (if (> (cdr (er/get-ruby-block old-end)) old-end)
+      (let* ((orig-end (region-end))
+             (orig-beg (region-beginning))
+             (orig-len (- orig-end orig-beg))
+             (prev-block-point
+              (or (save-excursion
+                    (goto-char orig-end)
+                    (forward-line 0)
+                    (back-to-indentation)
+                    (cond ((looking-at-p er/ruby-block-end-re)
+                           (point-at-bol 0))
+                          ((re-search-forward
+                            (concat "\\<\\(" ruby-block-beg-re "\\)\\>")
+                            (point-at-eol)
+                            t)
+                           (point-at-bol 2))) )
+                  (point)))
+             (prev-block-info (er/get-ruby-block prev-block-point))
+             (prev-block-beg (car prev-block-info))
+             (prev-block-end (cdr prev-block-info))
+             (prev-block-len (- prev-block-end prev-block-beg)))
+        (if (and (>= orig-beg prev-block-beg)
+                 (<= orig-end prev-block-end)
+                 (< orig-len prev-block-len))
+            ;; expand to previous block if it contains and grows current
+            ;; region
             (progn
               (deactivate-mark)
-              (goto-char old-end)
-              (er/mark-ruby-block-up))
+              (goto-char prev-block-point)
+              (or no-recurse
+                  (er/mark-ruby-block-up 'no-recurse)))
           (er/mark-ruby-block-up-1)))
     (er/mark-ruby-block-up-1)))
 
