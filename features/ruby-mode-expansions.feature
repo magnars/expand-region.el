@@ -22,6 +22,7 @@ Feature: ruby-mode expansions
     something do
         foo
       end
+
     """
 
   Scenario: Mark ruby block from end
@@ -43,6 +44,7 @@ Feature: ruby-mode expansions
     something do
         foo
       end
+
     """
 
   Scenario: Mark ruby block from within
@@ -64,6 +66,7 @@ Feature: ruby-mode expansions
     something do
         foo
       end
+
     """
 
   Scenario: Mark ruby block with using curly brackets
@@ -86,6 +89,7 @@ Feature: ruby-mode expansions
     something {
         foo
       }
+
     """
 
   Scenario: Mark ruby function at the beginning
@@ -107,6 +111,7 @@ Feature: ruby-mode expansions
     def foo
         bar
       end
+
     """
 
   Scenario: Mark ruby function at definition
@@ -128,4 +133,5 @@ Feature: ruby-mode expansions
     def foo
         bar
       end
+
     """
