@@ -147,6 +147,7 @@ Feature: ruby-mode expansions
         bar
       end
     end
+
     """
     And I go to line "3"
     And I press "C-@"
@@ -182,6 +183,7 @@ Feature: ruby-mode expansions
         bar
       end
     end
+
     """
     And I go to line "7"
     And I press "C-@"
@@ -214,20 +216,37 @@ Feature: ruby-mode expansions
     And there is no region selected
     When I insert:
     """
+    class Foo
+      def blah
+        [1,2,3].each do |num|
+          puts num
+        end
+      end
+    end
+
     #comment foo
     module Bar
       def foo
         bar
       end
     end
+
     """
-    And I go to line "3"
+    And I go to line "12"
     And I press "C-@"
     And I press "C-@"
     And I press "C-@"
     And I press "C-@"
     Then the region should be:
     """
+    class Foo
+      def blah
+        [1,2,3].each do |num|
+          puts num
+        end
+      end
+    end
+
     #comment foo
     module Bar
       def foo
