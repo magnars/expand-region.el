@@ -36,7 +36,9 @@
 
 (defun er/mark-ruby-block ()
   (interactive)
-  (forward-line 1)
+  ;; we do this since ruby-beginning-of-block doesn't work on the same line where the block starts
+  (if (string-match-p " do\\|{" (thing-at-point 'line))
+      (forward-line 1))
   (beginning-of-line)
   (ruby-beginning-of-block)
   (set-mark (point))
