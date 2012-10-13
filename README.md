@@ -104,14 +104,27 @@ sure to add a set of basic tests around the functionality you're changing.
 
 * [Josh Johnston](https://github.com/joshwnj) contributed `er/contract-region`
 * [Le Wang](https://github.com/lewang) contributed consistent handling of the mark ring, expanding into pairs/quotes just left of the cursor, and general code clean-up.
-* [Matt Briggs](https://github.com/mbriggs) contributed expansions for ruby-mode.
-* [Ivan Andrus](https://github.com/gvol) contributed expansions for python-mode, text-mode, LaTeX-mode and nxml-mode.
 * [Raimon Grau](https://github.com/kidd) added support for when transient-mark-mode is off.
-* [Gleb Peregud](https://github.com/gleber) contributed expansions for erlang-mode.
-* [fgeller](https://github.com/fgeller) and [edmccard](https://github.com/edmccard) contributed better support for python and its multiple modes.
-* [François Févotte](https://github.com/ffevotte) contributed expansions for C and C++.
 * [Roland Walker](https://github.com/rolandwalker) added option to copy the contents of the most recent action to a register, and some fixes.
 * [Damien Cassou](https://github.com/DamienCassou) added option to continue expanding/contracting with fast keys after initial expand.
+
+### Ruby expansions contributed by
+
+* [Matt Briggs](https://github.com/mbriggs)
+* [Jorge Dias](https://github.com/diasjorge)
+* [Le Wang](https://github.com/lewang)
+
+### Python expansions contributed by
+
+* [Ivan Andrus](https://github.com/gvol)
+* [fgeller](https://github.com/fgeller)
+* [edmccard](https://github.com/edmccard)
+
+### More languages
+
+* [François Févotte](https://github.com/ffevotte) contributed C and C++ expansions.
+* [Ivan Andrus](https://github.com/gvol) contributed text-mode, LaTeX-mode and nxml-mode expansions.
+* [Gleb Peregud](https://github.com/gleber) contributed Erlang expansions.
 
 Thanks!
 
