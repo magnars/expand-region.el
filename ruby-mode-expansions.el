@@ -44,9 +44,17 @@
   "like ruby-mode's but also for '}'")
 
 (defun er/ruby-skip-past-block-end ()
-  "ensure that point is at bol"
+  "If line is blockend, move point to next line."
   (when (looking-at er/ruby-block-end-re)
     (forward-line 1)))
+
+(defun er/ruby-end-of-block (&optional arg)
+  "By default `ruby-end-of-block' goes to BOL of line containing end-re.
+
+This moves point to the next line to include the end of the block"
+  (interactive "p")
+  (ruby-end-of-block (or arg 1))
+  (er/ruby-skip-past-block-end))
 
 (defun er/ruby-backward-up ()
   "a la `paredit-backward-up'"
@@ -83,8 +91,7 @@
   "a la `paredit-forward-up'"
   (interactive)
   (er/ruby-backward-up)
-  (ruby-end-of-block)
-  (er/ruby-skip-past-block-end))
+  (er/ruby-end-of-block))
 
 (defun er/get-ruby-block (&optional pos)
   "return (beg . end) of current block"
@@ -96,15 +103,13 @@
               (er/ruby-backward-up)
               (point))
             (progn
-              (ruby-end-of-block)
-              (er/ruby-skip-past-block-end)
+              (er/ruby-end-of-block)
               (point))))))
 
 (defun er/mark-ruby-block-up-1 ()
   (er/ruby-backward-up)
   (set-mark (point))
-  (ruby-end-of-block)
-  (er/ruby-skip-past-block-end)
+  (er/ruby-end-of-block)
   (exchange-point-and-mark))
 
 (defun er/mark-ruby-block-up (&optional no-recurse)
