@@ -48,6 +48,10 @@
 
 (set-default 'er--show-expansion-message nil)
 
+(defun er--point-is-in-comment-p ()
+  "t if point is in comment, otherwise nil"
+  (nth 4 (syntax-ppss)))
+
 ;; Default expansions
 
 (defun er/mark-word ()
@@ -115,54 +119,6 @@ period and marks next symbol."
       (if (looking-at "(")
           (forward-list))
       (exchange-point-and-mark))))
-
-;; Comments
-
-(defun er--point-is-in-comment-p ()
-  "t if point is in comment, otherwise nil"
-  (nth 4 (syntax-ppss)))
-
-(defun er--move-point-forward-out-of-comment ()
-  "Move point forward until it exits the current quoted comment."
-  (while (er--point-is-in-comment-p) (forward-char)))
-
-(defun er--move-point-backward-out-of-comment ()
-  "Move point backward until it exits the current quoted comment."
-  (while (er--point-is-in-comment-p) (backward-char)))
-
-(defun er/mark-comment ()
-  "Mark the current comment."
-  (interactive)
-  (when (or (er--point-is-in-comment-p)
-            (looking-at "\\s<"))
-    (er--move-point-backward-out-of-comment)
-    (set-mark (point))
-    (forward-char)
-    (er--move-point-forward-out-of-comment)
-    (backward-char)
-    (exchange-point-and-mark)))
-
-(defun er/mark-comment-block ()
-  "Mark the current block of comments."
-  (interactive)
-  (when (or (er--point-is-in-comment-p)
-            (looking-at "\\s<"))
-    (er--move-point-backward-out-of-comment)
-    (while (save-excursion
-             (skip-syntax-backward " ")
-             (backward-char)
-             (er--point-is-in-comment-p))
-      (skip-syntax-backward " ")
-      (backward-char)
-      (er--move-point-backward-out-of-comment))
-    (set-mark (point))
-    (forward-char)
-    (er--move-point-forward-out-of-comment)
-    (while (looking-at "\\s *\\s<")
-      (back-to-indentation)
-      (forward-char)
-      (er--move-point-forward-out-of-comment))
-    (exchange-point-and-mark)))
 
 ;; Quotes
 
@@ -261,8 +217,6 @@ period and marks next symbol."
                            er/mark-symbol-with-prefix
                            er/mark-next-accessor
                            er/mark-method-call
-                           er/mark-comment
-                           er/mark-comment-block
                            er/mark-inside-quotes
                            er/mark-outside-quotes
                            er/mark-inside-pairs

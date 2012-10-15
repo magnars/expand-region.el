@@ -51,8 +51,6 @@
 ;;     er/mark-word
 ;;     er/mark-symbol
 ;;     er/mark-method-call
-;;     er/mark-comment
-;;     er/mark-comment-block
 ;;     er/mark-inside-quotes
 ;;     er/mark-outside-quotes
 ;;     er/mark-inside-pairs
