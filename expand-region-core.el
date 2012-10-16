@@ -48,10 +48,6 @@
 
 (set-default 'er--show-expansion-message nil)
 
-(defun er--point-is-in-comment-p ()
-  "t if point is in comment, otherwise nil"
-  (nth 4 (syntax-ppss)))
-
 ;; Default expansions
 
 (defun er/mark-word ()
@@ -119,6 +115,27 @@ period and marks next symbol."
       (if (looking-at "(")
           (forward-list))
       (exchange-point-and-mark))))
+
+;; Comments
+
+(defun er--point-is-in-comment-p ()
+  "t if point is in comment, otherwise nil"
+  (or (nth 4 (syntax-ppss))
+      (memq (get-text-property (point) 'face) '(font-lock-comment-face font-lock-comment-delimiter-face))))
+
+(defun er/mark-comment ()
+  "Mark the entire comment around point."
+  (interactive)
+  (when (er--point-is-in-comment-p)
+    (let ((p (point)))
+      (while (er--point-is-in-comment-p)
+        (forward-char 1))
+      (skip-chars-backward " \n\t\r")
+      (set-mark (point))
+      (goto-char p)
+      (while (er--point-is-in-comment-p)
+        (forward-char -1))
+      (skip-chars-forward " \n\t\r"))))
 
 ;; Quotes
 
@@ -220,7 +237,8 @@ period and marks next symbol."
                            er/mark-inside-quotes
                            er/mark-outside-quotes
                            er/mark-inside-pairs
-                           er/mark-outside-pairs))
+                           er/mark-outside-pairs
+                           er/mark-comment))
 
 (defun er--prepare-expanding ()
   (when (and (er--first-invocation)
