@@ -85,6 +85,13 @@ always be copied to the register named after that character."
   :group 'expand-region
   :type 'string)
 
+;;;###autoload
+(defcustom expand-region-exclude-text-mode-expansions
+  '(html-mode nxml-mode)
+  "List of modes which derive from `text-mode' for which text mode expansions are not appropriate."
+  :group 'expand-region
+  :type '(repeat (symbol :tag "Major Mode" unknown)))
+
 (provide 'expand-region-custom)
 
 ;;; expand-region-custom.el ends here

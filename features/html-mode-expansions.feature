@@ -84,3 +84,12 @@ Feature: html-mode expansions
     And I press "C-@"
     And I press "C-@"
     Then the region should be "<div class='hi'><div>before <span></span></div> after</div>"
+
+  Scenario: Text mode expansions shouldn't be here
+    Given I turn on html-mode
+    And there is no region selected
+    When I insert "Sentence the first.  Sentence the second"
+    And I place the cursor between "first.  " and "Sentence"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be "Sentence the first.  Sentence the second"
