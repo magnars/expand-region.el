@@ -9,6 +9,8 @@ Feature: C-mode expansions
       double y = 1.;
       float z = my_function (x, y);
       char t = argv [x + 3];
+
+      fun ( (char*)bob, joe );
     
       int i = 0;
       for ( ; i<N ; ++i ) {
@@ -122,3 +124,10 @@ Feature: C-mode expansions
         doSomething (i);
       }
     """
+
+
+
+  Scenario: Handle consecutive open parens (issue #69)
+    When I place the cursor after "(char*)"
+    And I press "C-u 3 C-@"
+    Then the region should be "( (char*)bob, joe )"
