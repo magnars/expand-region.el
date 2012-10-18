@@ -183,12 +183,7 @@ before calling `er/expand-region' for the first time."
   (require 'js-mode-expansions)
   (er/add-js-mode-expansions))
 
-;; unfortunately html-mode inherits from text-mode
-;; and text-mode-expansions don't work well in html-mode
-;; so if you want text-mode-expansions, add this to your
-;; own init:
-;;
-;; (eval-after-load "text-mode"    '(require 'text-mode-expansions))
+(eval-after-load "text-mode"    '(require 'text-mode-expansions))
 
 (provide 'expand-region)
 
