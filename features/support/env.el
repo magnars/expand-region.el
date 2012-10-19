@@ -19,6 +19,7 @@
  (switch-to-buffer
   (get-buffer-create "*expand-region*"))
  (erase-buffer)
+ (fundamental-mode)
  (transient-mark-mode 1)
  (cua-mode 0)
  (setq er--show-expansion-message t)
