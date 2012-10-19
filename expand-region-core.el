@@ -252,7 +252,8 @@ period and marks next symbol."
 (defun er--copy-region-to-register ()
   (when (and (stringp expand-region-autocopy-register)
              (> (length expand-region-autocopy-register) 0))
-    (copy-to-register (aref expand-region-autocopy-register 0) (region-beginning) (region-end))))
+    (set-register (aref expand-region-autocopy-register 0)
+                  (filter-buffer-substring (region-beginning) (region-end)))))
 
 (defun er--expand-region-1 ()
   "Increase selected region by semantic units.
