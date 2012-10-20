@@ -50,7 +50,7 @@
   "Adds expansions for buffers in `text-mode' except for `html-mode'.
 Unfortunately `html-mode' inherits from `text-mode' and
 text-mode-expansions don't work well in `html-mode'."
-  (unless (some #'derived-mode-p expand-region-exclude-text-mode-expansions)
+  (unless (member major-mode expand-region-exclude-text-mode-expansions)
     (set (make-local-variable 'er/try-expand-list)
          (append
           er/try-expand-list
