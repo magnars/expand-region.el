@@ -20,16 +20,6 @@
 
 ;;; Commentary:
 
-;; Normal javascript-mode does not have a javascript-mode-hook, which is one of
-;; the reasons I switched to js2-mode. If you want to use this with
-;; javascript-mode, try putting this in your init:
-
-;;     (add-hook 'find-file-hook
-;;               (lambda ()
-;;                 (when (string-match-p "\\.js$" (buffer-file-name))
-;;                   (require 'js-mode-expansions)
-;;                   (er/add-js-mode-expansions))))
-
 ;; Extra expansions for JavaScript that I've found useful so far:
 ;;
 ;;    er/mark-js-function
@@ -170,6 +160,7 @@ If point is inside the value, that will be marked first anyway."
                                                     er/mark-js-inner-return
                                                     er/mark-js-outer-return))))
 
+(add-hook 'js-mode-hook  'er/add-js-mode-expansions)
 (add-hook 'js2-mode-hook 'er/add-js-mode-expansions)
 (add-hook 'js3-mode-hook 'er/add-js-mode-expansions)
 
