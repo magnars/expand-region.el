@@ -163,6 +163,7 @@ before calling `er/expand-region' for the first time."
 (eval-after-load "sgml-mode"    '(require 'html-mode-expansions)) ;; html-mode is defined in sgml-mode.el
 (eval-after-load "rhtml-mode"   '(require 'html-mode-expansions))
 (eval-after-load "nxhtml-mode"  '(require 'html-mode-expansions))
+(eval-after-load "js"           '(require 'js-mode-expansions))
 (eval-after-load "js2-mode"     '(require 'js-mode-expansions))
 (eval-after-load "js2-mode"     '(require 'js2-mode-expansions))
 (eval-after-load "js3-mode"     '(require 'js-mode-expansions))
@@ -178,11 +179,6 @@ before calling `er/expand-region' for the first time."
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
 (eval-after-load "org"          '(require 'org-mode-expansions))
 (eval-after-load "cc-mode"      '(require 'cc-mode-expansions))
-
-(defadvice javascript-mode (after enable-expand-region activate)
-  (require 'js-mode-expansions)
-  (er/add-js-mode-expansions))
-
 (eval-after-load "text-mode"    '(require 'text-mode-expansions))
 
 (provide 'expand-region)
