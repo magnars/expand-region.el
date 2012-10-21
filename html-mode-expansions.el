@@ -95,6 +95,7 @@ around the equal sign or unquotes attributes atm."
 (add-hook 'html-mode-hook 'er/add-html-mode-expansions)
 (add-hook 'rhtml-mode-hook 'er/add-html-mode-expansions)
 (add-hook 'nxhtml-mode-hook 'er/add-html-mode-expansions)
+(add-hook 'web-mode-hook 'er/add-html-mode-expansions)
 
 (provide 'html-mode-expansions)
 
