@@ -86,7 +86,7 @@
 ;;                                 '(mark-paragraph
 ;;                                   mark-page))))
 
-;;     (add-hook 'text-mode-hook 'er/add-text-mode-expansions)
+;;     (er/enable-mode-expansions text-mode er/add-text-mode-expansions)
 
 ;; Add that to its own file, and require it at the bottom of this one,
 ;; where it says "Mode-specific expansions"

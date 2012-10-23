@@ -48,8 +48,7 @@
                                                   er/try-expand-list
                                                   '(js2-mark-parent-statement))))
 
-(add-hook 'js2-mode-hook 'er/add-js2-mode-expansions)
-;;(add-hook 'js3-mode-hook 'er/add-js2-mode-expansions) -- works?
+(er/enable-mode-expansions js2-mode er/add-js2-mode-expansions)
 
 (provide 'js2-mode-expansions)
 

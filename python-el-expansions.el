@@ -76,15 +76,13 @@
                                      er/mark-inside-python-string
                                      er/mark-outside-python-string
                                      python-mark-block)))
+    (set (make-local-variable 'expand-region-skip-whitespace) nil)
     (set (make-local-variable 'er/try-expand-list)
          (remove 'er/mark-inside-quotes
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (set (make-local-variable 'expand-region-skip-whitespace) nil)
-              (er/add-python-mode-expansions)))
+(er/enable-mode-expansions python-mode er/add-python-mode-expansions)
 
 (provide 'python-el-expansions)
 

@@ -107,7 +107,7 @@
                 (remove 'er/mark-symbol-with-prefix
                         (remove 'er/mark-symbol er/try-expand-list))))))
 
-(add-hook 'nxml-mode-hook 'er/add-nxml-mode-expansions)
+(er/enable-mode-expansions nxml-mode er/add-nxml-mode-expansions)
 
 (provide 'nxml-mode-expansions)
 

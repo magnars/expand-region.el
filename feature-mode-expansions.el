@@ -63,6 +63,6 @@
                                                   '(er/mark-feature-scenario
                                                     er/mark-feature-step))))
 
-(add-hook 'feature-mode-hook 'er/add-feature-mode-expansions)
+(er/enable-mode-expansions feature-mode er/add-feature-mode-expansions)
 
 (provide 'feature-mode-expansions)
