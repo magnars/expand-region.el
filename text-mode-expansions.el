@@ -58,7 +58,7 @@ text-mode-expansions don't work well in `html-mode'."
             er/mark-text-paragraph
             mark-page)))))
 
-(add-hook 'text-mode-hook 'er/add-text-mode-expansions)
+(er/enable-mode-expansions text-mode er/add-text-mode-expansions)
 
 (provide 'text-mode-expansions)
 

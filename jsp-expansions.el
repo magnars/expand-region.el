@@ -57,7 +57,7 @@ If point is inside the brackets, they will be marked first anyway."
                                                   er/try-expand-list
                                                   '(er/mark-jstl-escape))))
 
-(add-hook 'html-mode-hook 'er/add-jsp-expansions)
+(er/enable-mode-expansions html-mode er/add-jsp-expansions)
 
 (provide 'jsp-expansions)
 

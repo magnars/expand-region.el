@@ -37,6 +37,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
 (defvar er/history '()
   "A history of start and end points so we can contract after expanding.")
 
@@ -448,6 +450,15 @@ remove the keymap depends on user input and KEEP-PRED:
   (and (or (memq (char-before) er--blank-list)
            (eq (point) (point-min)))
        (memq (char-after) er--blank-list)))
+
+(defmacro er/enable-mode-expansions (mode add-fn)
+  `(progn
+     (add-hook ',(intern (format "%s-hook" mode)) ',add-fn)
+     (save-window-excursion
+       (dolist (buffer (buffer-list))
+         (with-current-buffer buffer
+           (when (derived-mode-p ',mode)
+             (,add-fn)))))))
 
 (provide 'expand-region-core)
 
