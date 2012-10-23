@@ -37,6 +37,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
 (defvar er/history '()
   "A history of start and end points so we can contract after expanding.")
 
