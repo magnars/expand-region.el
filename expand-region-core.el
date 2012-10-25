@@ -386,10 +386,10 @@ before calling `er/expand-region' for the first time."
              `(lambda ()
                 (interactive)
                 (setq this-command `,(cadr ',binding))
-                (eval `,(cdr ',binding))
-                (message ,msg)))))
+                (or (minibufferp) (message "%s" ,msg))
+                (eval `,(cdr ',binding))))))
        t)
-      (message "%s" msg))))
+      (or (minibufferp) (message "%s" msg)))))
 
 (when (not (fboundp 'set-temporary-overlay-map))
   ;; Backport this function from newer emacs versions
@@ -432,6 +432,11 @@ remove the keymap depends on user input and KEEP-PRED:
 (defadvice keyboard-quit (before collapse-region activate)
   (when (memq last-command '(er/expand-region er/contract-region))
     (er/contract-region 0)))
+
+(defadvice minibuffer-keyboard-quit (around collapse-region activate)
+  (if (memq last-command '(er/expand-region er/contract-region))
+      (er/contract-region 0)
+    ad-do-it))
 
 (defadvice cua-cancel (before collapse-region activate)
   (when (memq last-command '(er/expand-region er/contract-region))
