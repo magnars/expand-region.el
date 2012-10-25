@@ -40,7 +40,7 @@
                                                   '(erlang-mark-function
                                                     erlang-mark-clause))))
 
-(er/enable-mode-expansions erlang-mode er/add-erlang-mode-expansions)
+(er/enable-mode-expansions 'erlang-mode 'er/add-erlang-mode-expansions)
 
 (provide 'erlang-mode-expansions)
 

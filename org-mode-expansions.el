@@ -55,6 +55,6 @@
                                                     er/mark-sentence
                                                     er/mark-paragraph))))
 
-(er/enable-mode-expansions org-mode er/add-org-mode-expansions)
+(er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
 
 (provide 'org-mode-expansions)

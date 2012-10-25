@@ -45,7 +45,7 @@
                                                   er/try-expand-list
                                                   '(er/mark-css-declaration))))
 
-(er/enable-mode-expansions css-mode er/add-css-mode-expansions)
+(er/enable-mode-expansions 'css-mode 'er/add-css-mode-expansions)
 
 (provide 'css-mode-expansions)
 

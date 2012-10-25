@@ -82,8 +82,8 @@ If point is inside the parens, they will be marked first anyway."
                                                     er/mark-clj-regexp-literal
                                                     er/mark-clj-function-literal))))
 
-(er/enable-mode-expansions clojure-mode er/add-clojure-mode-expansions)
-(er/enable-mode-expansions nrepl-mode er/add-clojure-mode-expansions)
+(er/enable-mode-expansions 'clojure-mode 'er/add-clojure-mode-expansions)
+(er/enable-mode-expansions 'nrepl-mode 'er/add-clojure-mode-expansions)
 
 (provide 'clojure-mode-expansions)
 

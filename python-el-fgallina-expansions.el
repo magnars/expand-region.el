@@ -154,7 +154,7 @@ Command that wraps `er/mark-python-block'."
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-(er/enable-mode-expansions python-mode er/add-python-mode-expansions)
+(er/enable-mode-expansions 'python-mode 'er/add-python-mode-expansions)
 
 (provide 'python-el-fgallina-expansions)
 

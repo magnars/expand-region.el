@@ -171,13 +171,13 @@ This function captures identifiers composed of multiple
                  er/c-mark-statement-block-1 er/c-mark-statement-block-2
                  er/c-mark-vector-access-1   er/c-mark-vector-access-2))))
 
-(er/enable-mode-expansions c-mode er/add-cc-mode-expansions)
-(er/enable-mode-expansions c++-mode er/add-cc-mode-expansions)
-(er/enable-mode-expansions objc-mode er/add-cc-mode-expansions)
-(er/enable-mode-expansions java-mode er/add-cc-mode-expansions)
-(er/enable-mode-expansions idl-mode er/add-cc-mode-expansions)
-(er/enable-mode-expansions pike-mode er/add-cc-mode-expansions)
-(er/enable-mode-expansions awk-mode er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'c-mode 'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'c++-mode 'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'objc-mode 'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'java-mode 'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'idl-mode 'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'pike-mode 'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'awk-mode 'er/add-cc-mode-expansions)
 
 (provide 'cc-mode-expansions)
 

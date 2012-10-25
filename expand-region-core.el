@@ -456,14 +456,13 @@ remove the keymap depends on user input and KEEP-PRED:
            (eq (point) (point-min)))
        (memq (char-after) er--blank-list)))
 
-(defmacro er/enable-mode-expansions (mode add-fn)
-  `(progn
-     (add-hook ',(intern (format "%s-hook" mode)) ',add-fn)
-     (save-window-excursion
-       (dolist (buffer (buffer-list))
-         (with-current-buffer buffer
-           (when (derived-mode-p ',mode)
-             (,add-fn)))))))
+(defun er/enable-mode-expansions (mode add-fn)
+  (add-hook (intern (format "%s-hook" mode)) add-fn)
+  (save-window-excursion
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (derived-mode-p mode)
+          (funcall add-fn))))))
 
 (provide 'expand-region-core)
 

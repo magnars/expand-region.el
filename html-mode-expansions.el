@@ -92,10 +92,10 @@ around the equal sign or unquotes attributes atm."
                                                     er/mark-inner-tag
                                                     er/mark-outer-tag))))
 
-(er/enable-mode-expansions html-mode er/add-html-mode-expansions)
-(er/enable-mode-expansions rhtml-mode er/add-html-mode-expansions)
-(er/enable-mode-expansions nxhtml-mode er/add-html-mode-expansions)
-(er/enable-mode-expansions web-mode er/add-html-mode-expansions)
+(er/enable-mode-expansions 'html-mode 'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'rhtml-mode 'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'nxhtml-mode 'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'web-mode 'er/add-html-mode-expansions)
 
 (provide 'html-mode-expansions)
 

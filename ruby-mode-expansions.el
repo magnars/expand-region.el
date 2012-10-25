@@ -158,6 +158,6 @@ This moves point to the next line to include the end of the block"
                                                   er/try-expand-list
                                                   '(er/mark-ruby-block-up))))
 
-(er/enable-mode-expansions ruby-mode er/add-ruby-mode-expansions)
+(er/enable-mode-expansions 'ruby-mode 'er/add-ruby-mode-expansions)
 
 (provide 'ruby-mode-expansions)
