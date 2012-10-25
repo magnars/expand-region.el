@@ -107,6 +107,7 @@ sure to add a set of basic tests around the functionality you're changing.
 * [Raimon Grau](https://github.com/kidd) added support for when transient-mark-mode is off.
 * [Roland Walker](https://github.com/rolandwalker) added option to copy the contents of the most recent action to a register, and some fixes.
 * [Damien Cassou](https://github.com/DamienCassou) added option to continue expanding/contracting with fast keys after initial expand.
+* [Sylvain Rousseau](https://github.com/thisirs) fixed loads of little annoyances.
 
 ### Ruby expansions contributed by
 
