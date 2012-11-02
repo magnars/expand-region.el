@@ -56,8 +56,18 @@
 
 This moves point to the next line to include the end of the block"
   (interactive "p")
+  ;; Workaround for `ruby-end-of-block' in Emacs 23.
+  (when (re-search-forward (concat "\\<\\(" ruby-block-beg-re "\\)\\>")
+                           (point-at-eol) t)
+    (goto-char (match-beginning 0)))
   (ruby-end-of-block (or arg 1))
   (er/ruby-skip-past-block-end))
+
+(defun er/point-at-indentation ()
+  "Return the point where current line's indentation ends."
+  (save-excursion
+    (back-to-indentation)
+    (point)))
 
 (defun er/ruby-backward-up ()
   "a la `paredit-backward-up'"
@@ -74,8 +84,8 @@ This moves point to the next line to include the end of the block"
     ;; cover the case when point is in the line of beginning of block
     (unless (progn (ruby-end-of-block)
                    (ruby-beginning-of-block)
-                   (back-to-indentation)
-                   (< (point) orig-point))
+                   ;; "Block beginning" is often not at indentation in Emacs 24.
+                   (< (er/point-at-indentation) orig-point))
       (loop do
             (ruby-beginning-of-block)
             (setq progress-beg (point))
@@ -105,14 +115,14 @@ This moves point to the next line to include the end of the block"
     (let (beg end)
       (cons (progn
               (er/ruby-backward-up)
-              (point))
+              (er/point-at-indentation))
             (progn
               (er/ruby-end-of-block)
               (point))))))
 
 (defun er/mark-ruby-block-up-1 ()
   (er/ruby-backward-up)
-  (set-mark (point))
+  (set-mark (er/point-at-indentation))
   (er/ruby-end-of-block)
   (exchange-point-and-mark))
 

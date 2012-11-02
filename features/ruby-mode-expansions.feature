@@ -69,6 +69,28 @@ Feature: ruby-mode expansions
 
     """
 
+  Scenario: Mark empty ruby block from within
+    Given I turn on ruby-mode
+    And there is no region selected
+    When I insert:
+    """
+    module Bar
+      something do
+
+      end
+    end
+    """
+    And I go to line "3"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+    """
+    something do
+
+      end
+    
+    """
+
   Scenario: Mark ruby block with using curly brackets
     Given I turn on ruby-mode
     And there is no region selected
