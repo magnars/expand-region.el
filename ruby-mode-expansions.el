@@ -74,6 +74,7 @@ This moves point to the next line to include the end of the block"
     ;; cover the case when point is in the line of beginning of block
     (unless (progn (ruby-end-of-block)
                    (ruby-beginning-of-block)
+                   (back-to-indentation)
                    (< (point) orig-point))
       (loop do
             (ruby-beginning-of-block)
