@@ -126,6 +126,7 @@ sure to add a set of basic tests around the functionality you're changing.
 * [François Févotte](https://github.com/ffevotte) contributed C and C++ expansions.
 * [Ivan Andrus](https://github.com/gvol) contributed text-mode, LaTeX-mode and nxml-mode expansions.
 * [Gleb Peregud](https://github.com/gleber) contributed Erlang expansions.
+* [Mark Hepburn](https://github.com/markhepburn) contributed Octave expansions.
 
 Thanks!
 
