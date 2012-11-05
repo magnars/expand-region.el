@@ -29,6 +29,18 @@
 (require 'expand-region-core)
 (require 'octave-mod)
 
+;;; Octave-mod received a major rewrite between versions 23 and 24 of
+;;; Emacs, for example using the new smie package instead of
+;;; hand-coding a lot of motion commands.  Unfortunately for our
+;;; purposes here, in the process the behaviour of `octave-mark-block'
+;;; changed slightly.  So, in order to behave identically across both
+;;; versions we need to check which is which in a few places and
+;;; adjust accordingly:
+(defconst er/old-octave-mod-p (fboundp 'octave-up-block))
+
+(defalias 'er/up-block
+  (if er/old-octave-mod-p 'octave-up-block 'up-list))
+
 (defun er/octave-mark-up-block ()
   "Mark the containing block, assuming the current block has
 already been marked."
@@ -36,15 +48,27 @@ already been marked."
   (when (use-region-p)
     (when (< (point) (mark))
       (exchange-point-and-mark))
-    (octave-up-block -1)              ; -1 means move up to _beginning_
+    (er/up-block -1)                    ; -1 means backwards, ie to the front
     (octave-mark-block)))
 
+(defun er/octave-mark-block ()
+  "Not for general use; this is a work-around for the different
+behaviour of `octave-mark-block' between emacs versions 23 and
+24."
+  (interactive)
+  (forward-word)
+  (octave-mark-block))
 
 (defun er/add-octave-expansions ()
   "Adds octave/matlab-specific expansions for buffers in octave-mode"
-  (let ((try-expand-list-additions '(octave-mark-block
-                                     er/octave-mark-up-block
-                                     octave-mark-defun)))
+  (let ((try-expand-list-additions (if er/old-octave-mod-p
+                                       '(octave-mark-block
+                                         er/octave-mark-up-block
+                                         octave-mark-defun)
+                                     '(octave-mark-block
+                                       er/octave-mark-block
+                                       er/octave-mark-up-block
+                                       mark-defun))))
     (set (make-local-variable 'er/try-expand-list)
          (append er/try-expand-list try-expand-list-additions))))
 
