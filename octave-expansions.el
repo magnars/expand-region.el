@@ -72,7 +72,6 @@ behaviour of `octave-mark-block' between emacs versions 23 and
     (set (make-local-variable 'er/try-expand-list)
          (append er/try-expand-list try-expand-list-additions))))
 
-(add-hook 'octave-mode-hook 'er/add-octave-expansions)
+(er/enable-mode-expansions 'octave-mode 'er/add-octave-expansions)
 
 (provide 'octave-expansions)
-
