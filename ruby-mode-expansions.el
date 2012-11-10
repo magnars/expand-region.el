@@ -163,11 +163,22 @@ This moves point to the next line to include the end of the block"
           (er/mark-ruby-block-up-1)))
     (er/mark-ruby-block-up-1)))
 
+(defun er/mark-ruby-instance-variable ()
+  "Marks instance variables in ruby.
+Assumes that point is at the @ - if it is inside the word, that will
+be marked first anyway."
+  (when (looking-at "@")
+    (forward-char 1))
+  (when (looking-back "@")
+    (er/mark-symbol)
+    (forward-char -1)))
+
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
   (set (make-local-variable 'er/try-expand-list) (append
                                                   er/try-expand-list
-                                                  '(er/mark-ruby-block-up))))
+                                                  '(er/mark-ruby-instance-variable
+                                                    er/mark-ruby-block-up))))
 
 (er/enable-mode-expansions 'ruby-mode 'er/add-ruby-mode-expansions)
 
