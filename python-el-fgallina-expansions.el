@@ -26,6 +26,7 @@
 ;;    - `er/mark-python-statement'
 ;;    - `er/mark-python-block'
 ;;    - `er/mark-outer-python-block'
+;;    - `er/mark-python-block-and-decorator'
 ;;  - Supports multi-line strings
 
 ;;; Code:
@@ -139,6 +140,30 @@ Command that wraps `er/mark-python-block'."
   (interactive)
   (er/mark-python-block (current-indentation)))
 
+(defvar er--python-decoratable-block-start-regex
+  (rx symbol-start (or "def" "class") symbol-end)
+  )
+
+(defun er/mark-python-block-and-decorator ()
+  "Marks a function block and a decorator"
+  (if (or (er--python-looking-at-decorator -1))
+      (progn
+	(set-mark (point))
+	(while (not (looking-at er--python-decoratable-block-start-regex))
+	  (forward-line 1)
+	  (back-to-indentation)
+	  )
+	(forward-line 1)
+	(python-nav-end-of-block)
+	(exchange-point-and-mark)
+	)))
+
+(defun er--python-looking-at-decorator (offset)
+  (forward-line offset)
+  (back-to-indentation)
+  (looking-at "@"))
+
+
 (defun er/add-python-mode-expansions ()
   "Adds python-mode-specific expansions for buffers in python-mode"
   (let ((try-expand-list-additions '(
@@ -147,6 +172,7 @@ Command that wraps `er/mark-python-block'."
                                      er/mark-python-statement
                                      er/mark-python-block
                                      er/mark-outer-python-block
+				     er/mark-python-block-and-decorator
                                      )))
     (set (make-local-variable 'expand-region-skip-whitespace) nil)
     (set (make-local-variable 'er/try-expand-list)
