@@ -141,22 +141,29 @@ Command that wraps `er/mark-python-block'."
   (er/mark-python-block (current-indentation)))
 
 (defun er/mark-python-block-and-decorator ()
-  "Marks a function block and a decorator"
   (interactive)
-  (let ((start-point (point)))
-    (forward-line -1)
-    (back-to-indentation)
-    (let ((prev-point (point)))
-      (if (looking-at "@")
-	(progn
-	  (set-mark (point))
-	  (goto-char prev-point)
-	  (python-nav-forward-block)
-	  (python-nav-end-of-block)
-	  (exchange-point-and-mark)
+  (back-to-indentation)
+  (if (or (er--python-looking-at-decorator) (er--python-looking-at-decorator -1))
+      (progn
+	(while (er--python-looking-at-decorator -1)
+	  (forward-line -1)
+	  (back-to-indentation)
 	  )
-	(goto-char start-point)
-	))))
+	(set-mark (point))
+	(while (er--python-looking-at-decorator)
+	  (forward-line)
+	  )
+	(python-nav-end-of-block)
+	(exchange-point-and-mark))))
+
+(defun er--python-looking-at-decorator (&optional line-offset)
+  (save-excursion
+    (if line-offset
+	(forward-line line-offset)
+	)
+    (back-to-indentation)
+    (looking-at "@")
+    ))
 
 (defun er/add-python-mode-expansions ()
   "Adds python-mode-specific expansions for buffers in python-mode"
