@@ -112,7 +112,7 @@ sure to add a set of basic tests around the functionality you're changing.
 ### Language specific contributions
 
 * [Matt Briggs](https://github.com/mbriggs), [Jorge Dias](https://github.com/diasjorge) and [Le Wang](https://github.com/lewang) contributed Ruby expansions.
-* [Ivan Andrus](https://github.com/gvol), [fgeller](https://github.com/fgeller) and [edmccard](https://github.com/edmccard) contributed Python expansions.
+* [Ivan Andrus](https://github.com/gvol), [fgeller](https://github.com/fgeller), [edmccard](https://github.com/edmccard) and [Rotem Yaari](https://github.com/vmalloc) contributed Python expansions.
 * [François Févotte](https://github.com/ffevotte) contributed C and C++ expansions.
 * [Ivan Andrus](https://github.com/gvol) contributed text-mode, LaTeX-mode and nxml-mode expansions.
 * [Gleb Peregud](https://github.com/gleber) contributed Erlang expansions.
