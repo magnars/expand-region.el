@@ -36,11 +36,6 @@
 (require 'expand-region-core)
 (require 'sml-mode)
 
-(defun er/sml-mark-function ()
-  "Marks fun and val statements"
-  (interactive)
-  (sml-mark-function))
-
 ;; TODO: head-or-tail, then cons expression
 ;; TODO: comma-delimited elements within a list,tuple,record
 ;; TODO: expression, match pattern, branch, case expression
@@ -51,7 +46,7 @@
   "Adds expansions for buffers in `sml-mode'."
   (set (make-local-variable 'er/try-expand-list)
        (append er/try-expand-list
-        '(er/sml-mark-function))))
+        '(sml-mark-function))))
  
 (er/enable-mode-expansions 'sml-mode 'er/add-sml-mode-expansions)
 
