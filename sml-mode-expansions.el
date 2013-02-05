@@ -21,11 +21,11 @@
 
 ;;; Commentary:
 
-;; Extra expansions for sml-mode:
-;;
-;; * `er/sml-mark-function` - mark fun and val definitions
-;;
-;; Tested with sml-mode version 6.2
+;; Provides extra expansions for sml-mode:
+;; - various expression (case, if, let)
+;; - fun bindings
+;; 
+;; Tested with sml-mode version 6.3
 ;; 
 ;; Feel free to contribute any other expansions for SML at
 ;;
@@ -36,18 +36,27 @@
 (require 'expand-region-core)
 (require 'sml-mode)
 
-;; TODO: head-or-tail, then cons expression
 ;; TODO: comma-delimited elements within a list,tuple,record
-;; TODO: expression, match pattern, branch, case expression
+;; TODO: match expression, patterns
 ;; TODO: individual field, record type
-;; TODO: expression structure
+;; TODO: head-or-tail, then cons expression
+
+(defun er/sml-mark-keyword-prefixed-expression ()
+  "Mark the surrounding expression."
+  (interactive)
+  (progn 
+    (sml-find-matching-starter '("case" "let" "if" "raise"))
+    (mark-sexp)))
+
 
 (defun er/add-sml-mode-expansions ()
   "Adds expansions for buffers in `sml-mode'."
   (set (make-local-variable 'er/try-expand-list)
        (append er/try-expand-list
-        '(sml-mark-function))))
- 
+	       '(sml-mark-function
+		 er/sml-mark-keyword-prefixed-expression
+		 mark-sexp))))
+
 (er/enable-mode-expansions 'sml-mode 'er/add-sml-mode-expansions)
 
 (provide 'sml-mode-expansions)
