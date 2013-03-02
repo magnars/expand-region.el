@@ -45,7 +45,7 @@
   (exchange-point-and-mark))
 
 (defun er/mark-cperl-subroutine ()
-  "Marks the right value of an assignment"
+  "Marks current subroutine body."
   (interactive)
   (end-of-defun)
   (set-mark (point))
