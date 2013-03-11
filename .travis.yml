@@ -13,7 +13,7 @@ before_install:
           emacs24 emacs24-el emacs24-common-non-dfsg;
     fi
   - curl -fsSkL https://raw.github.com/rejeep/carton/master/go | sh
-  - export PATH="~/.carton/bin:$PATH"
+  - export PATH="/home/travis/.carton/bin:$PATH"
   - carton
 env:
   - EMACS=emacs24
