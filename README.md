@@ -87,11 +87,12 @@ great if you opened a pull-request. The repo is at:
 All changes must be accompanied by feature tests.
 They are written in [Ecukes](http://ecukes.info), a Cucumber for Emacs.
 
-To fetch the test dependencies:
+To fetch the test dependencies, install
+[carton](https://github.com/rejeep/carton) if you haven't already,
+then:
 
     $ cd /path/to/expand-region
-    $ git submodule init
-    $ git submodule update
+    $ carton
 
 Run the tests with:
 
