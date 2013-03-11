@@ -95,7 +95,7 @@ To fetch the test dependencies:
 
 Run the tests with:
 
-    $ ./util/ecukes/ecukes features
+    $ ./run-tests.sh
 
 If feature tests are missing for the mode you are changing, please make
 sure to add a set of basic tests around the functionality you're changing.
