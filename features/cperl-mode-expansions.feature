@@ -53,10 +53,18 @@ Feature: cperl-mode expansions
     When I insert:
     """
     sub foo {
-      do_something;
+      foo_do_something;
+    }
+
+    sub bar {
+       bar_do_something;
+    }
+
+    sub baz {
+       baz_do_something;
     }
     """
-    And I place the cursor before "do_something"
+    And I place the cursor before "foo_do_something"
     And I press "C-@"
     And I press "C-@"
     And I press "C-@"
@@ -65,6 +73,7 @@ Feature: cperl-mode expansions
     Then the region should be:
     """
     sub foo {
-      do_something;
+      foo_do_something;
     }
+
     """
