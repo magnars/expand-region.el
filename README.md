@@ -126,6 +126,19 @@ Thanks!
 
 ## Changelist
 
+### From 0.8 to 0.9
+
+* Improve org-, clojure-, python-, latex-, cc-, ruby-modes
+* Add basic expansions: email and url
+* Add sml-mode expansions (Alexis Gallagher)
+* Add cperl-mode expansions (Kang-min Liu)
+* Add octave-mode expansions (Mark Hepburn)
+* Add web-mode expansions (Rotem Yaari)
+* Use Carton for dev-dependencies
+* Fix bad behavior in minibuffer (thisirs)
+* More robust comment expansions
+* Improve loading of expansions for all major modes
+
 ### From 0.7 to 0.8
 
 * Improve js-, ruby-, python- and latex-modes
