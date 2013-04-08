@@ -184,6 +184,7 @@ before calling `er/expand-region' for the first time."
 (eval-after-load "cc-mode"      '(require 'cc-mode-expansions))
 (eval-after-load "text-mode"    '(require 'text-mode-expansions))
 (eval-after-load "cperl-mode"    '(require 'cperl-mode-expansions))
+(eval-after-load "sml-mode"     '(require 'sml-mode-expansions))
 
 (provide 'expand-region)
 
