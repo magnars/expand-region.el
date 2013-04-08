@@ -137,6 +137,7 @@
 
 (require 'expand-region-core)
 (require 'expand-region-custom)
+(require 'er-basic-expansions)
 
 ;;;###autoload
 (defun er/expand-region (arg)
