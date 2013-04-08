@@ -203,6 +203,20 @@ period and marks next symbol."
     (forward-list)
     (exchange-point-and-mark)))
 
+(require 'thingatpt)
+
+(defun er/mark-url ()
+  (interactive)
+  (end-of-thing 'url)
+  (set-mark (point))
+  (beginning-of-thing 'url))
+
+(defun er/mark-email ()
+  (interactive)
+  (end-of-thing 'email)
+  (set-mark (point))
+  (beginning-of-thing 'email))
+
 ;; Methods to try expanding to
 (setq er/try-expand-list
       (append '(er/mark-word
@@ -214,7 +228,9 @@ period and marks next symbol."
                 er/mark-outside-quotes
                 er/mark-inside-pairs
                 er/mark-outside-pairs
-                er/mark-comment)
+                er/mark-comment
+                er/mark-url
+                er/mark-email)
               er/try-expand-list))
 
 (provide 'er-basic-expansions)
