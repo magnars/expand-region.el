@@ -22,18 +22,7 @@
 
 ;; The core functionality of expand-region.
 
-;; All changes to this file must be accompanied by feature tests.
-;; They are written in [Ecukes](http://ecukes.info), a Cucumber for Emacs.
-;;
-;; To fetch the test dependencies:
-;;
-;;     $ cd /path/to/expand-region
-;;     $ git submodule init
-;;     $ git submodule update
-;;
-;; Run the tests with:
-;;
-;;     $ ./util/ecukes/ecukes features
+;; See README.md
 
 ;;; Code:
 
