@@ -30,13 +30,16 @@ nature of the basic expansions:
 
     er/mark-word
     er/mark-symbol
+    er/mark-symbol-with-prefix
+    er/mark-next-accessor
     er/mark-method-call
-    er/mark-comment
-    er/mark-comment-block
     er/mark-inside-quotes
     er/mark-outside-quotes
     er/mark-inside-pairs
     er/mark-outside-pairs
+    er/mark-comment
+    er/mark-url
+    er/mark-email
 
 However, most languages also will benefit from some specially crafted
 expansions. For instance, expand-region comes with these extra expansions for
@@ -128,14 +131,14 @@ Thanks!
 
 ### From 0.8 to 0.9
 
-* Improve org-, clojure-, python-, latex-, cc-, ruby-modes
+* Improve org-, clojure-, python-, latex-, cc- and ruby-modes
 * Add basic expansions: email and url
 * Add sml-mode expansions (Alexis Gallagher)
 * Add cperl-mode expansions (Kang-min Liu)
 * Add octave-mode expansions (Mark Hepburn)
 * Add web-mode expansions (Rotem Yaari)
 * Use Carton for dev-dependencies
-* Fix bad behavior in minibuffer (thisirs)
+* Fix bad behavior in minibuffer (Sylvain Rousseau)
 * More robust comment expansions
 * Improve loading of expansions for all major modes
 
