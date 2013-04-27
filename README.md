@@ -40,6 +40,7 @@ nature of the basic expansions:
     er/mark-comment
     er/mark-url
     er/mark-email
+    er/mark-defun
 
 However, most languages also will benefit from some specially crafted
 expansions. For instance, expand-region comes with these extra expansions for

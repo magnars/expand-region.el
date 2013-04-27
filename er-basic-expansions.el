@@ -217,6 +217,15 @@ period and marks next symbol."
   (set-mark (point))
   (beginning-of-thing 'email))
 
+(defun er/mark-defun ()
+  "Mark defun around or in front of point."
+  (interactive)
+  (end-of-defun)
+  (skip-chars-backward er--space-str)
+  (set-mark (point))
+  (beginning-of-defun)
+  (skip-chars-forward er--space-str))
+
 ;; Methods to try expanding to
 (setq er/try-expand-list
       (append '(er/mark-word
@@ -230,7 +239,8 @@ period and marks next symbol."
                 er/mark-outside-pairs
                 er/mark-comment
                 er/mark-url
-                er/mark-email)
+                er/mark-email
+                er/mark-defun)
               er/try-expand-list))
 
 (provide 'er-basic-expansions)
