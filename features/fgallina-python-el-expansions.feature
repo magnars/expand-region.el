@@ -64,25 +64,25 @@ Feature: fgallinas python.el expansions
 
       """
 
-#  Scenario: Mark region outside a multi-line string.
-#    Given I turn on python-mode
-#    And there is no region selected
-#    When I insert:
-#      """
-#      '''This is a multi-line Python string
-#      with lots of useless content.
-#      '''
-#      """
-#    And I place the cursor between "-" and "l"
-#    And I press "C-@"
-#    And I press "C-@"
-#    And I press "C-@"
-#    Then the region should be:
-#      """
-#      '''This is a multi-line Python string
-#      with lots of useless content.
-#      '''
-#      """
+ Scenario: Mark region outside a multi-line string.
+   Given I turn on python-mode
+   And there is no region selected
+   When I insert:
+     """
+     '''This is a multi-line Python string
+     with lots of useless content.
+     '''
+     """
+   And I place the cursor between "-" and "l"
+   And I press "C-@"
+   And I press "C-@"
+   And I press "C-@"
+   Then the region should be:
+     """
+     '''This is a multi-line Python string
+     with lots of useless content.
+     '''
+     """
 
   Scenario: Mark a basic Python block
     Given I turn on python-mode
@@ -226,6 +226,32 @@ Feature: fgallinas python.el expansions
     And I press "C-@"
     Then the region should be:
       """
+      def inner_foo():
+              return 23
+      """
+
+  Scenario: Mark Python block including decorator
+    Given I turn on python-mode
+    And there is no region selected
+    When I insert:
+      """
+      def outer_foo():
+
+          @idontexist
+          def inner_foo():
+              return 23
+
+          return inner_foo()
+
+      """
+    And I go to point "23"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+      """
+      @idontexist
       def inner_foo():
               return 23
       """

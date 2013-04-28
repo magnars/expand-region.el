@@ -141,7 +141,6 @@ Command that wraps `er/mark-python-block'."
 
 (defun er/mark-python-block-and-decorator ()
   (interactive)
-  (back-to-indentation)
   (if (or (er--python-looking-at-decorator) (er--python-looking-at-decorator -1))
       (progn
 	(while (er--python-looking-at-decorator -1)
