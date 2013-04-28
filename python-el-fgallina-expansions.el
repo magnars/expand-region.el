@@ -51,9 +51,8 @@
 (defun er/mark-python-string (mark-inside)
   "Mark the Python string that surrounds point.
 
-If the optional MARK-INSIDE is not nil, only mark the region
-between the string delimiters, otherwise the region includes the
-delimiters as well."
+If the optional MARK-INSIDE is nil, mark including the string
+delimiters, otherwise only the region inside the delimiters."
   (let ((beginning-of-string (python-info-ppss-context 'string (syntax-ppss))))
     (when beginning-of-string
       (goto-char beginning-of-string)
