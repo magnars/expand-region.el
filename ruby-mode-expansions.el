@@ -176,7 +176,7 @@ be marked first anyway."
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
   (set (make-local-variable 'er/try-expand-list) (append
-                                                  er/try-expand-list
+                                                  (remove 'er/mark-defun er/try-expand-list)
                                                   '(er/mark-ruby-instance-variable
                                                     er/mark-ruby-block-up))))
 
