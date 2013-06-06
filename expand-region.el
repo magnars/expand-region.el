@@ -181,7 +181,7 @@ before calling `er/expand-region' for the first time."
                                      (require 'python-el-fgallina-expansions))))
 (eval-after-load "python-mode"  '(require 'python-mode-expansions))
 (eval-after-load "ruby-mode"    '(require 'ruby-mode-expansions))
-(eval-after-load "org"          '(require 'org-mode-expansions))
+(eval-after-load "org"          '(require 'the-org-mode-expansions))
 (eval-after-load "cc-mode"      '(require 'cc-mode-expansions))
 (eval-after-load "text-mode"    '(require 'text-mode-expansions))
 (eval-after-load "cperl-mode"    '(require 'cperl-mode-expansions))

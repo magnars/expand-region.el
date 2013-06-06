@@ -69,4 +69,4 @@
 
 (er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
 
-(provide 'org-mode-expansions)
+(provide 'the-org-mode-expansions)
