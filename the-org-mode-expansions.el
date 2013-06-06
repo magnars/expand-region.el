@@ -1,4 +1,4 @@
-;;; org-mode-expansions.el --- Expansions for expand-region to be used in org-mode
+;;; the-org-mode-expansions.el --- Expansions for expand-region to be used in org-mode
 
 ;; Copyright (C) 2012 Magnar Sveen
 
@@ -21,6 +21,10 @@
 
 ;;; Commentary:
 
+;; The file needs to be weirdly name (prefixed with the-) to avoid
+;; conflict with org-reload, which bases its functionality on the names
+;; of files, for some reason.
+;;
 ;; Feel free to contribute any other expansions for org-mode at
 ;;
 ;;     https://github.com/magnars/expand-region.el
