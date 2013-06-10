@@ -264,6 +264,21 @@ remove the keymap depends on user input and KEEP-PRED:
         (when (derived-mode-p mode)
           (funcall add-fn))))))
 
+;; Some more performant version of `looking-back'
+
+(defun er/looking-back-on-line (regexp)
+  "Version of `looking-back' that only checks current line."
+  (looking-back regexp (line-beginning-position)))
+
+(defun er/looking-back-exact (s)
+  "Version of `looking-back' that only looks for exact matches, no regexp."
+  (string= s (buffer-substring (- (point) (length s))
+                               (point))))
+
+(defun er/looking-back-max (regexp count)
+  "Version of `looking-back' that only check COUNT chars back."
+  (looking-back regexp (max 1 (- (point) count))))
+
 (provide 'expand-region-core)
 
 ;;; expand-region-core.el ends here

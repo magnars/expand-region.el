@@ -169,7 +169,7 @@ Assumes that point is at the @ - if it is inside the word, that will
 be marked first anyway."
   (when (looking-at "@")
     (forward-char 1))
-  (when (looking-back "@")
+  (when (er/looking-back-exact "@")
     (er/mark-symbol)
     (forward-char -1)))
 
