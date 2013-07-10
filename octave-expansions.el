@@ -27,8 +27,6 @@
 ;;; Code:
 
 (require 'expand-region-core)
-(or (require 'octave-mod nil t)
-    (require 'octave))
 
 
 ;;; Octave-mod received a major rewrite between versions 23 and 24 of
@@ -77,3 +75,4 @@ behaviour of `octave-mark-block' between emacs versions 23 and
 (er/enable-mode-expansions 'octave-mode 'er/add-octave-expansions)
 
 (provide 'octave-expansions)
+;;; octave-expansions.el ends here
