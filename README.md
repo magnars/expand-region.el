@@ -92,11 +92,11 @@ All changes must be accompanied by feature tests.
 They are written in [Ecukes](http://ecukes.info), a Cucumber for Emacs.
 
 To fetch the test dependencies, install
-[carton](https://github.com/rejeep/carton) if you haven't already,
+[cask](https://github.com/rejeep/cask.el) if you haven't already,
 then:
 
     $ cd /path/to/expand-region
-    $ carton
+    $ cask
 
 Run the tests with:
 
