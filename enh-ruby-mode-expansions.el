@@ -35,3 +35,5 @@
                                                   '(enh-ruby-mark-defun))))
 
 (er/enable-mode-expansions 'enh-ruby-mode 'er/add-enh-ruby-mode-expansions)
+
+(provide 'enh-ruby-mode-expansions)
