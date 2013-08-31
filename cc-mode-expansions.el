@@ -95,17 +95,17 @@ either fully inside or fully outside the statement."
   "Mark the current C++ fully qualified identifier.
 
 This function captures identifiers composed of multiple
-'::'-separated parts."
+'::'-separated parts or '->'-separated parts."
   (interactive)
   (er/mark-symbol)
   (when (use-region-p)
     (when (> (point) (mark))
       (exchange-point-and-mark))
-    (while (er/looking-back-exact "::")
+    (while (er/looking-back-max "\\(::\\|->\\)" 2)
       (backward-char 2)
       (skip-syntax-backward "_w"))
     (exchange-point-and-mark)
-    (while (looking-at "::")
+    (while (looking-at "\\(::\\|->\\)")
       (forward-char 2)
       (skip-syntax-forward "_w"))
     (exchange-point-and-mark)))
