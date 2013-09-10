@@ -89,6 +89,7 @@ Skips past [] and {} arguments to the environment."
           er/mark-LaTeX-math))))
 
 (er/enable-mode-expansions 'LaTeX-mode 'er/add-latex-mode-expansions)
+(er/enable-mode-expansions 'latex-mode 'er/add-latex-mode-expansions)
 
 (provide 'latex-mode-expansions)
 
