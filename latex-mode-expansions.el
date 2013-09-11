@@ -88,7 +88,9 @@ Skips past [] and {} arguments to the environment."
           er/mark-LaTeX-inside-environment
           er/mark-LaTeX-math))))
 
-(er/enable-mode-expansions 'LaTeX-mode 'er/add-latex-mode-expansions)
+(let ((latex-mode-hook LaTeX-mode-hook))
+  (er/enable-mode-expansions 'latex-mode 'er/add-latex-mode-expansions)
+  (setq LaTeX-mode-hook latex-mode-hook))
 
 (provide 'latex-mode-expansions)
 
