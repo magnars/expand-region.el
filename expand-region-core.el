@@ -99,6 +99,7 @@ moving point or mark as little as possible."
               (message "%S" (car try-list))))))
       (setq try-list (cdr try-list)))
 
+    (setq deactivate-mark nil)
     (goto-char best-start)
     (set-mark best-end)
 
