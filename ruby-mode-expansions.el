@@ -173,10 +173,33 @@ be marked first anyway."
     (er/mark-symbol)
     (forward-char -1)))
 
+(defun er/mark-ruby-heredoc ()
+  "Marks a heredoc, since `er/mark-inside-quotes' assumes single quote chars."
+  (let ((ppss (syntax-ppss)))
+    (when (elt ppss 3)
+      (let ((s-start (elt ppss 8)))
+        (goto-char s-start)
+        (when (save-excursion
+                (beginning-of-line)
+                (re-search-forward "<<\\(-?\\)['\"]?\\([a-zA-Z0-9_]+\\)" s-start nil))
+          (let ((allow-indent (string= "-" (match-string 1)))
+                (terminator (match-string 2))
+                (heredoc-start (save-excursion
+                                 (forward-line)
+                                 (point))))
+            (forward-sexp 1)
+            (forward-line -1)
+            (when (looking-at (concat "^" (if allow-indent "[ \t]*" "") terminator "$"))
+              (set-mark heredoc-start)
+              (exchange-point-and-mark))))))))
+
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
   (set (make-local-variable 'er/try-expand-list) (append
-                                                  (remove 'er/mark-defun er/try-expand-list)
+                                                  (let ((l (remove 'er/mark-defun er/try-expand-list)))
+                                                    (push 'er/mark-ruby-heredoc
+                                                          (nthcdr (position 'er/mark-inside-quotes l) l))
+                                                    l)
                                                   '(er/mark-ruby-instance-variable
                                                     er/mark-ruby-block-up))))
 
