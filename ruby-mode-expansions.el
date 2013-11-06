@@ -195,13 +195,16 @@ be marked first anyway."
 
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
-  (set (make-local-variable 'er/try-expand-list) (append
-                                                  (let ((l (remove 'er/mark-defun er/try-expand-list)))
-                                                    (push 'er/mark-ruby-heredoc
-                                                          (nthcdr (position 'er/mark-inside-quotes l) l))
-                                                    l)
-                                                  '(er/mark-ruby-instance-variable
-                                                    er/mark-ruby-block-up))))
+  (let ((new-try-expand-list (copy-sequence (default-value 'er/try-expand-list))))
+    (set (make-local-variable 'er/try-expand-list)
+         (append
+          (let* ((l (remove 'er/mark-defun new-try-expand-list))
+                 (p (position 'er/mark-inside-quotes l)))
+            (when p
+              (push 'er/mark-ruby-heredoc (nthcdr p l)))
+            l)
+          '(er/mark-ruby-instance-variable
+            er/mark-ruby-block-up)))))
 
 (er/enable-mode-expansions 'ruby-mode 'er/add-ruby-mode-expansions)
 
