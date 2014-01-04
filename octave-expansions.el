@@ -27,7 +27,7 @@
 ;;; Code:
 
 (require 'expand-region-core)
-
+(require 'octave-mod)
 
 ;;; Octave-mod received a major rewrite between versions 23 and 24 of
 ;;; Emacs, for example using the new smie package instead of
