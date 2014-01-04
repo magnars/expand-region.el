@@ -111,7 +111,7 @@
 (defun er/mark-js-object-property-value ()
   "Mark the current object property value, ie. from : to , or }"
   (interactive)
-  (unless (er--inside-pairs-p)
+  (unless (er--point-inside-pairs-p)
     (error "Point is not inside an object"))
   (search-backward ":")
   (forward-char)
