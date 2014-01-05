@@ -71,7 +71,7 @@ moving point or mark as little as possible."
          (try-list er/try-expand-list)
          (best-start (point-min))
          (best-end (point-max))
-         (transient-mark-mode 1))
+         (set-mark-default-inactive nil))
 
     ;; add hook to clear history on buffer changes
     (unless er/history
