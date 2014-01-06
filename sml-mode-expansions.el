@@ -34,6 +34,7 @@
 ;;; Code:
 
 (require 'expand-region-core)
+(declare-function sml-find-matching-starter "sml-mode")
 
 ;; TODO: comma-delimited elements within a list,tuple,record
 ;; TODO: match expression, patterns
