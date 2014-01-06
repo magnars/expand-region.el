@@ -36,7 +36,7 @@
 ;;
 
 ;;; Code:
-
+(require 'cl)
 (require 'expand-region-core)
 (require 'ruby-mode)
 
@@ -206,4 +206,7 @@ be marked first anyway."
 
 (er/enable-mode-expansions 'ruby-mode 'er/add-ruby-mode-expansions)
 
+;; Local Variables:
+;; byte-compile-warnings: (not cl-functions)
+;; End:
 (provide 'ruby-mode-expansions)
