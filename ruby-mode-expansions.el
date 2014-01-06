@@ -41,6 +41,7 @@
 (eval-when-compile (require 'cl))
 
 (require 'expand-region-core)
+(require 'ruby-mode)
 
 (defvar er/ruby-block-end-re
   (concat ruby-block-end-re "\\|}")
