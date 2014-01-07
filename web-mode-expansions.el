@@ -21,11 +21,11 @@
 
 ;;; Code:
 
-(make-variable-buffer-local 'er/try-expand-list)
 (defun er/add-web-mode-expansions ()
-  (setq er/try-expand-list (append
-			    er/try-expand-list
-			    '(web-mode-mark-and-expand))))
+  (setq (make-local-variable er/try-expand-list) 
+        (append
+         er/try-expand-list
+         '(web-mode-mark-and-expand))))
 
 (add-hook 'web-mode-hook 'er/add-web-mode-expansions)
 
