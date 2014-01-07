@@ -22,7 +22,7 @@
 ;;; Code:
 
 (defun er/add-web-mode-expansions ()
-  (setq (make-local-variable er/try-expand-list) 
+  (set (make-local-variable er/try-expand-list) 
         (append
          er/try-expand-list
          '(web-mode-mark-and-expand))))
