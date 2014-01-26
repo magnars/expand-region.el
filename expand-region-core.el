@@ -30,6 +30,25 @@
 (require 'expand-region-custom)
 (declare-function er/expand-region "expand-region")
 
+(defun running-version-earlier-than (version)
+  (let* ((split-version (split-string version "\\."))
+         (major-version (string-to-number (first split-version)))
+         (minor-version (string-to-number (second split-version))))
+    (or (< emacs-major-version major-version)
+        (and (eq emacs-major-version major-version)
+             (< emacs-minor-version minor-version)))))
+
+(defmacro call-obsolete-function (name new-name when &rest rest)
+  (let ((function-name (if (running-version-earlier-than when)
+                           name
+                         new-name)))
+    `(,function-name ,@rest)))
+
+(defmacro use-obsolete-variable (name new-name when)
+  (if (running-version-earlier-than when)
+      name
+    new-name))
+
 (defvar er/history '()
   "A history of start and end points so we can contract after expanding.")
 
@@ -182,7 +201,7 @@ before calling `er/expand-region' for the first time."
          (msg (car msg-and-bindings))
          (bindings (cdr msg-and-bindings)))
     (when repeat-key
-      (set-temporary-overlay-map
+      (call-obsolete-function set-temporary-overlay-map set-transient-map "24.4"
        (let ((map (make-sparse-keymap)))
          (dolist (binding bindings map)
            (define-key map (read-kbd-macro (car binding))
