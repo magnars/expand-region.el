@@ -129,7 +129,16 @@ sure to add a set of basic tests around the functionality you're changing.
 
 Thanks!
 
-## Changelist
+## Changelog
+
+### From 0.9 to 0.10
+
+* Smarter expansion of ruby heredoc contents (Steve Purcell)
+* Add enh-ruby-mode expansions (Bradley Wright)
+* Add basic expansion er/mark-defun
+* Big cleanup of byte compilation warnings (Ryan Mulligan)
+* Better performance
+* Lots of bugfixes
 
 ### From 0.8 to 0.9
 
