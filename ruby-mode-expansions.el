@@ -36,11 +36,8 @@
 ;;
 
 ;;; Code:
-
-
-(eval-when-compile (require 'cl))
-
 (require 'expand-region-core)
+(require 'ruby-mode)
 
 (defvar er/ruby-block-end-re
   (concat ruby-block-end-re "\\|}")
@@ -195,17 +192,13 @@ be marked first anyway."
 
 (defun er/add-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in ruby-mode"
-  (let ((new-try-expand-list (copy-sequence (default-value 'er/try-expand-list))))
-    (set (make-local-variable 'er/try-expand-list)
-         (append
-          (let* ((l (remove 'er/mark-defun new-try-expand-list))
-                 (p (position 'er/mark-inside-quotes l)))
-            (when p
-              (push 'er/mark-ruby-heredoc (nthcdr p l)))
-            l)
-          '(er/mark-ruby-instance-variable
-            er/mark-ruby-block-up)))))
+  (set (make-local-variable 'er/try-expand-list)
+       (remove 'er/mark-defun 
+               (append
+                (default-value 'er/try-expand-list)
+                '(er/mark-ruby-instance-variable
+                  er/mark-ruby-block-up
+                  er/mark-ruby-heredoc)))))
 
 (er/enable-mode-expansions 'ruby-mode 'er/add-ruby-mode-expansions)
-
 (provide 'ruby-mode-expansions)
