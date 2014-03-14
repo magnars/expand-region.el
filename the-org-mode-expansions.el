@@ -62,6 +62,12 @@
     (search-forward (concat "#+end_" (match-string 1)))
     (exchange-point-and-mark)))
 
+(defun er/mark-org-parent ()
+  "Marks a heading 1 level up from current subheading"
+  (interactive  )
+  (org-up-element)
+  (org-mark-subtree))
+
 (defun er/add-org-mode-expansions ()
   "Adds org-specific expansions for buffers in org-mode"
   (set (make-local-variable 'er/try-expand-list) (append
@@ -69,6 +75,7 @@
                                                   '(org-mark-subtree
                                                     er/mark-org-code-block
                                                     er/mark-sentence
+                                                    er/mark-parent
                                                     er/mark-paragraph))))
 
 (er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
