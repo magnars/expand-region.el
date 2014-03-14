@@ -64,7 +64,7 @@
 
 (defun er/mark-org-parent ()
   "Marks a heading 1 level up from current subheading"
-  (interactive  )
+  (interactive)
   (org-up-element)
   (org-mark-subtree))
 
@@ -75,7 +75,7 @@
                                                   '(org-mark-subtree
                                                     er/mark-org-code-block
                                                     er/mark-sentence
-                                                    er/mark-parent
+                                                    er/mark-org-parent
                                                     er/mark-paragraph))))
 
 (er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
