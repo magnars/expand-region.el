@@ -45,6 +45,13 @@
 
 (defalias 'py-goto-beyond-clause 'py-end-of-clause-bol)
 
+(declare-function py-in-string-p "python-mode")
+(declare-function py-beginning-of-block "python-mode")
+(declare-function py-end-of-block "python-mode")
+(declare-function py-mark-block-or-clause "python-mode")
+(declare-function py-end-of-clause-bol "python-mode")
+(defvar py-indent-offset)
+
 (defun er/mark-outside-python-string ()
   "Marks region outside a (possibly multi-line) Python string"
   (interactive)
