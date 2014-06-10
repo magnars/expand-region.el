@@ -108,7 +108,7 @@ than NEXT-INDENT-LEVEL."
           ;; Check whether point is at the start of a Python block.
           (if (looking-at er--python-block-start-regex)
               ;; Block start means that the next level is deeper.
-              (+ (current-indentation) python-indent)
+              (+ (current-indentation) python-indent-offset)
             ;; Assuming we're inside the block that we want to mark
             (current-indentation)))))
     ;; Move point to next Python block start at the correct indent-level
