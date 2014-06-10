@@ -33,6 +33,9 @@
 
 (require 'expand-region-core)
 
+(declare-function org-up-element "org")
+(declare-function org-mark-subtree "org")
+
 (defun er/mark-sentence ()
   "Marks one sentence."
   (interactive)
