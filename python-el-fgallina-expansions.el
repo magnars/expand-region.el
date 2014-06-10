@@ -33,6 +33,11 @@
 
 (require 'expand-region-core)
 
+(if (not (fboundp 'python-syntax-context))
+    (defalias 'python-syntax-context 'python-info-ppss-context))
+(if (not (fboundp 'python-indent-offset))
+    (defalias 'python-indent-offset 'python-indent))
+
 (defvar er--python-string-delimiter
   "'\""
   "Characters that delimit a Python string.")
@@ -47,9 +52,6 @@
           "except" "finally" "for" "while" "with")
       symbol-end)
   "Regular expression string to match the beginning of a Python block.")
-
-(if (not (fboundp 'python-syntax-context))
-    (defalias 'python-syntax-context 'python-info-ppss-context))
 
 (defun er/mark-python-string (mark-inside)
   "Mark the Python string that surrounds point.
