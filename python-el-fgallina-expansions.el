@@ -48,19 +48,22 @@
       symbol-end)
   "Regular expression string to match the beginning of a Python block.")
 
+(if (not (fboundp 'python-syntax-context))
+    (defalias 'python-syntax-context 'python-info-ppss-context))
+
 (defun er/mark-python-string (mark-inside)
   "Mark the Python string that surrounds point.
 
 If the optional MARK-INSIDE is not nil, only mark the region
 between the string delimiters, otherwise the region includes the
 delimiters as well."
-  (let ((beginning-of-string (python-info-ppss-context 'string (syntax-ppss))))
+  (let ((beginning-of-string (python-syntax-context 'string (syntax-ppss))))
     (when beginning-of-string
       (goto-char beginning-of-string)
       ;; Move inside the string, so we can use ppss to find the end of
       ;; the string.
       (skip-chars-forward er--python-string-delimiter)
-      (while (python-info-ppss-context 'string (syntax-ppss))
+      (while (python-syntax-context 'string (syntax-ppss))
         (forward-char 1))
       (when mark-inside (skip-chars-backward er--python-string-delimiter))
       (set-mark (point))
