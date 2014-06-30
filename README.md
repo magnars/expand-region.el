@@ -23,6 +23,15 @@ You can contract the region again with a negative prefix, if you expand too far.
 
 You can [watch an intro to expand-region at Emacs Rocks](http://emacsrocks.com/e09.html).
 
+## Installation
+
+I highly recommend installing expand-region through elpa.
+
+It's available on [marmalade](http://marmalade-repo.org/) and
+[melpa](http://melpa.milkbox.net/):
+
+    M-x package-install expand-region
+
 ## Language support
 
 Expand region works fairly well with most languages, due to the general
