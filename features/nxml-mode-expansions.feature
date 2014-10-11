@@ -11,7 +11,7 @@ Feature: nxml-mode expansions
     And I press "C-@"
     Then the region should be "myAttr"
 
-  Scenario: Mark xml attribute inside quotes
+  Scenario: Mark xml attribute with quotes
     Given I turn on nxml-mode
     And there is no region selected
     When I insert "<tag id="myAttr">"
