@@ -136,6 +136,7 @@ sure to add a set of basic tests around the functionality you're changing.
 * [Kang-min Liu](https://github.com/gugod) contributed Perl expansions.
 * [Alexis Gallagher](https://github.com/algal) contributs Standard ML expansions.
 * [Matt Price](https://github.com/titaniumbones) improved on org-mode expansions.
+* [Maksim Grinman](https://github.com/maksle) added inner-quotes expansion for nxml-mode.
 
 Thanks!
 
