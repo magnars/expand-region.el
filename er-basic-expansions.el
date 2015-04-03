@@ -139,19 +139,22 @@ period and marks next symbol."
     (exchange-point-and-mark)))
 
 (defun er/mark-outside-quotes ()
-  "Mark the current string, including the quotation marks."
+  "Mark the current string, including the quotation marks. It will returns t if region expanded."
   (interactive)
-  (if (er--point-inside-string-p)
-      (er--move-point-backward-out-of-string)
-    (when (and (not (use-region-p))
-               (er/looking-back-on-line "\\s\""))
-      (backward-char)
-      (er--move-point-backward-out-of-string)))
-  (when (looking-at "\\s\"")
-    (set-mark (point))
-    (forward-char)
-    (er--move-point-forward-out-of-string)
-    (exchange-point-and-mark)))
+  (let ((before (cons (mark) (point))))
+    (if (er--point-inside-string-p)
+        (er--move-point-backward-out-of-string)
+      (when (and (not (use-region-p))
+                 (er/looking-back-on-line "\\s\""))
+        (backward-char)
+        (er--move-point-backward-out-of-string)))
+    (when (looking-at "\\s\"")
+      (set-mark (point))
+      (forward-char)
+      (er--move-point-forward-out-of-string)
+      (exchange-point-and-mark))
+    (message "%S,%S" before (cons (mark) (point)))
+    (not (equal (cons (mark) (point)) before))))
 
 ;; Pairs - ie [] () {} etc
 
@@ -187,19 +190,21 @@ period and marks next symbol."
              (point)))))
 
 (defun er/mark-outside-pairs ()
-  "Mark pairs (as defined by the mode), including the pair chars."
+  "Mark pairs (as defined by the mode), including the pair chars. It will return t if region expanded."
   (interactive)
-  (if (er/looking-back-on-line "\\s)+\\=")
-      (ignore-errors (backward-list 1))
-    (skip-chars-forward er--space-str))
-  (when (and (er--point-inside-pairs-p)
-             (or (not (er--looking-at-pair))
-                 (er--looking-at-marked-pair)))
-    (goto-char (nth 1 (syntax-ppss))))
-  (when (er--looking-at-pair)
-    (set-mark (point))
-    (forward-list)
-    (exchange-point-and-mark)))
+  (let ((before (cons (mark) (point))))
+    (if (er/looking-back-on-line "\\s)+\\=")
+        (ignore-errors (backward-list 1))
+      (skip-chars-forward er--space-str))
+    (when (and (er--point-inside-pairs-p)
+               (or (not (er--looking-at-pair))
+                   (er--looking-at-marked-pair)))
+      (goto-char (nth 1 (syntax-ppss))))
+    (when (er--looking-at-pair)
+      (set-mark (point))
+      (forward-list)
+      (exchange-point-and-mark))
+    (not (equal (cons (mark) (point)) before))))
 
 (require 'thingatpt)
 
