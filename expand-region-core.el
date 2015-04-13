@@ -92,6 +92,7 @@ moving point or mark as little as possible."
     (while try-list
       (save-excursion
         (ignore-errors
+          (setq mark-active nil)
           (funcall (car try-list))
           (when (and (region-active-p)
                      (er--this-expansion-is-better start end best-start best-end))
