@@ -60,8 +60,10 @@
                   (filter-buffer-substring (region-beginning) (region-end)))))
 
 ;; save-mark-and-excursion in Emacs 25 works like save-excursion did before
-(when (not (fboundp 'save-mark-and-excursion))
-  (defalias 'save-mark-and-excursion 'save-excursion))
+(eval-when-compile
+  (when (not (fboundp 'save-mark-and-excursion))
+    (defmacro save-mark-and-excursion (&rest body)
+      `(save-excursion ,@body))))
 
 (defun er--expand-region-1 ()
   "Increase selected region by semantic units.
