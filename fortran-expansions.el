@@ -20,7 +20,7 @@
 
 ;;; Commentary:
 
-;; Feel free to contribute any other expansions for Octave at
+;; Feel free to contribute any other expansions for Fortran at
 ;;
 ;;     https://github.com/magnars/expand-region.el
 
