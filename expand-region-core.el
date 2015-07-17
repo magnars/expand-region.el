@@ -61,7 +61,7 @@
 
 ;; save-mark-and-excursion in Emacs 25 works like save-excursion did before
 (eval-when-compile
-  (when (not (fboundp 'save-mark-and-excursion))
+  (when (< emacs-major-version 25)
     (defmacro save-mark-and-excursion (&rest body)
       `(save-excursion ,@body))))
 
