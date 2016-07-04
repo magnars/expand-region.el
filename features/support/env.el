@@ -11,6 +11,7 @@
 (require 'expand-region)
 (require 'espuds)
 (require 'ert)
+(require 'fsharp-mode)
 
 (Before
  (global-set-key (kbd "C-@") 'er/expand-region)

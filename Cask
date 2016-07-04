@@ -5,4 +5,5 @@
 (development
   (depends-on "ecukes")
   (depends-on "espuds")
+  (depends-on "fsharp-mode")
   (depends-on "undercover"))
