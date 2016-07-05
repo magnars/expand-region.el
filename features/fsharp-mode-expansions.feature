@@ -33,6 +33,12 @@ Feature: fsharp mode expandsions
     Then the region should be:
       """
       if true then
+
+      """
+    And I press "C-@"
+    Then the region should be:
+      """
+      if true then
           1
       """
     And I press "C-@"
@@ -53,6 +59,21 @@ Feature: fsharp mode expandsions
 
   # TODO Scenario: Mark inside multi-line string
   # TODO Scenario: Mark nested block
+
+  Scenario: Mark nested block
+    When I insert:
+      """
+      let thing =
+          let item = func arg
+      """
+    And I place the cursor before "item"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+      """
+          let item = func arg
+      """
+
   # TODO Scenario: Mark nested function call
   # TODO Scenario: Mark match block
 
