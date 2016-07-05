@@ -1,5 +1,7 @@
 (require 'expand-region-core)
 
+(declare-function fsharp-mark-phrase "fsharp-mode")
+
 (defun er/add-fsharp-mode-expansions ()
   (set (make-local-variable 'er/try-expand-list)
        (append er/try-expand-list '(fsharp-mark-phrase))))
