@@ -57,9 +57,6 @@ Feature: fsharp mode expandsions
     And I press "C-@"
     Then the region should be "Douglas Adams"
 
-  # TODO Scenario: Mark inside multi-line string
-  # TODO Scenario: Mark nested block
-
   Scenario: Mark nested block
     When I insert:
       """
@@ -74,8 +71,34 @@ Feature: fsharp mode expandsions
           let item = func arg
       """
 
-  # TODO Scenario: Mark nested function call
-  # TODO Scenario: Mark match block
+  Scenario: Mark multi-line string
+    When I insert:
+      """
+      let one = 1
 
+      "This is a multi-line FSharp string
+      with lots of useless content.
+      "
+      
+      let two = 2
+      """
+    And I place the cursor between "-" and "l"
+    And I press "C-@"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be:
+      """
+      This is a multi-line FSharp string
+      with lots of useless content.
+
+      """
+    
+  Scenario: Mark long symbol name
+    When I insert "let ``this is long`` = 1 + 2"
+    And I place the cursor between "t" and "h"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be "this is long"
+  
 
   
