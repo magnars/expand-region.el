@@ -10,6 +10,24 @@ Feature: Expand Region
     And I press "C-@"
     Then the region should be "some"
 
+  Scenario: Mark entire word with point midword, smart cursor
+    Given there is no region selected
+    And cursor behaviour is set to smart
+    When I insert "This is some text"
+    And I go to point "10"
+    And I press "C-@"
+    Then the region should be "some"
+    And cursor should be at point "13"
+
+  Scenario: Mark entire word with point at beginning of word, smart cursor
+    Given there is no region selected
+    And cursor behaviour is set to smart
+    When I insert "This is some text"
+    And I go to point "9"
+    And I press "C-@"
+    Then the region should be "some"
+    And cursor should be at point "9"
+
   Scenario: Mark word just behind point
     Given there is no region selected
     When I insert "This is some text"
