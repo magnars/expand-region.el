@@ -92,6 +92,18 @@ always be copied to the register named after that character."
   :group 'expand-region
   :type '(repeat (symbol :tag "Major Mode" unknown)))
 
+;;;###autoload
+(defcustom expand-region-smart-cursor nil
+  "Defines whether the cursor should be placed intelligently after expansion.
+
+If set to t, and the cursor is already at the beginning of the new region,
+keep it there; otherwise, put it at the end of the region.
+
+If set to nil, always place the cursor at the beginning of the region."
+  :group 'expand-region
+  :type '(choice (const :tag "Smart behaviour" t)
+                 (const :tag "Standard behaviour" nil)))
+
 (provide 'expand-region-custom)
 
 ;;; expand-region-custom.el ends here

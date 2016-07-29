@@ -87,7 +87,7 @@ moving point or mark as little as possible."
     ;; unless we're already at maximum size
     (unless (and (= start best-start)
                  (= end best-end))
-      (push (cons start end) er/history))
+      (push (cons p1 p2) er/history))
 
     (when (and expand-region-skip-whitespace
                (er--point-is-surrounded-by-white-space)
@@ -108,8 +108,13 @@ moving point or mark as little as possible."
       (setq try-list (cdr try-list)))
 
     (setq deactivate-mark nil)
-    (goto-char best-start)
-    (set-mark best-end)
+    ;; if smart cursor enabled, decide to put it at start or end of region:
+    (if (and expand-region-smart-cursor
+             (not (= start best-start)))
+        (progn (goto-char best-end)
+               (set-mark best-start))
+      (goto-char best-start)
+      (set-mark best-end))
 
     (er--copy-region-to-register)
 

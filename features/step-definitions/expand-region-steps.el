@@ -2,6 +2,10 @@
        (lambda ()
          (setq set-mark-default-inactive t)))
 
+(Given "^cursor behaviour is set to smart$"
+       (lambda ()
+         (setq expand-region-smart-cursor t)))
+
 (When "^I expand the region$"
       (lambda ()
         (flet ((message (&rest args) nil))
