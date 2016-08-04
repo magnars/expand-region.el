@@ -59,27 +59,51 @@
   (interactive)
   (let ((case-fold-search t)
         (re "#\\+begin_\\(\\sw+\\)"))
-    (unless (looking-at re)
-      (search-backward-regexp re))
+    (unless (looking-at re)      (search-backward-regexp re))
     (set-mark (point))
     (search-forward (concat "#+end_" (match-string 1)))
     (exchange-point-and-mark)))
 
-(defun er/mark-org-parent ()
+(defun er/mark-org-parent-tree ()
   "Marks a heading 1 level up from current subheading"
   (interactive)
   (org-up-element)
   (org-mark-subtree))
 
-(defun er/add-org-mode-expansions ()
-  "Adds org-specific expansions for buffers in org-mode"
-  (set (make-local-variable 'er/try-expand-list) (append
-                                                  er/try-expand-list
-                                                  '(org-mark-subtree
-                                                    er/mark-org-code-block
-                                                    er/mark-sentence
-                                                    er/mark-org-parent
-                                                    er/mark-paragraph))))
+(defun er/mark-org-parent-element ()
+  "Marks an org parent element"
+  (interactive)
+  (let ((parent (plist-get (car (cdr (org-element-at-point))) :parent)))
+    (let ((parent-props (car (cdr parent))))
+      (if (plist-get parent-props :begin)
+          (progn
+            (set-mark (plist-get parent-props :begin))
+            (goto-char (plist-get parent-props :end))
+            (exchange-point-and-mark)
+            )))
+    )
+)
+
+(defun mwp-test-mark ()
+  (interactive)
+  (let ((testme 1426))
+    (goto-char testme)
+    (set-mark (point))
+    (goto-char 1525)
+    (exchange-point-and-mark)
+  ))
+
+  (defun er/add-org-mode-expansions ()
+    "Adds org-specific expansions for buffers in org-mode"
+    (set (make-local-variable 'er/try-expand-list) (append
+                                                    er/try-expand-list
+                                                    '(org-mark-subtree
+                                                      org-mark-element
+                                                      er/mark-org-code-block
+                                                      er/mark-sentence
+                                                      er/mark-org-parent-tree
+                                                      er/mark-org-parent-element
+                                                      er/mark-paragraph))))
 
 (er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
 
