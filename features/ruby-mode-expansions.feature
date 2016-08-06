@@ -17,7 +17,7 @@ Feature: ruby-mode expansions
     And I press "C-@"
     Then the region should be "@foo"
 
-  Scenario: Mark ruby block
+  Scenario: Mark before ruby block
     Given I turn on ruby-mode
     And there is no region selected
     When I insert:
@@ -27,19 +27,31 @@ Feature: ruby-mode expansions
         foo
       end
     end
+
     """
     And I place the cursor after "something"
     And I press "C-@"
+    Then the region should be "something"
     And I press "C-@"
     Then the region should be:
     """
-    something do
+      something do
         foo
       end
 
     """
+    And I press "C-@"
+    Then the region should be:
+    """
+    module Bar
+      something do
+        foo
+      end
+    end
 
-  Scenario: Mark ruby block from end
+    """
+
+  Scenario: Mark after ruby block
     Given I turn on ruby-mode
     And there is no region selected
     When I insert:
@@ -52,16 +64,31 @@ Feature: ruby-mode expansions
     """
     And I place the cursor after "end"
     And I press "C-@"
+    Then the region should be "end"
     And I press "C-@"
     Then the region should be:
     """
-    something do
+      end
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+    do
+        foo
+      end
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+      something do
         foo
       end
 
     """
 
-  Scenario: Mark ruby block from within
+  Scenario: Mark within ruby block
     Given I turn on ruby-mode
     And there is no region selected
     When I insert:
@@ -72,18 +99,40 @@ Feature: ruby-mode expansions
       end
     end
     """
-    And I go to line "2"
+    And I place the cursor before "foo"
     And I press "C-@"
+    Then the region should be "foo"
     And I press "C-@"
     Then the region should be:
     """
-    something do
+        foo
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+    do
+        foo
+      end
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+    do
+        foo
+      end
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+      something do
         foo
       end
 
     """
 
-  Scenario: Mark empty ruby block from within
+  Scenario: Mark within empty ruby block
     Given I turn on ruby-mode
     And there is no region selected
     When I insert:
@@ -96,10 +145,24 @@ Feature: ruby-mode expansions
     """
     And I go to line "3"
     And I press "C-@"
+    Then the region should be:
+    """
+    do
+
+      end
+    """
     And I press "C-@"
     Then the region should be:
     """
-    something do
+    do
+
+      end
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+      something do
 
       end
 
@@ -118,11 +181,30 @@ Feature: ruby-mode expansions
     """
     And I go to line "3"
     And I press "C-@"
-    And I press "C-@"
+    Then the region should be:
+    """
+        foo
+
+    """
     And I press "C-@"
     Then the region should be:
     """
-    something {
+    {
+        foo
+      }
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+    {
+        foo
+      }
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+      something {
         foo
       }
 
@@ -138,15 +220,27 @@ Feature: ruby-mode expansions
         bar
       end
     end
+
     """
     And I go to word "def"
     And I press "C-@"
+    Then the region should be "def"
     And I press "C-@"
     Then the region should be:
     """
-    def foo
+      def foo
         bar
       end
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+    module Bar
+      def foo
+        bar
+      end
+    end
 
     """
 
@@ -163,43 +257,21 @@ Feature: ruby-mode expansions
     """
     And I go to line "3"
     And I press "C-@"
+    Then the region should be:
+    """
+        bar
+
+    """
     And I press "C-@"
     Then the region should be:
     """
-    def foo
-        bar
-      end
-
-    """
-
-  Scenario: Mark ruby expand up 1 level
-    Given I turn on ruby-mode
-    And there is no region selected
-    When I insert:
-    """
-    #comment foo
-    module Bar
       def foo
         bar
       end
-    end
-
-    """
-    And I go to line "3"
-    And I press "C-@"
-    And I press "C-@"
-    And I press "C-@"
-    Then the region should be:
-    """
-    module Bar
-      def foo
-        bar
-      end
-    end
 
     """
 
-  Scenario: Mark ruby expand up 3 levels
+  Scenario: Mark ruby expand levels
     Given I turn on ruby-mode
     And there is no region selected
     When I insert:
@@ -223,10 +295,79 @@ Feature: ruby-mode expansions
     """
     And I go to line "8"
     And I press "C-@"
+    Then the region should be:
+    """
+          puts something
+
+    """
     And I press "C-@"
+    Then the region should be:
+    """
+    {
+          puts something
+        }
+    """
     And I press "C-@"
+    Then the region should be:
+    """
+    {
+          puts something
+        }
+
+    """
     And I press "C-@"
+    Then the region should be:
+    """
+        blah {
+          puts something
+        }
+
+    """
     And I press "C-@"
+    Then the region should be:
+    """
+    do |element|
+        blah {
+          puts something
+        }
+      end
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+    do |element|
+        blah {
+          puts something
+        }
+      end
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+      foo_arr.each do |element|
+        blah {
+          puts something
+        }
+      end
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+      attr_reader :blah
+
+      foo_arr.each do |element|
+        blah {
+          puts something
+        }
+      end
+
+      def foo
+        bar
+      end
+
+    """
     And I press "C-@"
     Then the region should be:
     """
@@ -260,10 +401,24 @@ Feature: ruby-mode expansions
     """
     And I place the cursor before "CONTENT"
     And I press "C-@"
+    Then the region should be "CONTENT"
     And I press "C-@"
     Then the region should be:
     """
         CONTENT
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+        CONTENT
+
+    """
+    And I press "C-@"
+    Then the region should be:
+    """
+      blah(<<-end_block)
+        CONTENT
+      end_block
 
     """
 
@@ -289,6 +444,7 @@ Feature: ruby-mode expansions
 
     """
     And I go to line "12"
+    And I press "C-@"
     And I press "C-@"
     And I press "C-@"
     And I press "C-@"
