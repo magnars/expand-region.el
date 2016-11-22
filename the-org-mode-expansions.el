@@ -73,13 +73,14 @@
 
 (defun er/add-org-mode-expansions ()
   "Adds org-specific expansions for buffers in org-mode"
-  (set (make-local-variable 'er/try-expand-list) (append
-                                                  er/try-expand-list
-                                                  '(org-mark-subtree
-                                                    er/mark-org-code-block
-                                                    er/mark-sentence
-                                                    er/mark-org-parent
-                                                    er/mark-paragraph))))
+  (set (make-local-variable 'er/try-expand-list)
+       (append
+        (remove #'er/mark-defun er/try-expand-list)
+        '(org-mark-subtree
+          er/mark-org-code-block
+          er/mark-sentence
+          er/mark-org-parent
+          er/mark-paragraph))))
 
 (er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
 
