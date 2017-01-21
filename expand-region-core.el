@@ -50,8 +50,7 @@
     (push-mark nil t)  ;; one for keeping starting position
     (push-mark nil t)) ;; one for replace by set-mark in expansions
 
-  (when (not (eq t transient-mark-mode))
-    (setq transient-mark-mode (cons 'only transient-mark-mode))))
+  (setq transient-mark-mode (cons 'only transient-mark-mode)))
 
 (defun er--copy-region-to-register ()
   (when (and (stringp expand-region-autocopy-register)
