@@ -150,13 +150,14 @@ A better expansion should have a lower score."
      ;; Assign a score to the character classes, so
      ;; "foobar" < "fo_bar"
      ;; "fo_bar" < "fo.bar"
+     ;; "foobar()" < "fo = bar"
      ;; and so on.
      (+ word-chars
         (* 10 symbol-chars)
         (* 100 punctuation-chars)
-        (* 1000 space-chars)
-        (* 10000 string-delim-chars)
-        (* 100000 paren-chars)
+        (* 1000 paren-chars)
+        (* 10000 space-chars)
+        (* 100000 string-delim-chars)
         ;; Heavily penalise unbalanced parens.
         (* 1000000 (abs unbalanced-parens))))))
 
