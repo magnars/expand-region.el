@@ -123,18 +123,60 @@ moving point or mark as little as possible."
                (= best-end (point-max))) ;; We didn't find anything new, so exit early
       'early-exit)))
 
+(defun er--expansion-score (start end)
+  "Assign a score to the region between START and END inclusive.
+The bigger the score, the more semantic elements in the region.
+A better expansion should have a lower score."
+  (save-mark-and-excursion
+   (let ((word-chars 0)
+         (symbol-chars 0)
+         (punctuation-chars 0)
+         (space-chars 0)
+         (string-delim-chars 0)
+         (paren-chars 0)
+         (unbalanced-parens 0))
+     (goto-char start)
+     ;; For every character in the region, count the character classes.
+     (while (and (< (point) end) (not (eobp)))
+       (cl-case (char-syntax (following-char))
+         (?w (cl-incf word-chars))
+         (?_ (cl-incf symbol-chars))
+         (?. (cl-incf punctuation-chars))
+         (?\s (cl-incf space-chars))
+         (?\" (cl-incf string-delim-chars))
+         (?\( (cl-incf paren-chars) (cl-incf unbalanced-parens))
+         (?\) (cl-incf paren-chars) (cl-decf unbalanced-parens)))
+       (forward-char 1))
+     ;; Assign a score to the character classes, so
+     ;; "foobar" < "fo_bar"
+     ;; "fo_bar" < "fo.bar"
+     ;; "foobar()" < "fo = bar"
+     ;; and so on.
+     (+ word-chars
+        (* 10 symbol-chars)
+        (* 100 punctuation-chars)
+        (* 1000 paren-chars)
+        (* 10000 space-chars)
+        (* 100000 string-delim-chars)
+        ;; Heavily penalise unbalanced parens.
+        (* 1000000 (abs unbalanced-parens))))))
+
 (defun er--this-expansion-is-better (start end best-start best-end)
   "t if the current region is an improvement on previous expansions.
 
 This is provided as a separate function for those that would like
 to override the heuristic."
-  (and
-   (<= (point) start)
-   (>= (mark) end)
-   (> (- (mark) (point)) (- end start))
-   (or (> (point) best-start)
-       (and (= (point) best-start)
-            (< (mark) best-end)))))
+  (let ((new-start (point))
+        (new-end (mark)))
+    (and
+     ;; The current region must include, and be bigger than, START...END.
+     (<= new-start start)
+     (>= new-end end)
+     (> (- new-end new-start) (- end start))
+     ;; The current region is better than BEST-START...BEST-END if it
+     ;; includes fewer syntactic elements (it's a tighter expansion).
+     (< (er--expansion-score new-start new-end)
+        (er--expansion-score best-start best-end)))))
 
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.

@@ -22,6 +22,27 @@ Feature: fgallinas python.el expansions
     And I press "C-@"
     Then the region should be "X-Men: Wolverine"
 
+  Scenario: Mark symbols and attributes.
+    Given I turn on python-mode
+    And there is no region selected
+    When I insert "foo_bar.baz = 1"
+    And I place the cursor after "bar"
+    And I press "C-@"
+    Then the region should be "bar"
+    And I press "C-@"
+    Then the region should be "foo_bar"
+    And I press "C-@"
+    Then the region should be "foo_bar.baz"
+
+  Scenario: Mark function calls assigned to variables.
+    Given I turn on python-mode
+    And there is no region selected
+    When I insert "foo = bar()"
+    And I place the cursor after "bar"
+    And I press "C-@"
+    And I press "C-@"
+    Then the region should be "bar()"
+
   Scenario: Mark region inside a string with escape delimiter.
     Given I turn on python-mode
     And there is no region selected
@@ -155,6 +176,7 @@ Feature: fgallinas python.el expansions
       def moo(data):
           for foo in data.items():
               print(foo)
+
       """
 
   Scenario: Mark an outer Python block
