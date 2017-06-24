@@ -15,7 +15,7 @@ Feature: Text-mode expansions
   Scenario: Mark sentence ending on a line
     When I place the cursor after "consectetur"
     And I press "C-@"
-    Then the region should be "consectetur"
+    Then the region should be "THIS SHOULD FAIL"
     And I press "C-@"
     Then the region should be "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
     And I press "C-@"
