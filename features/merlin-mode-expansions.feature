@@ -3,32 +3,53 @@ Feature: merlin-mode expansions
   As an Emacs user
   I want to expand to them
 
-  Scenario: Mark name
+  Scenario: merlin mark name
     Given I turn on merlin-mode
+    And there is no region selected
     When I insert:
     """
     let () =
-      List.iter (fun s ->
-          print_endline s)
-        ["okta"; "guokte"]
+      List.iter (fun s -> print_endline s) ["foo"; "bar"]
     """
-    And I place the cursor before "print_endline"
-    And I press "C-@"
-    Then the region should be "@print_endline"
-
-  Scenario: Mark fun
-    Given I turn on merlin-mode
-    When I insert:
-    """
-    let () =
-      List.iter (fun s ->
-          print_endline s)
-        ["okta"; "guokte"]
-    """
-    And I place the cursor before "fun "
-    And I press "C-@"
+    ;; why does the below line not fail?
+    And x
+    And I place the cursor before "endline"
+    And I expand the region
+    Then the region should be "print_endline"
+    And I expand the region
+    Then the region should be "print_endline s"
+    And I expand the region
+    Then the region should be "s -> print_endline s"
+    And I expand the region
+    Then the region should be "(fun s -> print_endline s)"
+    And I expand the region
     Then the region should be:
     """
-    (fun s ->
-          print_endline s)
+    List.iter (fun s -> print_endline s) ["foo"; "bar"]
+    """
+    And I expand the region
+    Then the region should be:
+    """
+    let () =
+      List.iter (fun s -> print_endline s) ["foo"; "bar"]
+    """
+
+  Scenario: merlin mark fun
+    Given I turn on merlin-mode
+    And there is no region selected
+    When I insert:
+    """
+    let () =
+      List.iter (fun s -> print_endline s) ["foo"; "bar"]
+    """
+    And I place the cursor before "fun "
+    And I expand the region
+    Then the region should be:
+    """
+    (fun s -> print_endline s)
+    """
+    And I expand the region
+    Then the region should be:
+    """
+    List.iter (fun s -> print_endline s) ["foo"; "bar"]
     """

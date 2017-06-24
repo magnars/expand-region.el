@@ -11,13 +11,20 @@
 (require 'expand-region)
 (require 'espuds)
 (require 'ert)
+(require 'merlin)
+
+;; GNU Emacs 25.1.1 automatically enters debug-on-error for some reason and
+;; tests become extremely unreadable.
+(setq debug-on-error nil)
 
 (Before
  (global-set-key (kbd "C-@") 'er/expand-region)
  (global-set-key (kbd "C-S-@") 'er/contract-region)
- (switch-to-buffer
-  (get-buffer-create "*expand-region*"))
- (erase-buffer)
+
+ (switch-to-buffer (create-file-buffer "expand-region"))
+ ;; merlin-mode-expansion gets upset if the buffer is not backed by file
+ (write-file (make-temp-file "expand-region" nil nil))
+
  (fundamental-mode)
  (transient-mark-mode 1)
  (cua-mode 0)
