@@ -4,17 +4,19 @@ before_install:
   - curl -fsSkL https://gist.github.com/rejeep/ebcd57c3af83b049833b/raw > x.sh && source ./x.sh
   - evm install $EVM_EMACS --use --skip
   - cask
-install: wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq ocaml
+install:
+  # For opam instructions see: http://opam.ocaml.org/doc/Install.html
+  - wget https://raw.github.com/ocaml/opam/master/shell/opam_installer.sh
+  - yes | sh ./opam_installer.sh /usr/local/bin $OCAML_VERSION
 env:
-  # For ocaml instructions please see: https://github.com/ocaml/ocaml-ci-scripts/blob/master/README-travis.md (c15c61b50f26216feadb1800a1e2ec5a149a0d15)
-  - OCAML_VERSION=4.04 EVM_EMACS=emacs-24.3-travis
-  - OCAML_VERSION=4.04 EVM_EMACS=emacs-24.4-travis
-  - OCAML_VERSION=4.04 EVM_EMACS=emacs-24.5-travis
-  - OCAML_VERSION=4.04 EVM_EMACS=emacs-25.1-travis
-  - OCAML_VERSION=4.04 EVM_EMACS=emacs-git-snapshot-travis
+  - OCAML_VERSION=4.04.1 EVM_EMACS=emacs-24.3-travis
+  - OCAML_VERSION=4.04.1 EVM_EMACS=emacs-24.4-travis
+  - OCAML_VERSION=4.04.1 EVM_EMACS=emacs-24.5-travis
+  - OCAML_VERSION=4.04.1 EVM_EMACS=emacs-25.1-travis
+  - OCAML_VERSION=4.04.1 EVM_EMACS=emacs-git-snapshot-travis
 script:
-  # This is going to fail because it tries to install local package but we're installing opam just to install merlin. If something is wrong merlin installation will fail so this is not hiding errors
-  - bash -ex .travis-opam.sh || true
   - opam install merlin.2.5.5 -y
   - ./run-travis-ci.sh
 
