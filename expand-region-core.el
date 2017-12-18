@@ -44,21 +44,13 @@
 (defvar er/try-expand-list nil
   "A list of functions that are tried when expanding.")
 
-(defvar er--transient-mark-mode-before-expanding nil
-  "The value of transient mark mode before expanding.")
-
 (defun er--prepare-expanding ()
-  (when (er--first-invocation)
-    (setq er--transient-mark-mode-before-expanding transient-mark-mode))
-
   (when (and (er--first-invocation)
              (not (use-region-p)))
     (push-mark nil t)  ;; one for keeping starting position
     (push-mark nil t)) ;; one for replace by set-mark in expansions
 
-  (when (and (er--first-invocation)
-             (or (not (eq t transient-mark-mode))
-                 shift-select-mode))
+  (when (not (eq t transient-mark-mode))
     (setq transient-mark-mode (cons 'only transient-mark-mode))))
 
 (defun er--copy-region-to-register ()
@@ -155,8 +147,7 @@ before calling `er/expand-region' for the first time."
     (when er/history
       ;; Be sure to reset them all if called with 0
       (when (= arg 0)
-        (setq arg (length er/history))
-        (setq transient-mark-mode er--transient-mark-mode-before-expanding))
+        (setq arg (length er/history)))
 
       (when (not transient-mark-mode)
         (setq transient-mark-mode (cons 'only transient-mark-mode)))
