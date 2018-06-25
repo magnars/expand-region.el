@@ -50,8 +50,8 @@
     (push-mark nil t)  ;; one for keeping starting position
     (push-mark nil t)) ;; one for replace by set-mark in expansions
 
-  (when (not (eq t transient-mark-mode))
-    (setq transient-mark-mode (cons 'only transient-mark-mode))))
+  (when (not transient-mark-mode)
+    (setq-local transient-mark-mode (cons 'only transient-mark-mode))))
 
 (defun er--copy-region-to-register ()
   (when (and (stringp expand-region-autocopy-register)
@@ -150,7 +150,7 @@ before calling `er/expand-region' for the first time."
         (setq arg (length er/history)))
 
       (when (not transient-mark-mode)
-        (setq transient-mark-mode (cons 'only transient-mark-mode)))
+        (setq-local transient-mark-mode (cons 'only transient-mark-mode)))
 
       ;; Advance through the list the desired distance
       (while (and (cdr er/history)
