@@ -23,8 +23,7 @@
 
 (defun er/add-web-mode-expansions ()
   (set (make-local-variable 'er/try-expand-list)
-       (append er/try-expand-list
-               '(web-mode-mark-and-expand))))
+       (cons 'web-mode-mark-and-expand er/try-expand-list)))
 
 (add-hook 'web-mode-hook 'er/add-web-mode-expansions)
 
