@@ -84,6 +84,12 @@
 (When "^I set \\(.+\\) to \\(.+\\)$"
       (lambda (var val)
         (set (intern var) (read val))))
+
+(Then "^the region should be$"
+      (lambda (contents)
+        (should
+         (equal contents (buffer-substring (region-beginning) (region-end))))))
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; End:
