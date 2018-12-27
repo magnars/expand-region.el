@@ -17,7 +17,8 @@ You can set it up like this:
     (require 'expand-region)
     (global-set-key (kbd "C-=") 'er/expand-region)
 
-If you expand too far, you can contract the region by pressing `-` (minus key).
+If you expand too far, you can contract the region by pressing `-` (minus key),
+or by prefixing the shortcut you defined with a negative argument: `C-- C-=`.
 
 ## Video
 
