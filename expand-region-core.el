@@ -279,6 +279,14 @@ remove the keymap depends on user input and KEEP-PRED:
         (when (derived-mode-p mode)
           (funcall add-fn))))))
 
+(defun er/enable-minor-mode-expansions (mode add-fn)
+  (add-hook (intern (format "%s-hook" mode)) add-fn)
+  (save-window-excursion
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (symbol-value mode)
+          (funcall add-fn))))))
+
 ;; Some more performant version of `looking-back'
 
 (defun er/looking-back-on-line (regexp)
