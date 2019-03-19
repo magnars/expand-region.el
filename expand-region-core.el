@@ -28,6 +28,7 @@
 
 (eval-when-compile (require 'cl))
 (require 'expand-region-custom)
+(require 'org)
 (declare-function er/expand-region "expand-region")
 
 (defvar er/history '()
