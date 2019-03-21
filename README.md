@@ -35,6 +35,8 @@ happily use this package, just like I do. If it doesn't work for you, then I'm
 sorry. Thankfully Emacs is infinitely malleable, you can probably fix it
 yourself.
 
+TLDR: *I am still maintaining this package*, but I am no longer crowdsourcing a list of issues.
+
 ## Video
 
 You can [watch an intro to expand-region at Emacs Rocks](http://emacsrocks.com/e09.html).
