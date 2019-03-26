@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'expand-region-core)
+(require 'org-macs)
 
 (declare-function org-up-element "org")
 (declare-function org-mark-subtree "org")
@@ -71,6 +72,11 @@
   (org-up-element)
   (org-mark-subtree))
 
+(defun er/save-org-mode-excursion (action)
+  "Save outline visibility while expanding in org-mode"
+  (org-save-outline-visibility t
+    (funcall action)))
+
 (defun er/add-org-mode-expansions ()
   "Adds org-specific expansions for buffers in org-mode"
   (set (make-local-variable 'er/try-expand-list)
@@ -80,7 +86,9 @@
           er/mark-org-code-block
           er/mark-sentence
           er/mark-org-parent
-          er/mark-paragraph))))
+          er/mark-paragraph)))
+  (set (make-local-variable 'er/save-mode-excursion)
+       #'er/save-org-mode-excursion))
 
 (er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
 

@@ -44,6 +44,9 @@
 (defvar er/try-expand-list nil
   "A list of functions that are tried when expanding.")
 
+(defvar er/save-mode-excursion nil
+  "A function to save excursion state when expanding.")
+
 (defun er--prepare-expanding ()
   (when (and (er--first-invocation)
              (not (use-region-p)))
@@ -64,6 +67,13 @@
   (when (< emacs-major-version 25)
     (defmacro save-mark-and-excursion (&rest body)
       `(save-excursion ,@body))))
+
+(defmacro er--save-excursion (&rest body)
+  `(let ((action (lambda ()
+                   (save-mark-and-excursion ,@body))))
+     (if er/save-mode-excursion
+         (funcall er/save-mode-excursion action)
+       (funcall action))))
 
 (defun er--expand-region-1 ()
   "Increase selected region by semantic units.
@@ -96,7 +106,7 @@ moving point or mark as little as possible."
       (setq start (point)))
 
     (while try-list
-      (save-mark-and-excursion
+      (er--save-excursion
        (ignore-errors
          (funcall (car try-list))
          (when (and (region-active-p)
