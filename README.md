@@ -45,8 +45,7 @@ You can [watch an intro to expand-region at Emacs Rocks](http://emacsrocks.com/e
 
 I highly recommend installing expand-region through elpa.
 
-It's available on [marmalade](http://marmalade-repo.org/) and
-[melpa](http://melpa.milkbox.net/):
+It's available on [MELPA](https://melpa.org/):
 
     M-x package-install expand-region
 
@@ -162,7 +161,26 @@ Thanks!
 
 ## Changelog
 
+### From 0.11 to 0.12 (WIP)
+
+* Option `expand-region-subword-enabled` to enable subword expansions
+* Improve web-mode expansions (Renato F)
+* Fixes for cc-mode expansions (Wilfred Hughes)
+* Fixes for org-mode expansions (Wilfred Hughes)
+* Fix unnecessary unfolding in org-mode
+* Fix bug with transient-mark-mode (Russell Black)
+* Fix problems with auto-loading (Philippe Vaucher, Wilfred Hughes)
+
+### From 0.10 to 0.11
+
 * Option `expand-region-smart-cursor` to keep cursor at beginning of region if it is there (Andrea Orru)
+* Add subword-mode expansions (Lefteris Karapetsas)
+* Improve enh-ruby-mode expansions (Ryan Davis)
+* Improve nxml-mode expansions (Maksim Grinman)
+* Improve org-mode expansions (Matt Price)
+* Improve js-mode expansions
+* Better performance
+* Lots of bugfixes
 
 ### From 0.9 to 0.10
 
@@ -199,7 +217,7 @@ Thanks!
 
 ## License
 
-Copyright (C) 2011-2016 Magnar Sveen
+Copyright (C) 2011-2019 Magnar Sveen
 
 Author: Magnar Sveen <magnars@gmail.com>
 Keywords: marking region
