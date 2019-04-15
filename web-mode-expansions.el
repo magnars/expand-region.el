@@ -21,10 +21,12 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/add-web-mode-expansions ()
   (set (make-local-variable 'er/try-expand-list)
        (cons 'web-mode-mark-and-expand er/try-expand-list)))
 
-(add-hook 'web-mode-hook 'er/add-web-mode-expansions)
+(er/enable-mode-expansions 'web-mode 'er/add-web-mode-expansions)
 
 (provide 'web-mode-expansions)
