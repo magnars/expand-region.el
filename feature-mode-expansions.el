@@ -1,6 +1,6 @@
 ;;; feature-mode-expansions.el --- cucumber-specific expansions for expand-region
 
-;; Copyright (C) 2012 Raimon Grau
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Raimon Grau
 ;; Based on js-mode-expansions by: Raimon Grau <raimonster@gmail.com>

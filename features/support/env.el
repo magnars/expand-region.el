@@ -1,3 +1,5 @@
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+
 (let* ((current-directory (file-name-directory load-file-name))
        (features-directory (expand-file-name ".." current-directory))
        (project-directory (expand-file-name ".." features-directory)))

@@ -1,6 +1,6 @@
 ;;; js2-mode-expansions.el --- Additional expansions for js2-mode
 
-;; Copyright (C) 2011 Magnar Sveen
+;; Copyright (C) 2011-2020  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region

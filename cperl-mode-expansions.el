@@ -1,6 +1,6 @@
 ;;; cperl-mode-expansions.el --- perl-specific expansions for expand-region
 
-;; Copyright (C) 2012 Kang-min Liu
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Kang-min Liu <gugod@gugod.org>
 ;; Keywords: marking region cperl

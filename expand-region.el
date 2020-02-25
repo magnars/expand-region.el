@@ -1,9 +1,11 @@
 ;;; expand-region.el --- Increase selected region by semantic units.
 
-;; Copyright (C) 2011 Magnar Sveen
+;; Copyright (C) 2011-2020  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
+;; URL: https://github.com/magnars/expand-region.el
+;; Version: 0.11.0
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by

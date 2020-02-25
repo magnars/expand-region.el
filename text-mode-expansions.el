@@ -1,6 +1,6 @@
 ;;; text-mode-expansions.el --- Expansions for expand-region to be used in text
 
-;; Copyright (C) 2012 Ivan Andrus
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Ivan Andrus
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>

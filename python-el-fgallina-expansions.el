@@ -1,6 +1,6 @@
 ;;; python-el-fgallina-expansions.el --- fgallina/python.el-specific expansions for expand-region
 
-;; Copyright (C) 2012 Felix Geller
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Felix Geller
 ;; Keywords: marking region python

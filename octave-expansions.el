@@ -1,6 +1,6 @@
 ;;; octave-expansions.el --- octave-mode expansions for expand-region
 
-;; Copyright (C) 2012 Mark Hepburn
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Mark Hepburn
 ;; Keywords: marking region

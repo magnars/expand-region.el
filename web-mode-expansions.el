@@ -1,7 +1,7 @@
 ;;; web-mode-expansions.el --- Thin layer for adapting fxbois's web-mode-mark-and-expand function
 ;;; to expand-region
 
-;; Copyright (C) 2012 Rotem Yaari
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Authors: Rotem Yaari
 ;; Based on, and makes use of web-mode.el by fxbois

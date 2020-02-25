@@ -1,6 +1,6 @@
 ;;; cc-mode-expansions.el --- C-specific expansions for expand-region
 
-;; Copyright (C) 2012 François Févotte
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: François Févotte
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>

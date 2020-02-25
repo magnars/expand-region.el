@@ -1,6 +1,6 @@
 ;;; expand-region-custom.el --- Increase selected region by semantic units.
 
-;; Copyright (C) 2012 Magnar Sveen
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region

@@ -1,6 +1,6 @@
 ;;; the-org-mode-expansions.el --- Expansions for expand-region to be used in org-mode
 
-;; Copyright (C) 2012 Magnar Sveen
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen
 ;; Based on text-mode-expansions by: Ivan Andrus

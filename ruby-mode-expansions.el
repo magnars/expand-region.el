@@ -1,6 +1,6 @@
 ;;; ruby-mode-expansions.el --- ruby-specific expansions for expand-region
 
-;; Copyright (C) 2011 Magnar Sveen
+;; Copyright (C) 2011-2020  Free Software Foundation, Inc
 
 ;; Author: Matt Briggs
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -36,6 +36,7 @@
 ;;
 
 ;;; Code:
+(eval-when-compile (require 'cl))
 (require 'expand-region-core)
 (require 'ruby-mode)
 

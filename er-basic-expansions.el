@@ -1,6 +1,6 @@
 ;;; er-basic-expansions.el --- Words, symbols, strings, et al
 
-;; Copyright (C) 2011-2013 Magnar Sveen
+;; Copyright (C) 2011-2020  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region

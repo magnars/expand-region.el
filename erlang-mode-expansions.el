@@ -1,6 +1,6 @@
 ;;; erlang-mode-expansions.el --- Erlang-specific expansions for expand-region
 
-;; Copyright (C) 2012 Gleb Peregud
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Gleb Peregud
 ;; Based on python-mode-expansions by: Ivan Andrus <darthandrus@gmail.com>

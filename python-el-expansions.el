@@ -1,6 +1,6 @@
 ;;; python-el-expansions.el --- Python-specific expansions for expand-region
 
-;; Copyright (C) 2012 Ivan Andrus
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Authors: Ivan Andrus, Felix Geller, @edmccard
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>

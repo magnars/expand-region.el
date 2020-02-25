@@ -1,3 +1,5 @@
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+
 (Given "^mark is inactive by default$"
        (lambda ()
          (setq set-mark-default-inactive t)))

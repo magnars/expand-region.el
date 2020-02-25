@@ -1,6 +1,6 @@
 ;;; sml-mode-expansions.el --- Expansions for expand-region to be used in sml-mode
 
-;; Copyright (C) 2012 Alexis Gallagher
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Alexis Gallagher
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>

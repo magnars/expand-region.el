@@ -1,6 +1,6 @@
 ;;; enh-ruby-mode-expansions.el --- Expansions for enh-ruby-mode
 
-;; Copyright (C) 2011 Magnar Sveen
+;; Copyright (C) 2011-2020  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region

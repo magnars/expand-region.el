@@ -1,6 +1,6 @@
 ;;; nxml-mode-expansions.el --- Nxml-specific expansions for expand-region
 
-;; Copyright (C) 2012 Ivan Andrus
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Ivan Andrus
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>

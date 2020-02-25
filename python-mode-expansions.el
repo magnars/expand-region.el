@@ -1,6 +1,6 @@
 ;;; python-mode-expansions.el --- python-mode-specific expansions for expand-region
 
-;; Copyright (C) 2012 Felix Geller
+;; Copyright (C) 2012-2020  Free Software Foundation, Inc
 
 ;; Author: Felix Geller
 ;; Based on python-mode-expansions by: Ivan Andrus
