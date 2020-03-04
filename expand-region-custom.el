@@ -115,6 +115,11 @@ If set to nil, always place the cursor at the beginning of the region."
   :type '(choice (const :tag "Enable subword expansions" t)
                  (const :tag "Disable subword expansions" nil)))
 
+(defcustom expand-region-show-usage-message t
+  "Whether expand-region should show usage message."
+  :group 'expand-region
+  :type 'boolean)
+
 (provide 'expand-region-custom)
 
 ;;; expand-region-custom.el ends here
