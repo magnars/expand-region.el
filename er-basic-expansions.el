@@ -96,6 +96,8 @@ period and marks next symbol."
   (or (nth 4 (syntax-ppss))
       (memq (get-text-property (point) 'face) '(font-lock-comment-face font-lock-comment-delimiter-face))))
 
+(cl-proclaim '(inline er--point-is-in-comment-p))
+
 (defun er/mark-comment ()
   "Mark the entire comment around point."
   (interactive)
@@ -116,6 +118,8 @@ period and marks next symbol."
   "The char that is the current quote delimiter"
   (nth 3 (syntax-ppss)))
 
+(cl-proclaim '(inline er--current-quotes-char))
+
 (defalias 'er--point-inside-string-p 'er--current-quotes-char)
 
 (defun er--move-point-forward-out-of-string ()
@@ -126,6 +130,8 @@ period and marks next symbol."
 (defun er--move-point-backward-out-of-string ()
   "Move point backward until it exits the current quoted string."
   (goto-char (nth 8 (syntax-ppss))))
+
+(cl-proclaim '(inline er--move-point-backward-out-of-string))
 
 (defun er/mark-inside-quotes ()
   "Mark the inside of the current string, not including the quotation marks."
@@ -159,6 +165,7 @@ period and marks next symbol."
   "Is point inside any pairs?"
   (> (car (syntax-ppss)) 0))
 
+(cl-proclaim '(inline er--point-inside-pairs-p))
 (defun er/mark-inside-pairs ()
   "Mark inside pairs (as defined by the mode), not including the pairs."
   (interactive)
@@ -177,6 +184,7 @@ period and marks next symbol."
   "Is point looking at an opening pair char?"
   (looking-at "\\s("))
 
+(cl-proclaim '(inline er--looking-at-pair))
 (defun er--looking-at-marked-pair ()
   "Is point looking at a pair that is entirely marked?"
   (and (er--looking-at-pair)
@@ -198,6 +206,14 @@ period and marks next symbol."
                  (er--looking-at-marked-pair)))
     (goto-char (nth 1 (syntax-ppss))))
   (when (er--looking-at-pair)
+    (set-mark (point))
+    (forward-list)
+    (exchange-point-and-mark)))
+
+;;Enhancement for lisp like #'() ,@()
+(defun er/move-out-prefix ()
+  (when (looking-at "\\(\\(`,?\\)\\|\\('?,?\\)\\|\\(,?@?\\)\\|\\(#?'?\\)\\)?(")
+    (cond ((er/looking-back-on-line ",\\|@\\|?\\|#\\|'\\|`") (backward-char 1)))
     (set-mark (point))
     (forward-list)
     (exchange-point-and-mark)))
@@ -236,6 +252,7 @@ period and marks next symbol."
                 er/mark-outside-quotes
                 er/mark-inside-pairs
                 er/mark-outside-pairs
+		er/move-out-prefix
                 er/mark-comment
                 er/mark-url
                 er/mark-email
