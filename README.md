@@ -49,6 +49,11 @@ It's available on [MELPA](https://melpa.org/):
 
     M-x package-install expand-region
 
+Via [use-package](https://github.com/jwiegley/use-package):
+
+    (use-package expand-region
+      :bind ("C-=" . er/expand-region))
+
 ## Language support
 
 Expand region works fairly well with most languages, due to the general
