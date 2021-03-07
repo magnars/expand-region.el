@@ -190,6 +190,7 @@ before calling `er/expand-region' for the first time."
 (eval-after-load 'sml-mode       '(require 'sml-mode-expansions))
 (eval-after-load 'enh-ruby-mode  '(require 'enh-ruby-mode-expansions))
 (eval-after-load 'subword        '(require 'subword-mode-expansions))
+(eval-after-load 'lisp-mode      '(require 'lisp-mode-expansions))
 
 (provide 'expand-region)
 
