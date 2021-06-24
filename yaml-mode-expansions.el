@@ -24,6 +24,9 @@
 ;;    - er/mark-yaml-key-value
 ;;    - er/mark-yaml-list-item
 ;;    - er/mark-yaml-block
+;;    - er/mark-yaml-outer-block
+;;    - er/mark-yaml-inner-block
+
 
 ;;; Code:
 
@@ -45,8 +48,7 @@
 (defvar er--yaml-list-item-regex
   (rx (seq "- "
            (one-or-more
-            (any "0-9A-Za-z" " '_-"))
-           "\n")))
+            (any "0-9A-Za-z" "\"':=_-")))))
 
 (defvar er--yaml-block-regex
   (rx (seq (zero-or-more
@@ -69,8 +71,39 @@
   (when (looking-at regex)
     (set-mark (line-end-position))))
 
+(defun er/mark-yaml-block-static-base (regex)
+  "Mark yaml block based on REGEX passed.  NEXT-INDENT-LEVEL can be used to search outer blocks when necessary."
+  ;; go bac to indentation so always can get regexp
+  (back-to-indentation)
+  ;; make sure the cursor is set inside the block
+  ;; mark point at this higher code block
+  (set-mark (point))
+  ;; save level of this blocks indentation
+  (let ((block-indentation (current-indentation)))
+    (forward-line 1)
+    (while (and
+            ;; No need to go beyond the end of the buffer. Can't use
+            ;; eobp as the loop places the point at the beginning of
+            ;; line, but eob might be at the end of the line.
+            (not (= (point-max) (point-at-eol)))
+            ;; Proceed if: indentation is too deep
+            (or (> (current-indentation) block-indentation)
+                ;; Looking at an empty line
+                (looking-at (rx line-start (* whitespace) line-end))
+                ;; We're not looking at the start of a YAML block
+                ;; and the indent is deeper than the block's indent
+                (and (not (looking-at regex))
+                     (> (current-indentation) block-indentation))))
+      (forward-line 1)
+      (back-to-indentation))
+    ;; Find the end of the block by skipping comments backwards
+    (python-util-forward-comment -1)
+    (exchange-point-and-mark))
+  (back-to-indentation))
+
 (defun er/mark-yaml-block-base (regex &optional next-indent-level)
   "Mark yaml block based on REGEX passed.  NEXT-INDENT-LEVEL can be used to search outer blocks when necessary."
+  ;; go bac to indentation so always can get regexp
   (back-to-indentation)
   ;; make sure the cursor is set inside the block
   (let ((next-indent-level
@@ -78,10 +111,10 @@
           ;; Use the given level
           next-indent-level
           ;; used to mark current block
-          ;; if true then at start of block and wanna mark itself
-          ;; else were are inside the block already and will mark it)))
-          ;; move up the code unti a parent code block is reached
           (er--get-regex-indentation-level regex))))
+    ;; if true then at start of block and wanna mark itself
+    ;; else were are inside the block already and will mark it)))
+    ;; move up the code unti a parent code block is reached
     (while (and (>= (current-indentation) next-indent-level)
                 (not (eq (current-indentation) 0)))
       (re-search-backward regex (point-min) t)
@@ -100,7 +133,7 @@
               (or (> (current-indentation) block-indentation)
                   ;; Looking at an empty line
                   (looking-at (rx line-start (* whitespace) line-end))
-                  ;; We're not looking at the start of a Python block
+                  ;; We're not looking at the start of a YAML block
                   ;; and the indent is deeper than the block's indent
                   (and (not (looking-at regex))
                        (> (current-indentation) block-indentation))))
@@ -121,33 +154,34 @@
   (interactive)
   (er/mark-yaml-line-base er--yaml-list-item-regex))
 
-(defun er/mark-yaml-block ()
-  "Mark the yaml block that surrounds the block around point.
-
-Command that wraps `er/mark-yaml-block-base'."
+(defun er/mark-yaml-inner-block ()
+  "Mark the yaml contents of the block at point.  Command that wraps `er/mark-yaml-block-base'."
   (interactive)
-  (er/mark-yaml-block-base er--yaml-block-regex))
+  (er/mark-yaml-block-base er--yaml-block-regex (current-indentation))
+  (forward-line)
+  (back-to-indentation))
 
-(defun er/mark-outer-yaml-block ()
-  "Mark the outer yaml block that surrounds the block around point.
+(defun er/mark-yaml-block ()
+  "Mark the yaml block that point is currently at the top of.  Command that wraps `er/mark-yaml-block-base'."
+  (interactive)
+  (er/mark-yaml-block-static-base er--yaml-block-regex))
 
-Command that wraps `er/mark-yaml-block-base'."
+(defun er/mark-yaml-outer-block ()
+  "Mark the outer yaml block that surrounds the block around point.  Command that wraps `er/mark-yaml-block-base'."
   (interactive)
   (er/mark-yaml-block-base er--yaml-block-regex (current-indentation)))
 
 (defun er/add-yaml-mode-expansions ()
   "Add yaml-mode-specific expansions for buffers in yaml-mode."
-  (let ((try-expand-list-additions '(
-                                     er/mark-symbol
+  (let ((try-expand-list-additions '(er/mark-symbol
                                      er/mark-outside-quotes
                                      er/mark-yaml-list-item
                                      er/mark-yaml-key-value
                                      er/mark-yaml-block
-                                     er/mark-outer-yaml-block
-                                     mark-page)))
+                                     er/mark-yaml-outer-block
+                                     er/mark-yaml-inner-block)))
     (set (make-local-variable 'expand-region-skip-whitespace) nil)
-    (set (make-local-variable 'er/try-expand-list)
-         (append try-expand-list-additions er/try-expand-list))))
+    (set (make-local-variable 'er/try-expand-list) try-expand-list-additions)))
 
 (er/enable-mode-expansions 'yaml-mode 'er/add-yaml-mode-expansions)
 
