@@ -31,7 +31,7 @@
 
 (defconst yaml-indent 2)
 
-(if (not (fboundp 'yaml-indent-offset))
+(unless (fboundp 'yaml-indent-offset))
     (defalias 'yaml-indent-offset 'yaml-indent))
 
 (defvar er--yaml-key-value-regex
@@ -57,17 +57,17 @@
 
 (defun er--get-regex-indentation-level (regex)
   "Return the indentation level of the code with respect to the REGEX passed."
-  (if (looking-at regex)
-      ;; Block start means that the next level is deeper.
-      (+ (current-indentation) yaml-indent-offset)
+  (when (looking-at regex)
+    ;; Block start means that the next level is deeper.
+    (+ (current-indentation) yaml-indent-offset)
     ;; Assuming we're inside the block that we want to mark
     (current-indentation)))
 
 (defun er/mark-yaml-line-base (regex)
   "Mark line of yaml file based on simple REGEX."
   (back-to-indentation)
-  (if (looking-at regex)
-      (set-mark (line-end-position))))
+  (when (looking-at regex)
+    (set-mark (line-end-position))))
 
 (defun er/mark-yaml-block-base (regex &optional next-indent-level)
   "Mark yaml block based on REGEX passed.  NEXT-INDENT-LEVEL can be used to search outer blocks when necessary."
