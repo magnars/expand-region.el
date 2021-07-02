@@ -31,8 +31,8 @@
 
 (defconst yaml-indent 2)
 
-(unless (fboundp 'yaml-indent-offset))
-    (defalias 'yaml-indent-offset 'yaml-indent))
+(unless (fboundp 'yaml-indent-offset)
+  (defalias 'yaml-indent-offset 'yaml-indent))
 
 (defvar er--yaml-key-value-regex
   (rx (one-or-more
