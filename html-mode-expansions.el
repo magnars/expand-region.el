@@ -97,6 +97,7 @@ around the equal sign or unquotes attributes atm."
 (er/enable-mode-expansions 'rhtml-mode 'er/add-html-mode-expansions)
 (er/enable-mode-expansions 'nxhtml-mode 'er/add-html-mode-expansions)
 (er/enable-mode-expansions 'web-mode 'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'js-jsx-mode 'er/add-html-mode-expansions)
 
 (provide 'html-mode-expansions)
 
