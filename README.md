@@ -53,12 +53,21 @@ I highly recommend installing expand-region through elpa.
 
 It's available on [MELPA](https://melpa.org/):
 
-    M-x package-install expand-region
+    M-x package-install expand-region    
 
 Via [use-package](https://github.com/jwiegley/use-package):
 
     (use-package expand-region
       :bind ("C-=" . er/expand-region))
+      
+Via manual installation
+    
+    mkdir -p ~/.emacs.d/lisp/ 
+    cd ~/.emacs.d/lisp
+    git clone https://github.com/magnars/expand-region.el
+    
+     echo "(require 'expand-region)
+     (global-set-key (kbd \"<f7>\") 'er/expand-region)" >> ~/.emacs.d/init.el
 
 ## Language support
 
