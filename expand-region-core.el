@@ -145,6 +145,7 @@ to override the heuristic."
        (and (= (point) best-start)
             (< (mark) best-end)))))
 
+;;;###autoload
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.
 With prefix argument contracts that many times.
