@@ -51,8 +51,7 @@
 (defun er/add-treesit-er-expansion ()
   "Add the expansion for treesit mode."
   (set (make-local-variable 'er/try-expand-list)
-       ;; we don't need any other expansion rules once we have treesit
-       '(er/treesit-er-parent-node)))
+       (append er/try-expand-list '(er/treesit-er-parent-node))))
 
 (er/enable-mode-expansions 'c-ts-mode 'er/add-treesit-er-expansion)
 (er/enable-mode-expansions 'js-ts-mode 'er/add-treesit-er-expansion)
