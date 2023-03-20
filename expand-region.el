@@ -195,25 +195,7 @@ before calling `er/expand-region' for the first time."
 ;; Since treesit is behind a compile time flag (for now) we first check if it's available
 (when (and (functionp 'treesit-available-p)
            (treesit-available-p))
-  ;; treesit expansions can be loaded by any ts mode.
-  (eval-after-load 'c-ts-mode      '(require 'treesit-er-expansions))
-  (eval-after-load 'js-ts-mode     '(require 'treesit-er-expansions))
-  (eval-after-load 'go-ts-mode     '(require 'treesit-er-expansions))
-  (eval-after-load 'css-ts-mode    '(require 'treesit-er-expansions))
-  (eval-after-load 'c++-ts-mode    '(require 'treesit-er-expansions))
-  (eval-after-load 'html-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'yaml-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'bash-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'ruby-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'java-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'toml-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'json-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'rust-ts-mode   '(require 'treesit-er-expansions))
-  (eval-after-load 'cmake-ts-mode  '(require 'treesit-er-expansions))
-  (eval-after-load 'csharp-ts-mode '(require 'treesit-er-expansions))
-  (eval-after-load 'python-ts-mode '(require 'treesit-er-expansions))
-  (eval-after-load 'go-mod-ts-mode '(require 'treesit-er-expansions))
-  (eval-after-load 'tsx-ts-mode    '(require 'treesit-er-expansions)))
+  (require 'treesit-er-expansions))
 
 (provide 'expand-region)
 
