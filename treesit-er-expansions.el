@@ -50,27 +50,12 @@
 
 (defun er/add-treesit-er-expansion ()
   "Add the expansion for treesit mode."
-  (set (make-local-variable 'er/try-expand-list)
-       (append er/try-expand-list '(er/treesit-er-parent-node))))
+  (when (treesit-language-at (point))
+    (set (make-local-variable 'er/try-expand-list)
+         (append er/try-expand-list '(er/treesit-er-parent-node)))))
 
-(er/enable-mode-expansions 'c-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'js-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'go-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'css-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'c++-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'html-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'yaml-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'bash-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'ruby-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'java-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'toml-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'json-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'rust-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'cmake-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'csharp-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'python-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'go-mod-ts-mode 'er/add-treesit-er-expansion)
-(er/enable-mode-expansions 'tsx-ts-mode 'er/add-treesit-er-expansion)
+(er/enable-mode-expansions 'prog-mode 'er/add-treesit-er-expansion)
+(er/enable-mode-expansions 'text-mode 'er/add-treesit-er-expansion)
 
 (provide 'treesit-er-expansions)
 
