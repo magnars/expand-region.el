@@ -50,6 +50,12 @@
   "t if this is the first invocation of `er/expand-region' or `er/contract-region'."
   (not (memq last-command '(er/expand-region er/contract-region))))
 
+(defvar-local er--saved-expansions nil
+  "List of region data used to avoid redundant computation.
+
+When expand-region or contract-region is called repeatedly, save
+the data here and reuse when possible.")
+
 (defun er--prepare-expanding ()
   (when (and (er--first-invocation)
              (not (use-region-p)))
@@ -109,17 +115,26 @@ moving point or mark as little as possible."
       (setq start (point)))
 
     (er--save-excursion
-       (while try-list
-         (ignore-errors
-           (save-mark-and-excursion
-             (funcall (car try-list))
-             (when (and (region-active-p)
-                        (er--this-expansion-is-better start end best-start best-end))
-               (setq best-start (point))
-               (setq best-end (mark))
-               (when (and er--show-expansion-message (not (minibufferp)))
-                 (message "%S" (car try-list))))))
-         (setq try-list (cdr try-list))))
+     (while try-list
+       (ignore-errors
+         (save-mark-and-excursion
+           ;; Try expansion or fetch memoized value
+           (if-let* ((try-func (car try-list))
+                     ((not (er--first-invocation)))
+                     (bounds (alist-get try-func er--saved-expansions))
+                     ((or (>= (point) (car bounds)) (<= (mark) (cadr bounds)))))
+               (progn (set-mark (cadr bounds))
+                      (goto-char (car bounds)))
+             (funcall try-func)
+             (setf (alist-get try-func er--saved-expansions) (list (point) (mark))))
+           ;; Test expansion against best expansion so far
+           (when (and (region-active-p)
+                      (er--this-expansion-is-better start end best-start best-end))
+             (setq best-start (point))
+             (setq best-end (mark))
+             (when (and er--show-expansion-message (not (minibufferp)))
+               (message "%S" (car try-list))))))
+       (setq try-list (cdr try-list))))
 
     (setq deactivate-mark nil)
     ;; if smart cursor enabled, decide to put it at start or end of region:

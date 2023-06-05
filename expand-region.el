@@ -157,6 +157,8 @@ before calling `er/expand-region' for the first time."
       (setq arg (- arg 1))
       (when (eq 'early-exit (er--expand-region-1))
         (setq arg 0)))
+    (when (er--first-invocation)
+      (setq-local er--saved-expansions nil))
     (when (and expand-region-fast-keys-enabled
                (not (memq last-command '(er/expand-region er/contract-region))))
       (er/prepare-for-more-expansions))))
