@@ -1,6 +1,6 @@
-;;; css-mode-expansions.el --- CSS-specific expansions for expand-region
+;;; css-mode-expansions.el --- CSS-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
@@ -45,7 +45,7 @@
                                                   er/try-expand-list
                                                   '(er/mark-css-declaration))))
 
-(er/enable-mode-expansions 'css-mode 'er/add-css-mode-expansions)
+(er/enable-mode-expansions 'css-mode #'er/add-css-mode-expansions)
 
 (provide 'css-mode-expansions)
 

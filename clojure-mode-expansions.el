@@ -1,6 +1,6 @@
-;;; clojure-mode-expansions.el --- Clojure-specific expansions for expand-region
+;;; clojure-mode-expansions.el --- Clojure-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
@@ -98,8 +98,8 @@ If point is inside the parens, they will be marked first anyway."
                                                     er/mark-clj-set-literal
                                                     er/mark-clj-function-literal))))
 
-(er/enable-mode-expansions 'clojure-mode 'er/add-clojure-mode-expansions)
-(er/enable-mode-expansions 'nrepl-mode 'er/add-clojure-mode-expansions)
+(er/enable-mode-expansions 'clojure-mode #'er/add-clojure-mode-expansions)
+(er/enable-mode-expansions 'nrepl-mode #'er/add-clojure-mode-expansions)
 
 (provide 'clojure-mode-expansions)
 

@@ -1,6 +1,6 @@
-;;; cperl-mode-expansions.el --- perl-specific expansions for expand-region
+;;; cperl-mode-expansions.el --- perl-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Kang-min Liu <gugod@gugod.org>
 ;; Keywords: marking region cperl
@@ -60,7 +60,7 @@
                                                     er/mark-cperl-subroutine
                                                     ))))
 
-(er/enable-mode-expansions 'cperl-mode 'er/add-cperl-mode-expansions)
+(er/enable-mode-expansions 'cperl-mode #'er/add-cperl-mode-expansions)
 
 (provide 'cperl-mode-expansions)
 

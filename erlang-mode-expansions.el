@@ -1,6 +1,6 @@
-;;; erlang-mode-expansions.el --- Erlang-specific expansions for expand-region
+;;; erlang-mode-expansions.el --- Erlang-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Gleb Peregud
 ;; Based on python-mode-expansions by: Ivan Andrus <darthandrus@gmail.com>
@@ -40,7 +40,7 @@
                                                   '(erlang-mark-function
                                                     erlang-mark-clause))))
 
-(er/enable-mode-expansions 'erlang-mode 'er/add-erlang-mode-expansions)
+(er/enable-mode-expansions 'erlang-mode #'er/add-erlang-mode-expansions)
 
 (provide 'erlang-mode-expansions)
 

@@ -1,6 +1,6 @@
-;;; subword-mode-expansions.el --- Expansions for subword-mode to be used for CamelCase
+;;; subword-mode-expansions.el --- Expansions for subword-mode to be used for CamelCase  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2014-2020  Free Software Foundation, Inc
+;; Copyright (C) 2014-2023  Free Software Foundation, Inc
 
 ;; Author: Lefteris Karapetsas
 ;; Keywords: marking region

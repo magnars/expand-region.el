@@ -1,6 +1,6 @@
-;;; python-el-fgallina-expansions.el --- fgallina/python.el-specific expansions for expand-region
+;;; python-el-fgallina-expansions.el --- fgallina/python.el-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Felix Geller
 ;; Keywords: marking region python
@@ -34,9 +34,9 @@
 (require 'expand-region-core)
 
 (if (not (fboundp 'python-syntax-context))
-    (defalias 'python-syntax-context 'python-info-ppss-context))
+    (defalias 'python-syntax-context #'python-info-ppss-context))
 (if (not (fboundp 'python-indent-offset))
-    (defalias 'python-indent-offset 'python-indent))
+    (defalias 'python-indent-offset #'python-indent))
 
 (defvar er--python-string-delimiter
   "'\""
@@ -123,7 +123,7 @@ than NEXT-INDENT-LEVEL."
               ;; No need to go beyond the end of the buffer. Can't use
               ;; eobp as the loop places the point at the beginning of
               ;; line, but eob might be at the end of the line.
-              (not (= (point-max) (point-at-eol)))
+              (not (= (point-max) (line-end-position)))
               ;; Proceed if: indentation is too deep
               (or (> (current-indentation) block-indentation)
                   ;; Looking at an empty line
@@ -186,7 +186,7 @@ Command that wraps `er/mark-python-block'."
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-(er/enable-mode-expansions 'python-mode 'er/add-python-mode-expansions)
+(er/enable-mode-expansions 'python-mode #'er/add-python-mode-expansions)
 
 (provide 'python-el-fgallina-expansions)
 

@@ -1,6 +1,6 @@
-;;; enh-ruby-mode-expansions.el --- Expansions for enh-ruby-mode
+;;; enh-ruby-mode-expansions.el --- Expansions for enh-ruby-mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
@@ -28,6 +28,8 @@
 
 ;;; Code:
 
+(require 'expand-region-core)
+
 (defun er/add-enh-ruby-mode-expansions ()
   "Adds Ruby-specific expansions for buffers in enh-ruby-mode"
   (require 'ruby-mode-expansions)
@@ -37,6 +39,6 @@
                                                   '(er/mark-ruby-instance-variable
                                                     er/mark-ruby-block-up))))
 
-(er/enable-mode-expansions 'enh-ruby-mode 'er/add-enh-ruby-mode-expansions)
+(er/enable-mode-expansions 'enh-ruby-mode #'er/add-enh-ruby-mode-expansions)
 
 (provide 'enh-ruby-mode-expansions)

@@ -1,6 +1,6 @@
-;;; octave-expansions.el --- octave-mode expansions for expand-region
+;;; octave-expansions.el --- octave-mode expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Mark Hepburn
 ;; Keywords: marking region
@@ -72,7 +72,7 @@ behaviour of `octave-mark-block' between emacs versions 23 and
     (set (make-local-variable 'er/try-expand-list)
          (append er/try-expand-list try-expand-list-additions))))
 
-(er/enable-mode-expansions 'octave-mode 'er/add-octave-expansions)
+(er/enable-mode-expansions 'octave-mode #'er/add-octave-expansions)
 
 (provide 'octave-expansions)
 ;;; octave-expansions.el ends here

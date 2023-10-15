@@ -1,6 +1,6 @@
-;;; cc-mode-expansions.el --- C-specific expansions for expand-region
+;;; cc-mode-expansions.el --- C-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: François Févotte
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -119,7 +119,7 @@ This function captures identifiers composed of multiple
            doc "\n\n"
            "This function tries to mark a region consisting of two parts:\n"
            (format " - the first part is marked using `%s'\n" (symbol-name mark-first-part))
-           (format " - the second part is a block beginning with '%s'\n\n" open-brace)))
+           (format " - the second part is a block beginning with %S\n\n" open-brace)))
     `(progn
        (defun ,(intern (concat (symbol-name name) "-1")) ()
          ,(concat docstring
@@ -173,13 +173,13 @@ This function captures identifiers composed of multiple
                  er/c-mark-statement-block-1 er/c-mark-statement-block-2
                  er/c-mark-vector-access-1   er/c-mark-vector-access-2))))
 
-(er/enable-mode-expansions 'c-mode 'er/add-cc-mode-expansions)
-(er/enable-mode-expansions 'c++-mode 'er/add-cc-mode-expansions)
-(er/enable-mode-expansions 'objc-mode 'er/add-cc-mode-expansions)
-(er/enable-mode-expansions 'java-mode 'er/add-cc-mode-expansions)
-(er/enable-mode-expansions 'idl-mode 'er/add-cc-mode-expansions)
-(er/enable-mode-expansions 'pike-mode 'er/add-cc-mode-expansions)
-(er/enable-mode-expansions 'awk-mode 'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'c-mode #'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'c++-mode #'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'objc-mode #'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'java-mode #'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'idl-mode #'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'pike-mode #'er/add-cc-mode-expansions)
+(er/enable-mode-expansions 'awk-mode #'er/add-cc-mode-expansions)
 
 (provide 'cc-mode-expansions)
 

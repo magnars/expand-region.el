@@ -1,6 +1,6 @@
-;;; js-mode-expansions.el --- JS-specific expansions for expand-region
+;;; js-mode-expansions.el --- JS-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
@@ -36,6 +36,7 @@
 ;;; Code:
 
 (require 'expand-region-core)
+(require 'er-basic-expansions)
 
 (defun er/mark-js-function ()
   "Mark the current JavaScript function."
@@ -72,7 +73,8 @@
   (exchange-point-and-mark))
 
 (defun er/mark-js-inner-return ()
-  "Mark contents of the current return statement, not including return or semi-colon"
+` "Mark contents of the current return statement.
+Does not include return or semi-colon."
   (interactive)
   (condition-case nil
       (forward-char 6)
@@ -128,7 +130,8 @@
   (exchange-point-and-mark))
 
 (defun er/mark-js-object-property ()
-  "Mark js-object-property presumes that point is at the assignment part of key: value.
+  "Mark js-object-property.
+Presumes that point is at the assignment part of key: value.
 If point is inside the value, that will be marked first anyway."
   (interactive)
   (when (or (looking-at "\"?\\(\\s_\\|\\sw\\| \\)*\":")
@@ -178,9 +181,9 @@ If point is inside the value, that will be marked first anyway."
                                                     er/mark-js-outer-return
                                                     er/mark-js-call))))
 
-(er/enable-mode-expansions 'js-mode 'er/add-js-mode-expansions)
-(er/enable-mode-expansions 'js2-mode 'er/add-js-mode-expansions)
-(er/enable-mode-expansions 'js3-mode 'er/add-js-mode-expansions)
+(er/enable-mode-expansions 'js-mode #'er/add-js-mode-expansions)
+(er/enable-mode-expansions 'js2-mode #'er/add-js-mode-expansions)
+(er/enable-mode-expansions 'js3-mode #'er/add-js-mode-expansions)
 
 (provide 'js-mode-expansions)
 

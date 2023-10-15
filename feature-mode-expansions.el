@@ -1,6 +1,6 @@
-;;; feature-mode-expansions.el --- cucumber-specific expansions for expand-region
+;;; feature-mode-expansions.el --- cucumber-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Raimon Grau
 ;; Based on js-mode-expansions by: Raimon Grau <raimonster@gmail.com>
@@ -63,6 +63,6 @@
                                                   '(er/mark-feature-scenario
                                                     er/mark-feature-step))))
 
-(er/enable-mode-expansions 'feature-mode 'er/add-feature-mode-expansions)
+(er/enable-mode-expansions 'feature-mode #'er/add-feature-mode-expansions)
 
 (provide 'feature-mode-expansions)

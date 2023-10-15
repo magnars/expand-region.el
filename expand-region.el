@@ -1,11 +1,12 @@
-;;; expand-region.el --- Increase selected region by semantic units.
+;;; expand-region.el --- Increase selected region by semantic units.  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
 ;; URL: https://github.com/magnars/expand-region.el
 ;; Version: 0.11.0
+;; Package-Requires: ((emacs "24.4"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -82,13 +83,12 @@
 ;; `mark-page`. To add it to the try-list, do this:
 
 ;;     (defun er/add-text-mode-expansions ()
-;;       (make-variable-buffer-local 'er/try-expand-list)
-;;       (setq er/try-expand-list (append
+;;       (setq-local er/try-expand-list (append
 ;;                                 er/try-expand-list
 ;;                                 '(mark-paragraph
 ;;                                   mark-page))))
 
-;;     (er/enable-mode-expansions 'text-mode 'er/add-text-mode-expansions)
+;;     (er/enable-mode-expansions 'text-mode #'er/add-text-mode-expansions)
 
 ;; Add that to its own file, and require it at the bottom of this one,
 ;; where it says "Mode-specific expansions"

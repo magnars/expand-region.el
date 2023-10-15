@@ -1,6 +1,6 @@
-;;; html-mode-expansions.el --- HTML-specific expansions for expand-region
+;;; html-mode-expansions.el --- HTML-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
@@ -36,10 +36,11 @@
 (require 'sgml-mode)
 
 (defun er/mark-html-attribute ()
-  "Mark html-attribute presumes that point is at the assignment part of attr=\"value\".
+  "Mark html-attribute.
+Presumes that point is at the assignment part of attr=\"value\".
 If point is inside the value-string, the quotes will be marked
 first anyway.  Does not support html-attributes with spaces
-around the equal sign or unquotes attributes atm."
+around the equal sign or unquoted attributes atm."
   (interactive)
   (when (or (looking-at "\\(\\s_\\|\\sw\\)*=")
             (er/looking-back-exact "="))
@@ -93,10 +94,10 @@ around the equal sign or unquotes attributes atm."
                                                     er/mark-inner-tag
                                                     er/mark-outer-tag))))
 
-(er/enable-mode-expansions 'html-mode 'er/add-html-mode-expansions)
-(er/enable-mode-expansions 'rhtml-mode 'er/add-html-mode-expansions)
-(er/enable-mode-expansions 'nxhtml-mode 'er/add-html-mode-expansions)
-(er/enable-mode-expansions 'web-mode 'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'html-mode #'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'rhtml-mode #'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'nxhtml-mode #'er/add-html-mode-expansions)
+(er/enable-mode-expansions 'web-mode #'er/add-html-mode-expansions)
 
 (provide 'html-mode-expansions)
 

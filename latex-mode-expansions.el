@@ -1,6 +1,6 @@
-;;; latex-mode-expansions.el --- LaTeX-specific expansions for expand-region
+;;; latex-mode-expansions.el --- LaTeX-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Ivan Andrus
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -96,7 +96,7 @@ Skips past [] and {} arguments to the environment."
           er/mark-LaTeX-math))))
 
 (let ((latex-mode-hook LaTeX-mode-hook))
-  (er/enable-mode-expansions 'latex-mode 'er/add-latex-mode-expansions)
+  (er/enable-mode-expansions 'latex-mode #'er/add-latex-mode-expansions)
   (setq LaTeX-mode-hook latex-mode-hook))
 
 (provide 'latex-mode-expansions)

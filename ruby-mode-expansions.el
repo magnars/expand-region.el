@@ -1,6 +1,6 @@
-;;; ruby-mode-expansions.el --- ruby-specific expansions for expand-region
+;;; ruby-mode-expansions.el --- ruby-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Matt Briggs
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -36,8 +36,9 @@
 ;;
 
 ;;; Code:
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
 (require 'expand-region-core)
+(require 'er-basic-expansions)
 (require 'ruby-mode)
 
 (defvar er/ruby-block-end-re
@@ -56,7 +57,7 @@ This moves point to the next line to include the end of the block"
   (interactive "p")
   ;; Workaround for `ruby-end-of-block' in Emacs 23.
   (when (re-search-forward (concat "\\<\\(" ruby-block-beg-re "\\)\\>")
-                           (point-at-eol) t)
+                           (line-end-position) t)
     (goto-char (match-beginning 0)))
   (ruby-end-of-block (or arg 1))
   (er/ruby-skip-past-block-end))
@@ -84,21 +85,20 @@ This moves point to the next line to include the end of the block"
                    (ruby-beginning-of-block)
                    ;; "Block beginning" is often not at indentation in Emacs 24.
                    (< (er/point-at-indentation) orig-point))
-      (loop do
-            (ruby-beginning-of-block)
-            (setq progress-beg (point))
-            (when (= (point) (point-min))
-              (return))
-            (ruby-end-of-block)
-            (setq progress-end (if (looking-at-p er/ruby-block-end-re)
-                                   (point-at-bol 0)
-                                 (point-at-bol 1)))
-            (goto-char progress-beg)
-            (when (> progress-end orig-point)
-              (return))))))
+      (cl-loop
+       (ruby-beginning-of-block)
+       (setq progress-beg (point))
+       (when (= (point) (point-min))
+         (cl-return))
+       (ruby-end-of-block)
+       (setq progress-end (line-beginning-position
+                           (if (looking-at-p er/ruby-block-end-re) 0 1)))
+       (goto-char progress-beg)
+       (when (> progress-end orig-point)
+         (cl-return))))))
 
-;;; This command isn't used here explicitly, but it's symmetrical with
-;;; `er/ruby-backward-up', and nifty for interactive use.
+;; This command isn't used here explicitly, but it's symmetrical with
+;; `er/ruby-backward-up', and nifty for interactive use.
 (defun er/ruby-forward-up ()
   "a la `paredit-forward-up'"
   (interactive)
@@ -110,13 +110,12 @@ This moves point to the next line to include the end of the block"
   (setq pos (or pos (point)))
   (save-excursion
     (goto-char pos)
-    (let (beg end)
-      (cons (progn
-              (er/ruby-backward-up)
-              (er/point-at-indentation))
-            (progn
-              (er/ruby-end-of-block)
-              (point))))))
+    (cons (progn
+            (er/ruby-backward-up)
+            (er/point-at-indentation))
+          (progn
+            (er/ruby-end-of-block)
+            (point)))))
 
 (defun er/mark-ruby-block-up-1 ()
   (er/ruby-backward-up)
@@ -137,12 +136,12 @@ This moves point to the next line to include the end of the block"
                     (forward-line 0)
                     (back-to-indentation)
                     (cond ((looking-at-p er/ruby-block-end-re)
-                           (point-at-bol 0))
+                           (line-beginning-position 0))
                           ((re-search-forward
                             (concat "\\<\\(" ruby-block-beg-re "\\)\\>")
-                            (point-at-eol)
+                            (line-end-position)
                             t)
-                           (point-at-bol 2))) )
+                           (line-beginning-position 2))) )
                   (point)))
              (prev-block-info (er/get-ruby-block prev-block-point))
              (prev-block-beg (car prev-block-info))
@@ -201,5 +200,5 @@ be marked first anyway."
                   er/mark-ruby-block-up
                   er/mark-ruby-heredoc)))))
 
-(er/enable-mode-expansions 'ruby-mode 'er/add-ruby-mode-expansions)
+(er/enable-mode-expansions 'ruby-mode #'er/add-ruby-mode-expansions)
 (provide 'ruby-mode-expansions)

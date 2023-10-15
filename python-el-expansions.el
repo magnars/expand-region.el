@@ -1,6 +1,6 @@
-;;; python-el-expansions.el --- Python-specific expansions for expand-region
+;;; python-el-expansions.el --- Python-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Authors: Ivan Andrus, Felix Geller, @edmccard
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -85,7 +85,7 @@
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-(er/enable-mode-expansions 'python-mode 'er/add-python-mode-expansions)
+(er/enable-mode-expansions 'python-mode #'er/add-python-mode-expansions)
 
 (provide 'python-el-expansions)
 

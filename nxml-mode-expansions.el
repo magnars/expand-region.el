@@ -1,6 +1,6 @@
-;;; nxml-mode-expansions.el --- Nxml-specific expansions for expand-region
+;;; nxml-mode-expansions.el --- Nxml-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Ivan Andrus
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -118,7 +118,7 @@ point is in, or otherwise nil"
                 (remove 'er/mark-symbol-with-prefix
                         (remove 'er/mark-symbol er/try-expand-list))))))
 
-(er/enable-mode-expansions 'nxml-mode 'er/add-nxml-mode-expansions)
+(er/enable-mode-expansions 'nxml-mode #'er/add-nxml-mode-expansions)
 
 (provide 'nxml-mode-expansions)
 

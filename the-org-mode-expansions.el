@@ -1,6 +1,6 @@
-;;; the-org-mode-expansions.el --- Expansions for expand-region to be used in org-mode
+;;; the-org-mode-expansions.el --- Expansions for expand-region to be used in org-mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen
 ;; Based on text-mode-expansions by: Ivan Andrus
@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'expand-region-core)
+(require 'er-basic-expansions)
 (require 'org-macs)
 
 (declare-function org-up-element "org")
@@ -113,6 +114,6 @@
   (set (make-local-variable 'er/save-mode-excursion)
        #'er/save-org-mode-excursion))
 
-(er/enable-mode-expansions 'org-mode 'er/add-org-mode-expansions)
+(er/enable-mode-expansions 'org-mode #'er/add-org-mode-expansions)
 
 (provide 'the-org-mode-expansions)

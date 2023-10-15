@@ -1,6 +1,6 @@
-;;; text-mode-expansions.el --- Expansions for expand-region to be used in text
+;;; text-mode-expansions.el --- Expansions for expand-region to be used in text  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Ivan Andrus
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -58,7 +58,7 @@ text-mode-expansions don't work well in `html-mode'."
             er/mark-text-paragraph
             mark-page)))))
 
-(er/enable-mode-expansions 'text-mode 'er/add-text-mode-expansions)
+(er/enable-mode-expansions 'text-mode #'er/add-text-mode-expansions)
 
 (provide 'text-mode-expansions)
 

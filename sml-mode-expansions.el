@@ -1,6 +1,6 @@
-;;; sml-mode-expansions.el --- Expansions for expand-region to be used in sml-mode
+;;; sml-mode-expansions.el --- Expansions for expand-region to be used in sml-mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Alexis Gallagher
 ;; Based on js-mode-expansions by: Magnar Sveen <magnars@gmail.com>
@@ -57,7 +57,7 @@
 		 er/sml-mark-keyword-prefixed-expression
 		 mark-sexp))))
 
-(er/enable-mode-expansions 'sml-mode 'er/add-sml-mode-expansions)
+(er/enable-mode-expansions 'sml-mode #'er/add-sml-mode-expansions)
 
 (provide 'sml-mode-expansions)
 

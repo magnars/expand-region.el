@@ -1,6 +1,6 @@
-;;; er-basic-expansions.el --- Words, symbols, strings, et al
+;;; er-basic-expansions.el --- Words, symbols, strings, et al  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
@@ -69,11 +69,11 @@ period and marks next symbol."
   (when (use-region-p)
     (when (< (point) (mark))
       (exchange-point-and-mark))
-    (let ((symbol-regexp "\\s_\\|\\sw"))
+    ;; (let ((symbol-regexp "\\s_\\|\\sw"))
       (when (looking-at "\\.")
         (forward-char 1)
         (skip-syntax-forward "_w")
-        (exchange-point-and-mark)))))
+        (exchange-point-and-mark)))) ;; )
 
 (defun er/mark-method-call ()
   "Mark the current symbol (including dots) and then paren to closing paren."
@@ -116,7 +116,7 @@ period and marks next symbol."
   "The char that is the current quote delimiter"
   (nth 3 (syntax-ppss)))
 
-(defalias 'er--point-inside-string-p 'er--current-quotes-char)
+(defalias 'er--point-inside-string-p #'er--current-quotes-char)
 
 (defun er--move-point-forward-out-of-string ()
   "Move point forward until it exits the current quoted string."

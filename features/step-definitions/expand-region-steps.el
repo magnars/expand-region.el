@@ -1,4 +1,4 @@
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc  -*- lexical-binding: t; -*-
 
 (Given "^mark is inactive by default$"
        (lambda ()

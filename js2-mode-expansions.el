@@ -1,6 +1,6 @@
-;;; js2-mode-expansions.el --- Additional expansions for js2-mode
+;;; js2-mode-expansions.el --- Additional expansions for js2-mode  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2011-2020  Free Software Foundation, Inc
+;; Copyright (C) 2011-2023  Free Software Foundation, Inc
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Keywords: marking region
@@ -52,7 +52,7 @@
                                                   er/try-expand-list
                                                   '(js2-mark-parent-statement))))
 
-(er/enable-mode-expansions 'js2-mode 'er/add-js2-mode-expansions)
+(er/enable-mode-expansions 'js2-mode #'er/add-js2-mode-expansions)
 
 (provide 'js2-mode-expansions)
 

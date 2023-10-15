@@ -1,7 +1,7 @@
-;;; web-mode-expansions.el --- Thin layer for adapting fxbois's web-mode-mark-and-expand function
+;;; web-mode-expansions.el --- Thin layer for adapting fxbois's web-mode-mark-and-expand function  -*- lexical-binding: t; -*-
 ;;; to expand-region
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Authors: Rotem Yaari
 ;; Based on, and makes use of web-mode.el by fxbois
@@ -27,6 +27,6 @@
   (set (make-local-variable 'er/try-expand-list)
        (cons 'web-mode-mark-and-expand er/try-expand-list)))
 
-(er/enable-mode-expansions 'web-mode 'er/add-web-mode-expansions)
+(er/enable-mode-expansions 'web-mode #'er/add-web-mode-expansions)
 
 (provide 'web-mode-expansions)

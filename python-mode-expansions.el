@@ -1,6 +1,6 @@
-;;; python-mode-expansions.el --- python-mode-specific expansions for expand-region
+;;; python-mode-expansions.el --- python-mode-specific expansions for expand-region  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012-2020  Free Software Foundation, Inc
+;; Copyright (C) 2012-2023  Free Software Foundation, Inc
 
 ;; Author: Felix Geller
 ;; Based on python-mode-expansions by: Ivan Andrus
@@ -43,7 +43,7 @@
 
 (defvar er--python-string-delimiter "'\"")
 
-(defalias 'py-goto-beyond-clause 'py-end-of-clause-bol)
+(defalias 'py-goto-beyond-clause #'py-end-of-clause-bol)
 
 (declare-function py-in-string-p "python-mode")
 (declare-function py-beginning-of-block "python-mode")
@@ -140,7 +140,7 @@ line and selecting the surrounding block."
                  (remove 'er/mark-outside-quotes
                          (append er/try-expand-list try-expand-list-additions))))))
 
-(er/enable-mode-expansions 'python-mode 'er/add-python-mode-expansions)
+(er/enable-mode-expansions 'python-mode #'er/add-python-mode-expansions)
 
 (provide 'python-mode-expansions)
 
