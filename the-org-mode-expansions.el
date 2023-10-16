@@ -34,6 +34,7 @@
 (require 'expand-region-core)
 (require 'er-basic-expansions)
 (require 'org-macs)
+(require 'org-element)
 
 (declare-function org-up-element "org")
 (declare-function org-mark-subtree "org")

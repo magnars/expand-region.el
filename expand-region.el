@@ -187,11 +187,12 @@ before calling `er/expand-region' for the first time."
 (eval-after-load 'ruby-mode      '(require 'ruby-mode-expansions))
 (eval-after-load 'org            '(require 'the-org-mode-expansions))
 (eval-after-load 'cc-mode        '(require 'cc-mode-expansions))
-(eval-after-load "text-mode"      '(require 'text-mode-expansions))
+(eval-after-load 'text-mode      '(require 'text-mode-expansions))
 (eval-after-load 'cperl-mode     '(require 'cperl-mode-expansions))
 (eval-after-load 'sml-mode       '(require 'sml-mode-expansions))
 (eval-after-load 'enh-ruby-mode  '(require 'enh-ruby-mode-expansions))
 (eval-after-load 'subword        '(require 'subword-mode-expansions))
+(eval-after-load 'yaml-mode      '(require 'yaml-mode-expansions))
 
 (provide 'expand-region)
 

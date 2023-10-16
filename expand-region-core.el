@@ -149,6 +149,7 @@ to override the heuristic."
        (and (= (point) best-start)
             (< (mark) best-end)))))
 
+;;;###autoload
 (defun er/contract-region (arg)
   "Contract the selected region to its previous size.
 With prefix argument contracts that many times.
@@ -214,10 +215,10 @@ before calling `er/expand-region' for the first time."
              `(lambda ()
                 (interactive)
                 (setq this-command `,(cadr ',binding))
-                (or (minibufferp) (message "%s" ,msg))
+                (or (not expand-region-show-usage-message) (minibufferp) (message "%s" ,msg))
                 (eval `,(cdr ',binding))))))
        t)
-      (or (minibufferp) (message "%s" msg)))))
+      (or (not expand-region-show-usage-message) (minibufferp) (message "%s" msg)))))
 
 (defalias 'er/set-temporary-overlay-map
   (if (fboundp 'set-temporary-overlay-map) ;Emacs≥24.3
