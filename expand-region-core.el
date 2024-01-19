@@ -72,7 +72,8 @@
       `(save-excursion ,@body))))
 
 (defmacro er--save-excursion (&rest body)
-  `(let ((action (lambda () ,@body)))
+  `(let ((action (lambda ()
+                   (save-mark-and-excursion ,@body))))
      (if er/save-mode-excursion
          (funcall er/save-mode-excursion action)
        (funcall action))))
@@ -108,18 +109,17 @@ moving point or mark as little as possible."
       (skip-chars-forward er--space-str)
       (setq start (point)))
 
-    (er--save-excursion
-       (while try-list
-         (ignore-errors
-           (save-mark-and-excursion
-             (funcall (car try-list))
-             (when (and (region-active-p)
-                        (er--this-expansion-is-better start end best-start best-end))
-               (setq best-start (point))
-               (setq best-end (mark))
-               (when (and er--show-expansion-message (not (minibufferp)))
-                 (message "%S" (car try-list))))))
-         (setq try-list (cdr try-list))))
+    (while try-list
+      (er--save-excursion
+       (ignore-errors
+         (funcall (car try-list))
+         (when (and (region-active-p)
+                    (er--this-expansion-is-better start end best-start best-end))
+           (setq best-start (point))
+           (setq best-end (mark))
+           (when (and er--show-expansion-message (not (minibufferp)))
+             (message "%S" (car try-list))))))
+      (setq try-list (cdr try-list)))
 
     (setq deactivate-mark nil)
     ;; if smart cursor enabled, decide to put it at start or end of region:
