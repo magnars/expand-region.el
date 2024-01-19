@@ -194,6 +194,11 @@ before calling `er/expand-region' for the first time."
 (eval-after-load 'subword        '(require 'subword-mode-expansions))
 (eval-after-load 'yaml-mode      '(require 'yaml-mode-expansions))
 
+;; Since treesit is behind a compile time flag (for now) we first check if it's available
+(when (and (functionp 'treesit-available-p)
+           (treesit-available-p))
+  (require 'treesit-er-expansions))
+
 (provide 'expand-region)
 
 ;;; expand-region.el ends here
