@@ -242,5 +242,26 @@ period and marks next symbol."
                 er/mark-defun)
               er/try-expand-list))
 
+(when (and (>= emacs-major-version 29)
+           (treesit-available-p))
+  (defun er/mark-ts-node ()
+    "Mark tree sitter node around or after point."
+    (interactive)
+    (when (treesit-language-at (point))
+      (let* ((node (if (use-region-p)
+                       (treesit-node-on (region-beginning) (region-end))
+                     (treesit-node-at (point))))
+             (node-start (treesit-node-start node))
+             (node-end (treesit-node-end node)))
+        ;; when the node fits the region exactly, try its parent node instead
+        (when (and (= (region-beginning) node-start)
+                   (= (region-end) node-end))
+          (when-let ((node (treesit-node-parent node)))
+            (setq node-start (treesit-node-start node)
+                  node-end (treesit-node-end node))))
+        (goto-char node-start)
+        (set-mark node-end))))
+  (setq er/try-expand-list (append er/try-expand-list '(er/mark-ts-node))))
+
 (provide 'er-basic-expansions)
 ;;; er-basic-expansions.el ends here
