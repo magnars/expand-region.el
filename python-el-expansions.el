@@ -22,16 +22,15 @@
 ;;; Commentary:
 
 ;; For python.el included with GNU Emacs
-;;  - Mark functionality taken from python.el:
-;;    - `python-mark-block'
-;;  - Additions implemented here:
+;;  - Mark functionality implemented here:
 ;;    - `er/mark-python-statement'
 ;;    - `er/mark-inside-python-string'
 ;;    - `er/mark-outside-python-string'
+;;    - `er/mark-python-numbers'
+;;    - `er/mark-python-defun-or-class'
+;;    - `er/mark-python-inside-block'
+;;    - `er/mark-python-outside-block'
 ;;  - Supports multi-line strings
-
-;; There is no need for a er/mark-python-defun since
-;; er/mark-python-block will mark it
 
 ;; Feel free to contribute any other expansions for Python at
 ;;
@@ -42,51 +41,142 @@
 (require 'expand-region-core)
 (require 'python)
 
-(declare-function python-beginning-of-string "python-mode")
-
-(defvar er--python-string-delimiter "'\"")
-
+;; Statements
+;; ----------
 (defun er/mark-python-statement ()
-  "Marks one Python statement, eg. x = 3"
-  (interactive)
+  "Mark one Python statement, eg. x = 3."
   (python-nav-end-of-statement)
   (set-mark (point))
   (python-nav-beginning-of-statement))
 
-(defun er/mark-outside-python-string ()
-  "Marks region outside a (possibly multi-line) Python string"
-  (interactive)
-  (python-beginning-of-string)
-  (set-mark (point))
-  (forward-sexp)
+;; Numbers
+;; -------
+(defun er/mark-python-numbers ()
+  "Mark one Python number, eg. '1', '10_000', '-4.2', '1e-4', '5j'."
+  (er/mark-word)
+  ;; in case we are on the decimal side
+  (when (looking-back "[0-9]+\\." (line-beginning-position) t)
+    (goto-char (match-beginning 0)))
+  ;; thousands delimiters upstream
+  (when (looking-back "\\([0-9]+_\\)+" (line-beginning-position) t)
+    (goto-char (match-beginning 0)))
+  ;; +/- signs before numbers
+  (when (looking-back "[+-]" (- (point) 2))
+    (goto-char (match-beginning 0)))
+  ;; Other direction
+  (exchange-point-and-mark)
+  ;; thousands delimiters downstream
+  (when (looking-at "\\(_[0-9]+\\)+")
+    (goto-char (match-end 0)))
+  ;; floating numbers
+  (when (looking-at "\\.[0-9j]+")
+    (goto-char (match-end 0)))
+  ;; exponential notation
+  (when (save-excursion (forward-char -1) (looking-at "[eE]-?[0-9]+"))
+    (goto-char (match-end 0)))
   (exchange-point-and-mark))
 
-(defun er/mark-inside-python-string ()
-  "Marks region inside a (possibly multi-line) Python string"
-  (interactive)
-  (when (eq 'string (syntax-ppss-context (syntax-ppss)))
-    (python-beginning-of-string)
-    (let ((string-beginning (point)))
-      (forward-sexp)
-      (skip-chars-backward er--python-string-delimiter)
-      (set-mark (point))
-      (goto-char string-beginning)
-      (skip-chars-forward er--python-string-delimiter))))
+;; Strings
+;; -------
+(defun er--move-point-backward-out-of-python-string ()
+  "Move point backward until it exits the current python string."
+  (goto-char (nth 8 (syntax-ppss)))
+  ;; Out of multi-quoted string
+  (when (looking-back "\\(\"\"\\|''\\)" (- (point) 3))
+    (goto-char (match-beginning 0)))
+  ;; Out of the string prefix
+  (when (looking-back "[rfubBRFU]+" (- (point) 3) t)
+    (goto-char (match-beginning 0))))
 
+(defun er--move-point-forward-out-of-python-string ()
+  "Move point backward until it exits the current python string."
+  (goto-char (nth 8 (syntax-ppss)))
+  (forward-sexp)
+  (cond
+   ((looking-at "\\(\"\"\\|''\\)")
+    (goto-char (match-end 0)))))
+
+(defun er/mark-outside-python-string ()
+  "Mark the current string, including the quotation marks and specifiers."
+  (when (er--point-inside-string-p)
+    (er--move-point-backward-out-of-python-string)
+    (when (looking-at "[rfubRFUB]*\\s\"")
+      (set-mark (point))
+      (goto-char (match-end 0))
+      ;; (forward-char)
+      (er--move-point-forward-out-of-python-string)
+      (exchange-point-and-mark))))
+
+(defun er/mark-inside-python-string ()
+  "Mark the current inside string."
+  (er/mark-inside-quotes))
+
+;; Functions / Classes
+;; -------------------
+(defun er/mark-python-defun-or-class ()
+  "Mark the current function or class."
+  (let ((starting-indent (current-indentation))
+        moved)
+    (if (python-info-looking-at-beginning-of-defun)
+        (if (= starting-indent 0)
+            (setq moved nil)
+          (while (>= (current-indentation) starting-indent)
+            (python-nav-beginning-of-defun))
+          (setq moved t))
+      (setq moved (python-nav-beginning-of-defun)))
+    ;; other side
+    (when moved
+      (set-mark (point))
+      (python-nav-end-of-defun)
+      (exchange-point-and-mark))))
+
+;; Blocks
+;; ------
+(defun er/mark-python-inside-block ()
+  "Mark the current inside indentation block."
+  (let ((indentation (current-indentation)))
+    (if (= indentation 0)
+        (progn
+          (push-mark (point))
+          (push-mark (point-max) nil t)
+          (goto-char (point-min)))
+      (while (<= indentation (current-indentation))
+        (forward-line -1))
+      (forward-line 1)
+      (push-mark (point) nil t)
+      (while (<= indentation (current-indentation))
+        (forward-line 1))
+      (backward-char)))
+  (exchange-point-and-mark)
+  (python-nav-beginning-of-statement))
+
+(defun er/mark-python-outside-block ()
+  "Mark the current outside indentation block."
+  (python-nav-backward-block)
+  (set-mark (point))
+  (python-nav-end-of-block)
+  (exchange-point-and-mark))
+
+;; Hook it up
+;; ----------
 (defun er/add-python-mode-expansions ()
-  "Adds Python-specific expansions for buffers in python-mode"
+  "Add Python-specific expansions for buffers in `python-mode'."
   (let ((try-expand-list-additions '(er/mark-python-statement
                                      er/mark-inside-python-string
                                      er/mark-outside-python-string
-                                     python-mark-block)))
+                                     er/mark-python-numbers
+                                     er/mark-python-defun-or-class
+                                     er/mark-python-inside-block
+                                     er/mark-python-outside-block)))
     (set (make-local-variable 'expand-region-skip-whitespace) nil)
     (set (make-local-variable 'er/try-expand-list)
          (remove 'er/mark-inside-quotes
+         (remove 'er/mark-defun
+         (remove 'er/mark-defun-or-class
                  (remove 'er/mark-outside-quotes
-                         (append er/try-expand-list try-expand-list-additions))))))
+                         (append er/try-expand-list try-expand-list-additions))))))))
 
 (er/enable-mode-expansions 'python-mode #'er/add-python-mode-expansions)
 
 (provide 'python-el-expansions)
-
-;; python-el-expansions.el ends here
+;;; python-el-expansions.el ends here
