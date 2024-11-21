@@ -39,6 +39,22 @@
 (declare-function org-up-element "org")
 (declare-function org-mark-subtree "org")
 
+(defun er/mark-org-table-field ()
+  (interactive)
+  (when (and
+         (org-at-table-p)
+         (> (length
+             (string-trim
+              (save-excursion (org-table-get-field))))
+            0))
+    ;; Move to beginning of field. Cannot use
+    ;; (org-table-beginning-of-field) here because it moves to the
+    ;; previous field if point is already at beginning.
+    (org-table-get-field)
+    (org-table-end-of-field 0)
+    (set-mark (point))
+    (org-table-beginning-of-field 0)))
+
 (defun er/mark-org-element ()
   (interactive)
   (let* ((el (org-element-at-point))
@@ -106,6 +122,7 @@
        (append
         (remove #'er/mark-defun er/try-expand-list)
         '(org-mark-subtree
+          er/mark-org-table-field
           er/mark-org-element
           er/mark-org-element-parent
           er/mark-org-code-block
